@@ -44,6 +44,19 @@ enum bifs {			/* built-in functions */
 
 /* nodes in the Abstract Syntax Tree */
 /* all have common initial nodetype */
+struct value {
+  char type;
+  void * value;
+};
+
+struct ddouble {
+  double value;
+};
+
+struct iint {
+  int value;
+};
+
 
 struct ast {
   int nodetype;

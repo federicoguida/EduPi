@@ -9,6 +9,7 @@
 %union {
   struct ast *a;
   double d;
+  int i;
   struct symbol *s;		/* which symbol */
   struct symlist *sl;
   int fn;			/* which function */
@@ -36,7 +37,7 @@
 
 %%
 
-stmt: IF exp THEN list           { $$ = newflow('I', $2, $4, NULL); }
+stmt: IF '(' exp ')' '{' list '}'         { $$ = newflow('I', $2, $4, NULL); } // aggiunte parentesi
    | IF exp THEN list ELSE list  { $$ = newflow('I', $2, $4, $6); }
    | WHILE exp DO list           { $$ = newflow('W', $2, $4, NULL); }
    | exp
@@ -53,6 +54,7 @@ list: /* nothing */ { $$ = NULL; }
 exp: exp CMP exp          { $$ = newcmp($2, $1, $3); }
    | exp '+' exp          { $$ = newast('+', $1,$3); }
    | exp '-' exp          { $$ = newast('-', $1,$3);}
+   | type NAME           { $$ = newDecl('i', $1,$2) } // double pippo esempio
    | exp '*' exp          { $$ = newast('*', $1,$3); }
    | exp '/' exp          { $$ = newast('/', $1,$3); }
    | '|' exp              { $$ = newast('|', $2, NULL); }

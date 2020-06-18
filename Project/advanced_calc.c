@@ -199,11 +199,28 @@ dodef(struct symbol *name, struct symlist *syms, struct ast *func)
   name->func = func;
 }
 
-static double callbuiltin(struct fncall *);
-static double calluser(struct ufncall *);
 
-double
-eval(struct ast *a)
+// funzione esempio somma
+struct value * sum( struct value* value1, struct value* value2 ){
+  switch (value1->type)
+  {
+  case 'i':
+    (struct iint*)value1->value1 + (struct iint*)value2->value2;
+    break;
+  case 'd':
+    (struct ddouble*)value1->value1 + (struct ddouble*)value2->value2;
+    break;
+
+  default:
+    break;
+  }
+
+}
+
+static double callbuiltin(struct fncall *); // chiama le funzioni definite dal programmatore { I2CON}
+static double calluser(struct ufncall *); // chiama le funzioni definite dall'utente
+
+struct value* eval(struct ast *a)
 {
   double v;
 
@@ -224,7 +241,7 @@ eval(struct ast *a)
       eval(((struct symasgn *)a)->v); break;
 
     /* expressions */
-  case '+': v = eval(a->l) + eval(a->r); break;
+  case '+': v = sum(eval(a->l),eval(a->r)); break; // somma
   case '-': v = eval(a->l) - eval(a->r); break;
   case '*': v = eval(a->l) * eval(a->r); break;
   case '/': v = eval(a->l) / eval(a->r); break;

@@ -20,7 +20,9 @@ EXP	([Ee][-+]?[0-9]+)
 "," |
 ";" |
 "(" |
-")"     { return yytext[0]; }
+")" |
+"{" |
+"}"    { return yytext[0]; }
 
  /* comparison ops */
 ">"     { yylval.fn = 1; return CMP; }

@@ -6,84 +6,94 @@
 #  include "advanced_calc.h"
 %}
 
-%union {
-  struct ast *a;
-  double d;
-  int i;
-  struct symbol *s;		/* which symbol */
-  struct symlist *sl;
-  int fn;			/* which function */
+%union{
+    struct ast *a; /*Struttura albero*/
+    double r; /*Indicherà i reali*/
+    int i; /*Indicherà gli interi*/
+    char *string; /*Indicherà le stringhe*/
+    struct peripheral *p; /*Indicherà la periferica*/
+    struct symbol *s; /* Indicherà il simbolo */
+    struct symlist *sl;  /* Lista di simboli */
+    int fn; /* Indicherà quale funzione */
 }
 
 /* declare tokens */
-%token <d> NUMBER
+%token <i> INTEGER
+%token <r> REAL
+%token <string> STRING
+/* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
+%token <fn> CMP
 %token EOL
+%token <i> PERI STR INT RL IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF
+%token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP
+%token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
 
-%token IF THEN ELSE WHILE DO LET
-
-
+/* precedencies and associativities */
 %nonassoc <fn> CMP
-%right '='
-%left '+' '-'
-%left '*' '/'
-%nonassoc '|' UMINUS
+%left LPAREN RPAREN LBRACK RBRACK
+%right NOTOP
+%left MULOP DIVOP
+%left ADDOP SUBOP
+%left OROP
+%left ANDOP
+%right ASSIGN
+%left COMMA
+%nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
 %type <a> exp stmt list explist
 %type <sl> symlist
 
-%start calclist
+%start program
 
 %%
 
-stmt: IF '(' exp ')' '{' list '}'         { $$ = newflow('I', $2, $4, NULL); } // aggiunte parentesi
-   | IF exp THEN list ELSE list  { $$ = newflow('I', $2, $4, $6); }
-   | WHILE exp DO list           { $$ = newflow('W', $2, $4, NULL); }
-   | exp
+program: /* nothing */
+| program statement EOL { }
+| program function EOL { }
+| program error EOL { }
 ;
 
-list: /* nothing */ { $$ = NULL; }
-   | stmt ';' list { if ($3 == NULL)
-	                $$ = $1;
-                      else
-			$$ = newast('L', $1, $3);
-                    }
-   ;
-
-exp: exp CMP exp          { $$ = newcmp($2, $1, $3); }
-   | exp '+' exp          { $$ = newast('+', $1,$3); }
-   | exp '-' exp          { $$ = newast('-', $1,$3);}
-   | type NAME           { $$ = newDecl('i', $1,$2) } // double pippo esempio
-   | exp '*' exp          { $$ = newast('*', $1,$3); }
-   | exp '/' exp          { $$ = newast('/', $1,$3); }
-   | '|' exp              { $$ = newast('|', $2, NULL); }
-   | '(' exp ')'          { $$ = $2; }
-   | '-' exp %prec UMINUS { $$ = newast('M', $2, NULL); }
-   | NUMBER               { $$ = newnum($1); }
-   | FUNC '(' explist ')' { $$ = newfunc($1, $3); }
-   | NAME                 { $$ = newref($1); }
-   | NAME '=' exp         { $$ = newasgn($1, $3); }
-   | NAME '(' explist ')' { $$ = newcall($1, $3); }
+statement: if_statement { }
+| for_statement { }
+| while_statement { }
+| do_while_statement { }
+| exp { }
 ;
 
-explist: exp
- | exp ',' explist  { $$ = newast('L', $1, $3); }
-;
-symlist: NAME       { $$ = newsymlist($1, NULL); }
- | NAME ',' symlist { $$ = newsymlist($1, $3); }
+if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE else_if optional_else { }
+| IF LPAREN exp RPAREN LBRACE tail RBRACE optional_else { }
 ;
 
-calclist: /* nothing */
-  | calclist stmt EOL {
-    if(debug) dumpast($2, 0);
-     printf("= %4.4g\n> ", eval($2));
-     treefree($2);
-    }
-  | calclist LET NAME '(' symlist ')' '=' list EOL {
-                       dodef($3, $5, $8);
-                       printf("Defined %s\n> ", $3->name); }
+else_if: else_if ELSE IF LPAREN exp RPAREN LBRACE tail RBRACE { }
+| ELSE IF LPAREN exp RPAREN LBRACE tail RBRACE { }
+;
 
-  | calclist error EOL { yyerrok; printf("> "); }
- ;
+optional_else: /* empty */
+| ELSE LBRACE tail RBRACE { }
+;
+
+for_statement: FOR LPAREN exp SEMI exp SEMI exp RPAREN LBRACE tail RBRACE { }
+;
+
+while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
+;
+
+do_while_statement: DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
+;
+
+tail: /* nothing */
+| statement SEMI tail { }
+;
+
+exp: exp CMP exp { }
+| exp ADDOP exp { }
+| exp SUBOP exp { }
+| exp MULOP exp { }
+| exp DIVOP exp { }
+| ABSOP exp { }
+| LPAREN exp LPAREN { }
+| SUBOP exp %prec UMINUS { }
+
 %%

@@ -24,7 +24,6 @@
 /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
-%token <fn> CMP
 %token EOL
 %token <i> PERI STR INT RL IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP
@@ -42,7 +41,7 @@
 %left COMMA
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
-%type <a> exp stmt list explist
+%type <a> exp statement tail explist
 %type <sl> symlist
 
 %start program
@@ -51,8 +50,6 @@
 
 program: /* nothing */
 | program statement EOL { }
-| program function EOL { }
-| program error EOL { }
 ;
 
 statement: if_statement { }
@@ -95,5 +92,9 @@ exp: exp CMP exp { }
 | ABSOP exp { }
 | LPAREN exp LPAREN { }
 | SUBOP exp %prec UMINUS { }
+
+
+explist: exp { }
+| exp COMMA explist { }
 
 %%

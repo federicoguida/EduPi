@@ -123,7 +123,7 @@ init: type NAME ASSIGN value SEMI { }
 ;
 
 functionB: PRINT LPAREN  value  RPAREN
- { print($3);} 
+ { print($3); treefree($3);} ; 
 
 value: NAME { }
 | INTEGER { $$ = newInteger('I', $1); }

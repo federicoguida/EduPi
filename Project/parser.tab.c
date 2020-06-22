@@ -1495,7 +1495,7 @@ yyreduce:
 
   case 21:
 #line 126 "parser.y"
- { print((yyvsp[-1].a));}
+ { print((yyvsp[-1].a)); treefree((yyvsp[-1].a));}
 #line 1500 "parser.tab.c"
     break;
 

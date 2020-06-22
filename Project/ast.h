@@ -35,6 +35,8 @@ struct ast *newInteger(int nodetype, int value);
 struct ast *newString(int nodetype, char * value);
 struct ast *newReal(int nodetype, double value);
 
+
+void treefree(struct ast *);
 /* interface to the lexer */
 extern int yylineno; /* from lexer */
 void yyerror(char *s, ...);

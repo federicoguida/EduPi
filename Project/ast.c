@@ -53,6 +53,17 @@ newString(int nodetype , char * value)
   return (struct ast *)a;
 }
 
+void
+treefree(struct ast *a)
+{
+  switch(a->nodetype) {
+      case 'I' : case 'R' : case 'S' :
+      break;
+      default: printf("internal error: free bad node %c\n", a->nodetype);
+  }
+  free(a); /* always free the node itself */
+}
+
 void print(struct ast *val){
     struct value *a= malloc(sizeof(struct value));
     struct integerType *i;
@@ -65,7 +76,6 @@ void print(struct ast *val){
                     i=(struct integerType *)a->structType;
                     int intero= i->value;
                     printf("Test printf --> %d\n", intero);
-                    free(a);
                     free(i);
                     break;
         case 'R' :
@@ -74,7 +84,6 @@ void print(struct ast *val){
                     r=(struct realType *)a->structType;
                     double reale= r->value;
                     printf("Test printf --> %g\n", reale);
-                    free(a);
                     free(r);
                     break;
         case 'S' :
@@ -83,7 +92,6 @@ void print(struct ast *val){
                     s=(struct stringType *)a->structType;
                     char * stringa= s->value;
                     printf("Test printf --> %s\n", stringa);
-                    free(a);
                     free(s);
                     break;   
 

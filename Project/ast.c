@@ -113,7 +113,7 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       stringValue1=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      res= intValue1->value + sizeof(stringValue1->value) ;
+                      res= intValue1->value + stringValue1->value ;
                       free(intValue1);
                       free(stringValue1);
                       free(val1);

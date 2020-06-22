@@ -77,7 +77,7 @@ struct ast *sum(struct ast* value1, struct ast* value2){
       struct realType *realResult;
       double dbres;
       struct stringType *stringValue1;
-      struct stringType *stringValue1;
+      struct stringType *stringValue2;
       struct stringType *stringResult;
       char * stres;
 
@@ -105,11 +105,19 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       realValue1=(struct realType *)val2->structType;
                       res= intValue1->value + realValue1->value ;
                       free(intValue1);
-                      free(intValue2);
+                      free(realValue1);
                       free(val1);
                       free(val2);
                       break;
                     case 'S' :
+                      stringValue1=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      res= intValue1->value + sizeof(stringValue1->value) ;
+                      free(intValue1);
+                      free(stringValue1);
+                      free(val1);
+                      free(val2);
                       break;
                   }
                   result->nodetype='I';

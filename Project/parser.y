@@ -3,7 +3,7 @@
 %{
 #  include <stdio.h>
 #  include <stdlib.h>
-#  include "advanced_calc.h"
+#  include "ast.h"
 %}
 
 %union{

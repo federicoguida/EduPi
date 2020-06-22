@@ -1,6 +1,6 @@
 %option noyywrap nodefault yylineno
 %{
-# include "advanced_calc.h"
+# include "ast.h"
 # include "parser.tab.h"
 %}
 

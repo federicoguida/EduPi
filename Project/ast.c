@@ -71,19 +71,47 @@ struct ast *sum(struct ast* value1, struct ast* value2){
       struct integerType *intValue1;
       struct integerType *intValue2;
       struct integerType *intResult;
-      struct realType *r;
-      struct stringType *s;
+      int res;
+      struct realType *realValue1;
+      struct realType *realValue2;
+      struct realType *realResult;
+      double dbres;
+      struct stringType *stringValue1;
+      struct stringType *stringValue1;
+      struct stringType *stringResult;
+      char * stres;
+
 
       switch(value1->nodetype){
           case 'I' :
                   intValue1=malloc(sizeof(struct integerType));
-                  intValue2=malloc(sizeof(struct integerType));
-                  intResult=malloc(sizeof(struct integerType));
                   val1=(struct value *)value1;
-                  val2=(struct value *)value2;
                   intValue1=(struct integerType *)val1->structType;
-                  intValue2=(struct integerType *)val2->structType;
-                  int res= intValue1->value + intValue2->value ;
+                  intResult=malloc(sizeof(struct integerType));
+                  switch(value2->nodetype){
+                    case 'I' :
+                      intValue2=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue2=(struct integerType *)val2->structType;
+                      res= intValue1->value + intValue2->value ;
+                      free(intValue1);
+                      free(intValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'R' :
+                      realValue1=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue1=(struct realType *)val2->structType;
+                      res= intValue1->value + realValue1->value ;
+                      free(intValue1);
+                      free(intValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'S' :
+                      break;
+                  }
                   result->nodetype='I';
                   intResult->value=res;
                   result->structType=intResult;

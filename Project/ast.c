@@ -113,7 +113,7 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       stringValue1=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      res= intValue1->value + stringValue1->value ;
+                      res= intValue1->value + atoi(stringValue1->value+1) ;
                       free(intValue1);
                       free(stringValue1);
                       free(val1);
@@ -124,6 +124,93 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                   intResult->value=res;
                   result->structType=intResult;
                   break ;
+
+          case 'R' :
+                  realValue1=malloc(sizeof(struct realType));
+                  val1=(struct value *)value1;
+                  realValue1=(struct realType *)val1->structType;
+                  realResult=malloc(sizeof(struct realType));
+                  switch(value2->nodetype){
+                    case 'I' :
+                      intValue1=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue1=(struct integerType *)val2->structType;
+                      dbres= realValue1->value + (double)intValue1->value ;
+                      free(realValue1);
+                      free(intValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'R' :
+                      realValue2=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue2=(struct realType *)val2->structType;
+                      dbres= realValue1->value + realValue2->value ;
+                      free(realValue1);
+                      free(realValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'S' :
+                      stringValue1=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      dbres= realValue1->value + atof(stringValue1->value+1) ;
+                      free(realValue1);
+                      free(stringValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                  }
+                  result->nodetype='R';
+                  realResult->value=dbres;
+                  result->structType=realResult;
+                  break ;
+          
+          case 'S' :
+                  stringValue1=malloc(sizeof(struct stringType));
+                  val1=(struct value *)value1;
+                  stringValue1=(struct stringType *)val1->structType;
+                  stringResult=malloc(sizeof(struct stringType));
+                  switch(value2->nodetype){
+                    case 'I' :
+                      intValue1=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue1=(struct integerType *)val2->structType;
+                      dbres= realValue1->value + (double)intValue1->value ;
+                      free(realValue1);
+                      free(intValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'R' :
+                      realValue2=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue2=(struct realType *)val2->structType;
+                      dbres= realValue1->value + realValue2->value ;
+                      free(realValue1);
+                      free(realValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'S' :
+                      stringValue2=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue2=(struct stringType *)val2->structType;
+                      strcat(stres, stringValue1->value);
+                      strcpy(stres, stringValue2->value);
+                      free(stringValue1);
+                      free(stringValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                  }
+                  result->nodetype='S';
+                  stringResult->value=stres;
+                  result->structType=stringResult;
+                  break ;
+
+            
 
           default: printf("internal error");
       }

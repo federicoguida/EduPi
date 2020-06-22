@@ -88,7 +88,7 @@ tail: /* nothing */
 ; /* modificata */
 
 exp: exp CMP exp { }
-| exp ADDOP exp { }
+| exp ADDOP exp { $$ = sum($1,$3); }
 | exp SUBOP exp { }
 | exp MULOP exp { }
 | exp DIVOP exp { }
@@ -128,16 +128,16 @@ init: type NAME ASSIGN value SEMI { }
 ;
 
 value: NAME { }
-| INTEGER { }
-| REAL { }
-| STRING { }
+| INTEGER { $$ = newInteger('I', $1); }
+| REAL { $$= newReal('R', $1); }
+| STRING { $$= newString('S', $1); }
 ;
 
 value_list: value_list COMMA value { }
 | value { }
 ;
 
-functionB: PRINT LPAREN exp RPAREN { }
+functionB: PRINT LPAREN exp RPAREN { print($3); treefree($3);}
 ;
 
 explist: exp { }

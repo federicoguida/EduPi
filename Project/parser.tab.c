@@ -1569,7 +1569,7 @@ yyreduce:
 
   case 23:
 #line 91 "parser.y"
-                { }
+                { (yyval.a) = sum((yyvsp[-2].a),(yyvsp[0].a)); }
 #line 1574 "parser.tab.c"
     break;
 
@@ -1725,19 +1725,19 @@ yyreduce:
 
   case 49:
 #line 131 "parser.y"
-          { }
+          { (yyval.a) = newInteger('I', (yyvsp[0].i)); }
 #line 1730 "parser.tab.c"
     break;
 
   case 50:
 #line 132 "parser.y"
-       { }
+       { (yyval.a)= newReal('R', (yyvsp[0].r)); }
 #line 1736 "parser.tab.c"
     break;
 
   case 51:
 #line 133 "parser.y"
-         { }
+         { (yyval.a)= newString('S', (yyvsp[0].string)); }
 #line 1742 "parser.tab.c"
     break;
 
@@ -1755,7 +1755,7 @@ yyreduce:
 
   case 54:
 #line 140 "parser.y"
-                                   { }
+                                   { print((yyvsp[-1].a)); treefree((yyvsp[-1].a));}
 #line 1760 "parser.tab.c"
     break;
 

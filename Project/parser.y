@@ -25,7 +25,7 @@
 %token <s> NAME
 %token <fn> FUNC
 %token EOL
-%token <i> PERI STR INT RL IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF
+%token <i> LST PERI STR INT RL IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
 
@@ -56,7 +56,8 @@ statement: if_statement { }
 | for_statement { }
 | while_statement { }
 | do_while_statement { }
-| exp { }
+| declarations { }
+| inits { }
 ;
 
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE else_if optional_else { }
@@ -72,7 +73,7 @@ optional_else: /* empty */
 ;
 
 for_statement: FOR LPAREN exp SEMI exp SEMI exp RPAREN LBRACE tail RBRACE { }
-;
+; /*da rivedere*/
 
 while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
 ;
@@ -92,9 +93,47 @@ exp: exp CMP exp { }
 | ABSOP exp { }
 | LPAREN exp LPAREN { }
 | SUBOP exp %prec UMINUS { }
+/* da finire */
+;
 
+declarations: declarations declaration { }
+| declaration { }
+;
+
+declaration: type NAME SEMI { }
+| LST NAME SEMI { }
+;
+
+type: INT { }
+| STR { }
+| PERI { }
+| RL { }
+;
+
+inits: inits init { }
+| init { }
+;
+
+init: type NAME ASSIGN value SEMI { }
+| NAME ASSIGN value SEMI { }
+| LST NAME ASSIGN value_list SEMI { }
+| NAME ASSIGN value_list SEMI { }
+/* da aggiungere la periferica */
+;
+
+value: NAME { }
+| INTEGER { }
+| REAL { }
+| STRING { }
+| exp { }
+;
+
+value_list: value_list COMMA value { }
+| value { }
+;
 
 explist: exp { }
 | exp COMMA explist { }
+;
 
 %%

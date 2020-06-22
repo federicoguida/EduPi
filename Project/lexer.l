@@ -16,13 +16,14 @@ STRING      \"{print}*\"
 
 %%
 
+"list"          { return LST; }
 "periferica"    { return PERI; }
 "string"        { return STR; }
 "integer"       { return INT; }
 "real"          { return RL; }
 "if"            { return IF; }
 "else"          { return ELSE; }
-"do"            { return DO}
+"do"            { return DO; }
 "while"         { return WHILE; }
 "for"           { return FOR; }
 "continue"      { return CONTINUE; }
@@ -71,7 +72,6 @@ STRING      \"{print}*\"
 {REAL}      { yylval.r = atof(yytext); return REAL; }
 {STRING}    { yylval.string = malloc(yyleng * sizeof(char));
                 strcpy(yylval.string, yytext); return STRING; }
- /* bisogna definire il formato della periferica */
 
 "//".*
 [ \t]   /* ignore white space */

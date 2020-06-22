@@ -21,7 +21,7 @@
 %token <i> INTEGER
 %token <r> REAL
 %token <string> STRING
-%token PRINT
+%token PRINT /* aggiunto per utilizzare printf */
 /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC

@@ -97,6 +97,7 @@ void print(struct ast *val){
 
         default: printf("Error");
     }
+    free(a);
 }
 
 void

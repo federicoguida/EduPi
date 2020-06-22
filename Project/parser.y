@@ -122,7 +122,7 @@ init: type NAME ASSIGN value SEMI { }
 ;
 
 value: NAME { }
-| INTEGER { }
+| INTEGER { $$ = newInteger($1); }
 | REAL { }
 | STRING { }
 | exp { }
@@ -136,4 +136,5 @@ explist: exp { }
 | exp COMMA explist { }
 ;
 
+functionB: 'p' value { print($2);} ;
 %%

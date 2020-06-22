@@ -17,6 +17,16 @@ newInteger(int value)
   }
   a->nodetype = 'I';
   i->value=value;
-  a->number = d;
+  a->number = i;
   return (struct ast *)a;
+}
+
+void print(struct ast *val){
+    void * v;
+    switch(val->nodetype){
+        case 'I' : v = ((struct value *)val)->structType->value;
+                    printf("%d", value);
+                    break;
+        default: printf("Error");
+    }
 }

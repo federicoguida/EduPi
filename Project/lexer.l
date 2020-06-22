@@ -30,6 +30,7 @@ STRING      \"{print}*\"
 "break"         { return BREAK; }
 "return"        { return RETURN; }
 "def"           { return DEF; }
+"print"         { return PRINT; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }
@@ -58,16 +59,9 @@ STRING      \"{print}*\"
 ">="    { yylval.fn = 5; return CMP; }
 "<="    { yylval.fn = 6; return CMP; }
 
- /* built in functions */
-"sqrt"  { yylval.fn = B_sqrt; return FUNC; }
-"exp"   { yylval.fn = B_exp; return FUNC; }
-"log"   { yylval.fn = B_log; return FUNC; }
-"print" { yylval.fn = B_print; return FUNC; }
-
  /* debug hack */
-"debug"[0-9]+ { debug = atoi(&yytext[5]); printf("debug set to %d\n", debug); }
 
-{NAME}      { yylval.s = lookup(yytext); return NAME; }
+{NAME}      { return NAME; } /*yylval.s = lookup(yytext);*/
 {INTEGER}   { yylval.i = atoi(yytext); return INTEGER;}
 {REAL}      { yylval.r = atof(yytext); return REAL; }
 {STRING}    { yylval.string = malloc(yyleng * sizeof(char));

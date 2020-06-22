@@ -7,19 +7,19 @@ struct ast {
 struct value{
     int nodetype;
     void * structType;
-}
+};
 
 struct integerType{
     int value;
-}
+};
 
 struct stringType{
     char * value;
-}
+};
 
 struct realType{
     double value;
-}
+};
 
 enum bifs {			/* built-in functions */
   B_printf = 1,

@@ -21,6 +21,7 @@
 %token <i> INTEGER
 %token <r> REAL
 %token <string> STRING
+%token PRINT
 /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
@@ -28,7 +29,6 @@
 %token <i> LST PERI STR INT RL IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
-
 /* precedencies and associativities */
 %nonassoc <fn> CMP
 %left LPAREN RPAREN LBRACK RBRACK
@@ -41,7 +41,7 @@
 %left COMMA
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
-%type <a> exp statement tail explist
+%type <a> exp statement tail explist value
 %type <sl> symlist
 
 %start program
@@ -58,6 +58,7 @@ statement: if_statement { }
 | do_while_statement { }
 | declarations { }
 | inits { }
+| functionB { }
 ;
 
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE else_if optional_else { }
@@ -121,10 +122,13 @@ init: type NAME ASSIGN value SEMI { }
 /* da aggiungere la periferica */
 ;
 
+functionB: PRINT LPAREN  value  RPAREN
+ { print($3);} 
+
 value: NAME { }
-| INTEGER { $$ = newInteger($1); }
-| REAL { }
-| STRING { }
+| INTEGER { $$ = newInteger('I', $1); }
+| REAL { $$= newReal('R', $1);}
+| STRING { $$= newString('S', $1); }
 | exp { }
 ;
 
@@ -136,5 +140,5 @@ explist: exp { }
 | exp COMMA explist { }
 ;
 
-functionB: 'p' value { print($2);} ;
+
 %%

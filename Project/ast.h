@@ -34,7 +34,7 @@ struct fncall {			/* built-in function */
 struct ast *newInteger(int nodetype, int value);
 struct ast *newString(int nodetype, char * value);
 struct ast *newReal(int nodetype, double value);
-
+struct ast *sum(struct ast* value1, struct ast* value2);
 
 void treefree(struct ast *);
 /* interface to the lexer */

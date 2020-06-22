@@ -87,13 +87,14 @@ tail: /* nothing */
 ;
 
 exp: exp CMP exp { }
-| exp ADDOP exp { }
+| exp ADDOP exp { $$ = sum($1,$3);}
 | exp SUBOP exp { }
 | exp MULOP exp { }
 | exp DIVOP exp { }
 | ABSOP exp { }
 | LPAREN exp LPAREN { }
 | SUBOP exp %prec UMINUS { }
+| value
 /* da finire */
 ;
 
@@ -122,14 +123,12 @@ init: type NAME ASSIGN value SEMI { }
 /* da aggiungere la periferica */
 ;
 
-functionB: PRINT LPAREN  value  RPAREN
- { print($3); treefree($3);} ; 
+functionB: PRINT LPAREN  exp  RPAREN { print($3); treefree($3);}; 
 
 value: NAME { }
 | INTEGER { $$ = newInteger('I', $1); }
 | REAL { $$= newReal('R', $1);}
 | STRING { $$= newString('S', $1); }
-| exp { }
 ;
 
 value_list: value_list COMMA value { }

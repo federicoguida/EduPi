@@ -17,20 +17,19 @@
     int fn; /* Indicherà quale funzione */
 }
 
- /* declare tokens */
+/* declare tokens */
 %token <i> INTEGER
 %token <r> REAL
 %token <string> STRING
-%token PRINT
- /* %token <p> PERIPHERAL (ancora non esiste il token)*/
+%token PRINT /* aggiunto per utilizzare printf */
+/* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
 %token EOL
 %token <i> LST PERI STR INT RL IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
-
- /* precedencies and associativities */
+/* precedencies and associativities */
 %nonassoc <fn> CMP
 %left LPAREN RPAREN LBRACK RBRACK
 %right NOTOP
@@ -42,7 +41,7 @@
 %left COMMA
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
-%type <a> statement if_statement for_statement while_statement do_while_statement declarations declaration inits init exp tail else_if optional_else type value value_list functionB explist
+%type <a> exp statement tail explist value
 %type <sl> symlist
 
 %start program
@@ -74,7 +73,7 @@ optional_else: /* empty */
 | ELSE LBRACE tail RBRACE { }
 ;
 
-for_statement: FOR LPAREN init SEMI exp SEMI exp RPAREN LBRACE tail RBRACE { }
+for_statement: FOR LPAREN exp SEMI exp SEMI exp RPAREN LBRACE tail RBRACE { }
 ; /*da rivedere*/
 
 while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
@@ -84,22 +83,19 @@ do_while_statement: DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN LBRACE tail RB
 ;
 
 tail: /* nothing */
-| statement { }
-; /* modificata */
+| statement SEMI tail { }
+;
 
 exp: exp CMP exp { }
-| exp ADDOP exp { }
+| exp ADDOP exp { $$ = sum($1,$3);}
 | exp SUBOP exp { }
 | exp MULOP exp { }
 | exp DIVOP exp { }
-| exp OROP exp { }
-| exp ANDOP exp { }
-| NOTOP exp { }
 | ABSOP exp { }
 | LPAREN exp LPAREN { }
 | SUBOP exp %prec UMINUS { }
-| value { }
- /* credo non manchi nulla */
+| value
+/* da finire */
 ;
 
 declarations: declarations declaration { }
@@ -108,11 +104,11 @@ declarations: declarations declaration { }
 
 declaration: type NAME SEMI { }
 | LST NAME SEMI { }
-| PERI NAME SEMI { }
 ;
 
 type: INT { }
 | STR { }
+| PERI { }
 | RL { }
 ;
 
@@ -122,27 +118,26 @@ inits: inits init { }
 
 init: type NAME ASSIGN value SEMI { }
 | NAME ASSIGN value SEMI { }
-| LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
-| NAME ASSIGN LBRACK value_list RBRACK SEMI { }
- /* da aggiungere la periferica */
+| LST NAME ASSIGN value_list SEMI { }
+| NAME ASSIGN value_list SEMI { }
+/* da aggiungere la periferica */
 ;
 
+functionB: PRINT LPAREN  exp  RPAREN { print($3); treefree($3);}; 
+
 value: NAME { }
-| INTEGER { }
-| REAL { }
-| STRING { }
+| INTEGER { $$ = newInteger('I', $1); }
+| REAL { $$= newReal('R', $1);}
+| STRING { $$= newString('S', $1); }
 ;
 
 value_list: value_list COMMA value { }
 | value { }
 ;
 
-functionB: PRINT LPAREN exp RPAREN { }
-;
-
 explist: exp { }
 | exp COMMA explist { }
 ;
 
-%%
 
+%%

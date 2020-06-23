@@ -30,11 +30,12 @@ struct fncall {			/* built-in function */
   struct ast *l;
   enum bifs functype;
 };
-
+struct ast *newAst(int nodetype, struct ast* value1, struct ast* value2);
 struct ast *newInteger(int nodetype, int value);
 struct ast *newString(int nodetype, char * value);
 struct ast *newReal(int nodetype, double value);
 struct ast *sum(struct ast* value1, struct ast* value2);
+struct ast *evaluate(struct ast* value);
 
 void treefree(struct ast *);
 /* interface to the lexer */

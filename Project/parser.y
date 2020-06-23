@@ -88,7 +88,7 @@ tail: /* nothing */
 ; /* modificata */
 
 exp: exp CMP exp { }
-| exp ADDOP exp { $$ = sum($1,$3); }
+| exp ADDOP exp { $$ = newast('+',$1,$2); }
 | exp SUBOP exp { }
 | exp MULOP exp { }
 | exp DIVOP exp { }
@@ -137,7 +137,7 @@ value_list: value_list COMMA value { }
 | value { }
 ;
 
-functionB: PRINT LPAREN exp RPAREN { print($3); treefree($3);}
+functionB: PRINT LPAREN exp RPAREN { print(evaluate($3)); treefree($3);}
 ;
 
 explist: exp { }

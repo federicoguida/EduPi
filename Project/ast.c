@@ -64,6 +64,35 @@ treefree(struct ast *a)
   free(a); /* always free the node itself */
 }
 
+
+struct ast *newAst(int nodetype, struct ast* l, struct ast* r){
+      struct ast *a = malloc(sizeof(struct ast));
+      if(!a) {
+      yyerror("out of space");
+      exit(0);
+      }
+    a->nodetype = nodetype;
+    a->l = l;
+    a->r = r;
+  return a;
+}
+
+
+struct ast *evaluate(struct ast* tree){
+    struct ast *result=malloc(sizeof(struct ast));
+    switch(tree->nodetype){
+        case '+' :
+              result=sum(tree->l, tree->r);
+              free(tree);
+              break;
+
+        default: printf("internal error");
+    }
+    return result;
+
+}
+
+
 struct ast *sum(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
       struct value *val2= malloc(sizeof(struct value));

@@ -262,8 +262,6 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                   result->structType=stringResult;
                   break ;
 
-            
-
           default: printf("internal error");
       }
 

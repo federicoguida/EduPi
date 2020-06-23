@@ -116,6 +116,7 @@ struct ast *evaluate(struct ast* tree){
         case 'M' :
               result=negateValue(tree->l);
               break;
+<<<<<<< HEAD
         case 'O' :
               result=or(tree->l,tree->r);
               free(tree);
@@ -127,6 +128,8 @@ struct ast *evaluate(struct ast* tree){
         case '5':  break;
         case '6':  break;
 
+=======
+>>>>>>> 7c9698abe4214caf637a12cc7b74eff2df7acf82
         default: printf("internal error debug");
     }
     return result;
@@ -134,6 +137,7 @@ struct ast *evaluate(struct ast* tree){
 }
 
 
+<<<<<<< HEAD
 struct ast *or(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
       struct value *val2= malloc(sizeof(struct value));
@@ -167,6 +171,8 @@ struct ast *or(struct ast* value1, struct ast* value2){
 
   return (struct ast *)result;
 }
+=======
+>>>>>>> 7c9698abe4214caf637a12cc7b74eff2df7acf82
 
 
 struct ast *negateValue(struct ast* tree){

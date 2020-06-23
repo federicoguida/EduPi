@@ -116,10 +116,22 @@ struct ast *evaluate(struct ast* tree){
         case 'M' :
               result=negateValue(tree->l);
               break;
+        case '1': result=cmp('>', result); break;
+        case '2':  break;
+        case '3':  break;
+        case '4':  break;
+        case '5':  break;
+        case '6':  break;
 
         default: printf("internal error debug");
     }
     return result;
+
+}
+
+struct ast* cmp(int value, struct ast * tree){
+    
+
 
 }
 
@@ -696,6 +708,20 @@ struct ast * sub(struct ast* value1, struct ast* value2){
       return (struct ast *)result;
 }
 
+struct ast *
+newcmp(int cmptype, struct ast *l, struct ast *r)
+{
+  struct ast *a = malloc(sizeof(struct ast));
+  
+  if(!a) {
+    yyerror("out of space");
+    exit(0);
+  }
+  a->nodetype = '0' + cmptype;
+  a->l = l;
+  a->r = r;
+  return a;
+}
 
 
 void print(struct ast *val){

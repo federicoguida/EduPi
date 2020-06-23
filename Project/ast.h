@@ -38,6 +38,7 @@ struct ast *sum(struct ast* value1, struct ast* value2);
 struct ast *sub(struct ast* value1, struct ast* value2);
 struct ast *mul(struct ast* value1, struct ast* value2);
 struct ast *rdiv(struct ast* value1, struct ast* value2);
+struct ast *newcmp(int cmptype, struct ast *l, struct ast *r);
 struct ast *evaluate(struct ast* value);
 struct ast *negateValue(struct ast* tree);
 char * printString(char * value);

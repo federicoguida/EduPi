@@ -11,7 +11,7 @@ newInteger(int nodetype , int value)
   struct value *a = malloc(sizeof(struct value));
   struct integerType *i = malloc(sizeof(struct integerType));
 
-  if(!a) {
+  if(!a || !i) {
     yyerror("out of space");
     exit(0);
   }
@@ -57,15 +57,15 @@ void
 treefree(struct ast *a)
 {
   switch(a->nodetype) {
-      case 'I' : case 'R' : case 'S' :
+      case 'I' : case 'R' : case 'S':
       break;
-      default: printf("internal error: free bad node %c\n", a->nodetype);
+      
   }
   free(a); /* always free the node itself */
 }
 
 
-struct ast *newAst(int nodetype, struct ast* l, struct ast* r){
+struct ast *newast(int nodetype, struct ast* l, struct ast* r){
       struct ast *a = malloc(sizeof(struct ast));
       if(!a) {
       yyerror("out of space");
@@ -85,11 +85,26 @@ struct ast *evaluate(struct ast* tree){
               result=sum(tree->l, tree->r);
               free(tree);
               break;
-
-        default: printf("internal error");
+        case 'I' :
+              result=tree;
+              break;
+        case 'S' :
+              result=tree;
+              break;
+        case 'R' :
+              result=tree;
+              break;
+        default: printf("internal error debug");
     }
     return result;
 
+}
+
+char * printString(char * string){
+  char * result=malloc(sizeof(string));
+  char * token;
+  
+  return result;
 }
 
 
@@ -116,42 +131,50 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                   intValue1=malloc(sizeof(struct integerType));
                   val1=(struct value *)value1;
                   intValue1=(struct integerType *)val1->structType;
-                  intResult=malloc(sizeof(struct integerType));
                   switch(value2->nodetype){
                     case 'I' :
+                      intResult=malloc(sizeof(struct integerType));
                       intValue2=malloc(sizeof(struct integerType));
                       val2=(struct value *)value2;
                       intValue2=(struct integerType *)val2->structType;
                       res= intValue1->value + intValue2->value ;
+                      result->nodetype='I';
+                      intResult->value=res;
+                      result->structType=intResult;
                       free(intValue1);
                       free(intValue2);
                       free(val1);
                       free(val2);
                       break;
                     case 'R' :
+                      realResult=malloc(sizeof(struct realType));
                       realValue1=malloc(sizeof(struct realType));
                       val2=(struct value *)value2;
                       realValue1=(struct realType *)val2->structType;
-                      res= intValue1->value + realValue1->value ;
+                      dbres= intValue1->value + realValue1->value ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       free(intValue1);
                       free(realValue1);
                       free(val1);
                       free(val2);
                       break;
                     case 'S' :
+                      realResult=malloc(sizeof(struct realType));
                       stringValue1=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      res= intValue1->value + atoi(stringValue1->value+1) ;
+                      dbres= intValue1->value + atof(stringValue1->value+1) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       free(intValue1);
                       free(stringValue1);
                       free(val1);
                       free(val2);
                       break;
                   }
-                  result->nodetype='I';
-                  intResult->value=res;
-                  result->structType=intResult;
                   break ;
 
           case 'R' :
@@ -226,8 +249,8 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       stringValue2=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue2=(struct stringType *)val2->structType;
-                      strcat(stres, stringValue1->value);
-                      strcpy(stres, stringValue2->value);
+                      strcat(stres, printString(stringValue1->value));
+                      strcpy(stres, printString(stringValue2->value));
                       free(stringValue1);
                       free(stringValue2);
                       free(val1);
@@ -274,7 +297,7 @@ void print(struct ast *val){
                     a=(struct value *)val;
                     s=(struct stringType *)a->structType;
                     char * stringa=s->value;
-                    printf("%s\n", stringa);
+                    printf("%s\n", printString(stringa));
                     free(s);
                     break;   
 

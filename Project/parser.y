@@ -85,10 +85,10 @@ do_while_statement: DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN LBRACE tail RB
 
 tail: /* nothing */
 | statement { }
-; /* modificata */
+; 
 
 exp: exp CMP exp { }
-| exp ADDOP exp { $$ = newast('+',$1,$2); }
+| exp ADDOP exp { $$ = newast('+',evaluate($1),evaluate($3)); }
 | exp SUBOP exp { }
 | exp MULOP exp { }
 | exp DIVOP exp { }
@@ -98,7 +98,7 @@ exp: exp CMP exp { }
 | ABSOP exp { }
 | LPAREN exp LPAREN { }
 | SUBOP exp %prec UMINUS { }
-| value { }
+| value 
  /* credo non manchi nulla */
 ;
 
@@ -120,8 +120,8 @@ inits: inits init { }
 | init { }
 ;
 
-init: type NAME ASSIGN value SEMI { }
-| NAME ASSIGN value SEMI { }
+init: type NAME ASSIGN exp SEMI { }
+| NAME ASSIGN exp SEMI { }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }
  /* da aggiungere la periferica */
@@ -133,11 +133,11 @@ value: NAME { }
 | STRING { $$= newString('S', $1); }
 ;
 
-value_list: value_list COMMA value { }
-| value { }
+value_list: value_list COMMA exp { }
+| exp { }
 ;
 
-functionB: PRINT LPAREN exp RPAREN { print(evaluate($3)); treefree($3);}
+functionB: PRINT LPAREN exp RPAREN { print(evaluate($3)); treefree($3); }
 ;
 
 explist: exp { }

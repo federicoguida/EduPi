@@ -630,7 +630,6 @@ struct ast * sub(struct ast* value1, struct ast* value2){
       char * str2;
       char * stres;
 
-
       switch(value1->nodetype){
           case 'I' :
                   intValue1=malloc(sizeof(struct integerType));
@@ -769,7 +768,6 @@ void print(struct ast *val){
 
         default: printf("Error");
     }
-
 }
 
 void println(struct ast *val){

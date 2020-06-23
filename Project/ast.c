@@ -126,9 +126,6 @@ struct ast *evaluate(struct ast* tree){
 
 }
 
-<<<<<<< HEAD
-=======
-
 struct ast *or(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
       struct value *val2= malloc(sizeof(struct value));
@@ -164,7 +161,6 @@ struct ast *or(struct ast* value1, struct ast* value2){
 }
 
 
->>>>>>> e79f5d610147b07125130b9e839573b957449c02
 struct ast *negateValue(struct ast* tree){
   struct value * a=malloc(sizeof(struct value));
   struct integerType * i;

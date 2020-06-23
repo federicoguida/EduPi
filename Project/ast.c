@@ -126,6 +126,8 @@ struct ast *evaluate(struct ast* tree){
 
 }
 
+<<<<<<< HEAD
+=======
 
 struct ast *or(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
@@ -162,6 +164,7 @@ struct ast *or(struct ast* value1, struct ast* value2){
 }
 
 
+>>>>>>> e79f5d610147b07125130b9e839573b957449c02
 struct ast *negateValue(struct ast* tree){
   struct value * a=malloc(sizeof(struct value));
   struct integerType * i;
@@ -205,9 +208,7 @@ char * strmul(char *str, int n){
     }
     free(str);
     return result;
-
 }
-
 
 struct ast *sum(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
@@ -264,18 +265,8 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       free(val2);
                       break;
                     case 'S' :
-                      realResult=malloc(sizeof(struct realType));
-                      stringValue1=malloc(sizeof(struct stringType));
-                      val2=(struct value *)value2;
-                      stringValue1=(struct stringType *)val2->structType;
-                      dbres= intValue1->value + atof(stringValue1->value) ;
-                      result->nodetype='R';
-                      realResult->value=dbres;
-                      result->structType=realResult;
-                      free(intValue1);
-                      free(stringValue1);
-                      free(val1);
-                      free(val2);
+                      yyerror("invalid operation.. Incompatible type IntType + StringType");
+                      exit(1);
                       break;
                   }
                   break ;
@@ -307,14 +298,8 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       free(val2);
                       break;
                     case 'S' :
-                      stringValue1=malloc(sizeof(struct stringType));
-                      val2=(struct value *)value2;
-                      stringValue1=(struct stringType *)val2->structType;
-                      dbres= realValue1->value + atof(stringValue1->value+1) ;
-                      free(realValue1);
-                      free(stringValue1);
-                      free(val1);
-                      free(val2);
+                      yyerror("invalid operation.. Incompatible type RealType + StringType");
+                      exit(1);
                       break;
                   }
                   result->nodetype='R';
@@ -352,15 +337,12 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       result->structType=stringResult;
                       break;
                   }
-                  
                   break ;
 
           default: printf("internal error");
       }
-
       return (struct ast *)result;
 }
-
 
 struct ast * mul(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
@@ -380,7 +362,6 @@ struct ast * mul(struct ast* value1, struct ast* value2){
       char * str1;
       char * str2;
       char * stres;
-
 
       switch(value1->nodetype){
           case 'I' :
@@ -445,7 +426,7 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                       intValue1=malloc(sizeof(struct integerType));
                       val2=(struct value *)value2;
                       intValue1=(struct integerType *)val2->structType;
-                      dbres= realValue1->value * (double)intValue1->value ;
+                      dbres=realValue1->value * (double)intValue1->value ;
                       free(realValue1);
                       free(intValue1);
                       free(val1);
@@ -463,6 +444,7 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                       break;
                     case 'S' :
                       yyerror("invalid operation.. String cannot mul with double type ");
+                      exit(1);
                   }
                   result->nodetype='R';
                   realResult->value=dbres;
@@ -474,13 +456,15 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                   val1=(struct value *)value1;
                   stringValue1=(struct stringType *)val1->structType;
                   stringResult=malloc(sizeof(struct stringType));
+                  int mult;
+                  char *stringa;
                   switch(value2->nodetype){
                     case 'I' :
                       intValue1=malloc(sizeof(struct integerType));
                       val2=(struct value *)value2;
                       intValue1=(struct integerType *)val2->structType;
-                      int mult=intValue1->value;
-                      char *stringa=strdup(stringValue1->value);
+                      mult=intValue1->value;
+                      stringa=strdup(stringValue1->value);
                       stringa=strmul(stringa,mult);
                       result->nodetype='S';
                       stringResult->value=stringa;
@@ -491,20 +475,29 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                       free(val2);
                       break;
                     case 'R' :
-                      yyerror("invalid operation.. String cannot mul with double type ");
-                      exit(1);
+                      realValue1=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue1=(struct realType *)val2->structType;
+                      mult=(int)realValue1->value;
+                      stringa=strdup(stringValue1->value);
+                      stringa=strmul(stringa,mult);
+                      result->nodetype='S';
+                      stringResult->value=stringa;
+                      result->structType=stringResult;
+                      free(stringValue1);
+                      free(realValue1);
+                      free(val1);
+                      free(val2);
                       break;
                     case 'S' :
                       yyerror("invalid operation.. cannot mul string with string type ");
                       exit(1);
                       break;
                   }
-                  
                   break ;
 
           default: printf("internal error");
       }
-
       return (struct ast *)result;
 }
 
@@ -555,6 +548,7 @@ struct ast *rdiv(struct ast* value1, struct ast* value2){
                       break;
                     case 'S' :
                       yyerror("invalid operation.. String cannot div with double type ");
+                      exit(1);
                       break;
                   }
                   break ;
@@ -602,11 +596,11 @@ struct ast *rdiv(struct ast* value1, struct ast* value2){
                   break ;
           
           case 'S' :
-                      yyerror("invalid operation.. String cannot div ");
-                      exit(1);
+                yyerror("invalid operation.. String cannot div ");
+                exit(1);
+
           default: printf("internal error");
       }
-
       return (struct ast *)result;
 }
 

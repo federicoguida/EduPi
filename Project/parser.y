@@ -41,8 +41,8 @@
 %left ADDOP SUBOP
 %left MULOP DIVOP
 %right NOTOP
-%left LPAREN RPAREN LBRACK RBRACK /* non so cosa sia UMINUS */
-%nonassoc ABSOP UMINUS
+%left LPAREN RPAREN LBRACK RBRACK
+%nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
 %type <a> statement if_statement for_statement while_statement do_while_statement declarations declaration inits init exp tail else_if optional_else type value value_list functionB explist
 %type <sl> symlist
@@ -92,16 +92,15 @@ tail: /* nothing */
 exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | exp ADDOP exp { $$ = newast('+',evaluate($1),evaluate($3)); }
 | exp SUBOP exp {$$ = newast('-',evaluate($1),evaluate($3)); }
-| exp MULOP exp { $$ = newast('*',evaluate($1),evaluate($3));}
-| exp DIVOP exp { $$ = newast('/',evaluate($1),evaluate($3));}
+| exp MULOP exp { $$ = newast('*',evaluate($1),evaluate($3)); }
+| exp DIVOP exp { $$ = newast('/',evaluate($1),evaluate($3)); }
 | exp OROP exp {$$ = newast('O',evaluate($1),evaluate($3)); }
-| exp ANDOP exp { }
+| exp ANDOP exp {$$ = newast('A',evaluate($1),evaluate($3)); }
 | NOTOP exp { }
 | ABSOP exp { }
 | LPAREN exp LPAREN { }
 | SUBOP exp %prec UMINUS { $$ = newast('M',evaluate($2),NULL); }
 | value 
- /* credo non manchi nulla */
 ;
 
 declarations: declarations declaration { }

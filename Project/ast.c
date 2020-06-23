@@ -5,16 +5,13 @@
 #  include <math.h>
 #  include "ast.h"
 
-
-char * clearString( char * str){
+char * clearString( char * str) {
     char * result;
     result=strndup(str+1, strlen(str)-2);
     return result;
 }
 
-struct ast *
-newInteger(int nodetype , int value)
-{
+struct ast *newInteger(int nodetype , int value) {
   struct value *a = malloc(sizeof(struct value));
   struct integerType *i = malloc(sizeof(struct integerType));
 
@@ -28,9 +25,7 @@ newInteger(int nodetype , int value)
   return (struct ast *)a;
 }
 
-struct ast *
-newReal(int nodetype , double value)
-{
+struct ast *newReal(int nodetype , double value) {
   struct value *a = malloc(sizeof(struct value));
   struct realType *r = malloc(sizeof(struct realType));
 
@@ -44,9 +39,7 @@ newReal(int nodetype , double value)
   return (struct ast *)a;
 }
 
-struct ast *
-newString(int nodetype , char * value)
-{
+struct ast *newString(int nodetype , char * value) {
   struct value *a = malloc(sizeof(struct value));
   struct stringType *s = malloc(sizeof(struct stringType));
 
@@ -60,9 +53,7 @@ newString(int nodetype , char * value)
   return (struct ast *)a;
 }
 
-void
-treefree(struct ast *a)
-{
+void treefree(struct ast *a) {
   switch(a->nodetype) {
       case 'I' : case 'R' : case 'S':
       break;
@@ -70,7 +61,6 @@ treefree(struct ast *a)
   }
   free(a); /* always free the node itself */
 }
-
 
 struct ast *newast(int nodetype, struct ast* l, struct ast* r){
       struct ast *a = malloc(sizeof(struct ast));
@@ -83,7 +73,6 @@ struct ast *newast(int nodetype, struct ast* l, struct ast* r){
     a->r = r;
   return a;
 }
-
 
 struct ast *evaluate(struct ast* tree){
     struct ast *result=malloc(sizeof(struct ast));
@@ -117,7 +106,11 @@ struct ast *evaluate(struct ast* tree){
               result=negateValue(tree->l);
               break;
         case 'O' :
-              result=or(tree->l,tree->r);
+              result=orr(tree->l,tree->r);
+              free(tree);
+              break;
+        case 'A' :
+              result=and(tree->l,tree->r);
               free(tree);
               break;
         case 1: result = compare(1,tree->l,tree->r); break; // >
@@ -129,7 +122,6 @@ struct ast *evaluate(struct ast* tree){
         default: printf("internal error debug");
     }
     return result;
-
 }
 
 struct ast *compare(int type, struct ast *l, struct ast *r){
@@ -766,43 +758,295 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
       return (struct ast *)result;
 }
 
-
-
-
-struct ast *or(struct ast* value1, struct ast* value2){
+struct ast *orr(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
       struct value *val2= malloc(sizeof(struct value));
       struct value *result= malloc(sizeof(struct value));
       struct integerType *intValue1;
       struct integerType *intValue2;
       struct integerType *intResult;
-      int res;     
-    struct realType *realValue1;
+      struct realType *realValue1;
       struct realType *realValue2;
-      struct realType *realResult;
-      double dbres;
       struct stringType *stringValue1;
       struct stringType *stringValue2;
-      struct stringType *stringResult;
-      char * str1;
-      char * str2;
-      char * stres;
+      int res;
+      
+      switch(value1->nodetype) {
+        case 'I':
               intValue1=malloc(sizeof(struct integerType));
               val1=(struct value *)value1;
               intValue1=(struct integerType *)val1->structType;
               intResult=malloc(sizeof(struct integerType));
-              intValue2=malloc(sizeof(struct integerType));
-              val2=(struct value *)value2;
-              intValue2=(struct integerType *)val2->structType;
-              res=(intValue1->value || intValue2->value);
+              switch(value2->nodetype) {
+                case 'I':
+                      intValue2=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue2=(struct integerType *)val2->structType;
+                      res=(intValue1->value || intValue2->value);
+                      free(intValue1);
+                      free(intValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'R':
+                      realValue1=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue1=(struct realType *)val2->structType;
+                      res=(intValue1->value || realValue1->value);
+                      free(intValue1);
+                      free(realValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'S':
+                      stringValue1=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      res=(intValue1->value || stringValue1->value);
+                      free(intValue1);
+                      free(stringValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+              }
               result->nodetype='I';
               intResult->value=res;
               result->structType=intResult;
+              break;
 
+        case 'R':
+              realValue1=malloc(sizeof(struct realType));
+              val1=(struct value *)value1;
+              realValue1=(struct realType *)val1->structType;
+              intResult=malloc(sizeof(struct integerType));
+              switch(value2->nodetype) {
+                case 'I':
+                      intValue1=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue1=(struct integerType *)val2->structType;
+                      res=(realValue1->value || intValue1->value);
+                      free(realValue1);
+                      free(intValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'R':
+                      realValue2=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue2=(struct realType *)val2->structType;
+                      res=(realValue1->value || realValue2->value);
+                      free(realValue1);
+                      free(realValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'S':
+                      stringValue1=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      res=(realValue1->value || stringValue1->value);
+                      free(realValue1);
+                      free(stringValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+              }
+              result->nodetype='I';
+              intResult->value=res;
+              result->structType=intResult;
+              break;
 
-  return (struct ast *)result;
+        case 'S':
+              stringValue1=malloc(sizeof(struct stringType));
+              val1=(struct value *)value1;
+              stringValue1=(struct stringType *)val1->structType;
+              intResult=malloc(sizeof(struct integerType));
+              switch(value2->nodetype) {
+                case 'I':
+                      intValue1=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue1=(struct integerType *)val2->structType;
+                      res=(stringValue1->value || intValue1->value);
+                      free(stringValue1);
+                      free(intValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'R':
+                      realValue1=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue1=(struct realType *)val2->structType;
+                      res=(stringValue1->value || realValue1->value);
+                      free(stringValue1);
+                      free(realValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'S':
+                      stringValue2=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue2=(struct stringType *)val2->structType;
+                      res=(stringValue1->value || stringValue2->value);
+                      free(stringValue1);
+                      free(stringValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+              }
+              result->nodetype='I';
+              intResult->value=res;
+              result->structType=intResult;
+              break;
+
+        default: printf("internal error");
+      }
+      return (struct ast *)result;
 }
 
+struct ast *and(struct ast* value1, struct ast* value2){
+      struct value *val1= malloc(sizeof(struct value));
+      struct value *val2= malloc(sizeof(struct value));
+      struct value *result= malloc(sizeof(struct value));
+      struct integerType *intValue1;
+      struct integerType *intValue2;
+      struct integerType *intResult;
+      struct realType *realValue1;
+      struct realType *realValue2;
+      struct stringType *stringValue1;
+      struct stringType *stringValue2;
+      int res;
+      
+      switch(value1->nodetype) {
+        case 'I':
+              intValue1=malloc(sizeof(struct integerType));
+              val1=(struct value *)value1;
+              intValue1=(struct integerType *)val1->structType;
+              intResult=malloc(sizeof(struct integerType));
+              switch(value2->nodetype) {
+                case 'I':
+                      intValue2=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue2=(struct integerType *)val2->structType;
+                      res=(intValue1->value && intValue2->value);
+                      free(intValue1);
+                      free(intValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'R':
+                      realValue1=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue1=(struct realType *)val2->structType;
+                      res=(intValue1->value && realValue1->value);
+                      free(intValue1);
+                      free(realValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'S':
+                      stringValue1=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      res=(intValue1->value && stringValue1->value);
+                      free(intValue1);
+                      free(stringValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+              }
+              result->nodetype='I';
+              intResult->value=res;
+              result->structType=intResult;
+              break;
+
+        case 'R':
+              realValue1=malloc(sizeof(struct realType));
+              val1=(struct value *)value1;
+              realValue1=(struct realType *)val1->structType;
+              intResult=malloc(sizeof(struct integerType));
+              switch(value2->nodetype) {
+                case 'I':
+                      intValue1=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue1=(struct integerType *)val2->structType;
+                      res=(realValue1->value && intValue1->value);
+                      free(realValue1);
+                      free(intValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'R':
+                      realValue2=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue2=(struct realType *)val2->structType;
+                      res=(realValue1->value && realValue2->value);
+                      free(realValue1);
+                      free(realValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'S':
+                      stringValue1=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      res=(realValue1->value && stringValue1->value);
+                      free(realValue1);
+                      free(stringValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+              }
+              result->nodetype='I';
+              intResult->value=res;
+              result->structType=intResult;
+              break;
+
+        case 'S':
+              stringValue1=malloc(sizeof(struct stringType));
+              val1=(struct value *)value1;
+              stringValue1=(struct stringType *)val1->structType;
+              intResult=malloc(sizeof(struct integerType));
+              switch(value2->nodetype) {
+                case 'I':
+                      intValue1=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue1=(struct integerType *)val2->structType;
+                      res=(stringValue1->value && intValue1->value);
+                      free(stringValue1);
+                      free(intValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'R':
+                      realValue1=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue1=(struct realType *)val2->structType;
+                      res=(stringValue1->value && realValue1->value);
+                      free(stringValue1);
+                      free(realValue1);
+                      free(val1);
+                      free(val2);
+                      break;
+                case 'S':
+                      stringValue2=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue2=(struct stringType *)val2->structType;
+                      res=(stringValue1->value && stringValue2->value);
+                      free(stringValue1);
+                      free(stringValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+              }
+              result->nodetype='I';
+              intResult->value=res;
+              result->structType=intResult;
+              break;
+
+        default: printf("internal error");
+      }
+      return (struct ast *)result;
+}
 
 struct ast *negateValue(struct ast* tree){
   struct value * a=malloc(sizeof(struct value));
@@ -867,7 +1111,6 @@ struct ast *sum(struct ast* value1, struct ast* value2){
       char * str2;
       char * stres;
 
-
       switch(value1->nodetype){
           case 'I' :
                   intValue1=malloc(sizeof(struct integerType));
@@ -879,7 +1122,7 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       intValue2=malloc(sizeof(struct integerType));
                       val2=(struct value *)value2;
                       intValue2=(struct integerType *)val2->structType;
-                      res= intValue1->value + intValue2->value ;
+                      res=intValue1->value + intValue2->value ;
                       result->nodetype='I';
                       intResult->value=res;
                       result->structType=intResult;
@@ -982,7 +1225,7 @@ struct ast *sum(struct ast* value1, struct ast* value2){
       return (struct ast *)result;
 }
 
-struct ast * mul(struct ast* value1, struct ast* value2){
+struct ast *mul(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
       struct value *val2= malloc(sizeof(struct value));
       struct value *result= malloc(sizeof(struct value));
@@ -1151,7 +1394,6 @@ struct ast * mul(struct ast* value1, struct ast* value2){
       return (struct ast *)result;
 }
 
-
 struct ast *rdiv(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
       struct value *val2= malloc(sizeof(struct value));
@@ -1254,7 +1496,7 @@ struct ast *rdiv(struct ast* value1, struct ast* value2){
       return (struct ast *)result;
 }
 
-struct ast * sub(struct ast* value1, struct ast* value2){
+struct ast *sub(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
       struct value *val2= malloc(sizeof(struct value));
       struct value *result= malloc(sizeof(struct value));
@@ -1377,7 +1619,6 @@ struct ast * sub(struct ast* value1, struct ast* value2){
       return (struct ast *)result;
 }
 
-
 void print(struct ast *val){
     struct value *a= malloc(sizeof(struct value));
     struct integerType *i;
@@ -1408,7 +1649,6 @@ void print(struct ast *val){
                     printf("%s", stringa);
                     free(s);
                     break;   
-
         default: printf("Error");
     }
 }
@@ -1418,9 +1658,7 @@ void println(struct ast *val){
   printf("\n");
 }
 
-void
-yyerror(char *s, ...)
-{
+void yyerror(char *s, ...) {
   va_list ap;
   va_start(ap, s);
 
@@ -1429,9 +1667,7 @@ yyerror(char *s, ...)
   fprintf(stderr, "\n");
 }
 
-int
-main()
-{
+int main() {
   printf("> ");
   return yyparse();
 }

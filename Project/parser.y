@@ -21,12 +21,14 @@
 %token <i> INTEGER
 %token <r> REAL
 %token <string> STRING
+/*function*/
 %token PRINT
+%token PRINTLN
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
 %token EOL
-%token <i> LST PERI STR INT RL IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF
+%token <i> LST PERI STR INT RL IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF 
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
 
@@ -50,7 +52,7 @@
 %%
 
 program: /* nothing */
-| program statement EOL { }
+| program statement EOL { yyerrok; printf("\n> ");}
 ;
 
 statement: if_statement { }
@@ -59,7 +61,7 @@ statement: if_statement { }
 | do_while_statement { }
 | declarations { }
 | inits { }
-| functionB { }
+| functions { }
 ;
 
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE else_if optional_else { }
@@ -137,7 +139,11 @@ value_list: value_list COMMA exp { }
 | exp { }
 ;
 
-functionB: PRINT LPAREN exp RPAREN { print(evaluate($3)); treefree($3); }
+functions: functions functionB 
+| functionB ;
+
+functionB: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3)); treefree($3); }
+| PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3)); treefree($3); }
 ;
 
 explist: exp { }

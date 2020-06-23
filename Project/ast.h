@@ -37,6 +37,8 @@ struct ast *newReal(int nodetype, double value);
 struct ast *sum(struct ast* value1, struct ast* value2);
 struct ast *evaluate(struct ast* value);
 char * printString(char * value);
+void println(struct ast *val);
+void print(struct ast *val);
 
 void treefree(struct ast *);
 /* interface to the lexer */

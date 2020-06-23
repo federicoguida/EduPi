@@ -232,24 +232,12 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                   stringResult=malloc(sizeof(struct stringType));
                   switch(value2->nodetype){
                     case 'I' :
-                      intValue1=malloc(sizeof(struct integerType));
-                      val2=(struct value *)value2;
-                      intValue1=(struct integerType *)val2->structType;
-                      dbres= realValue1->value + (double)intValue1->value ;
-                      free(realValue1);
-                      free(intValue1);
-                      free(val1);
-                      free(val2);
+                      yyerror("invalid operation.. Incompatible type StringType + IntType");
+                      exit(1);
                       break;
                     case 'R' :
-                      realValue2=malloc(sizeof(struct realType));
-                      val2=(struct value *)value2;
-                      realValue2=(struct realType *)val2->structType;
-                      dbres= realValue1->value + realValue2->value ;
-                      free(realValue1);
-                      free(realValue2);
-                      free(val1);
-                      free(val2);
+                      yyerror("invalid operation.. Incompatible type StringType + RealType");
+                      exit(1);
                       break;
                     case 'S' :
                       stringValue2=malloc(sizeof(struct stringType));
@@ -262,11 +250,12 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       free(stringValue2);
                       free(val1);
                       free(val2);
+                      result->nodetype='S';
+                      stringResult->value=str1;
+                      result->structType=stringResult;
                       break;
                   }
-                  result->nodetype='S';
-                  stringResult->value=str1;
-                  result->structType=stringResult;
+                  
                   break ;
 
           default: printf("internal error");
@@ -286,7 +275,7 @@ void print(struct ast *val){
                     a=(struct value *)val;
                     i=(struct integerType *)a->structType;
                     int intero= i->value;
-                    printf("%d\n", intero);
+                    printf("%d", intero);
                     free(i);
                     break;
         case 'R' :
@@ -294,7 +283,7 @@ void print(struct ast *val){
                     a=(struct value *)val;
                     r=(struct realType *)a->structType;
                     double reale= r->value;
-                    printf("%g\n", reale);
+                    printf("%g", reale);
                     free(r);
                     break;
         case 'S' :
@@ -302,13 +291,18 @@ void print(struct ast *val){
                     a=(struct value *)val;
                     s=(struct stringType *)a->structType;
                     char * stringa=s->value;
-                    printf("%s\n", stringa);
+                    printf("%s", stringa);
                     free(s);
                     break;   
 
         default: printf("Error");
     }
 
+}
+
+void println(struct ast *val){
+  print(val); 
+  printf("\n");
 }
 
 void
@@ -325,5 +319,6 @@ yyerror(char *s, ...)
 int
 main()
 {
+  printf("> ");
   return yyparse();
 }

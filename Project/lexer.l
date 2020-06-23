@@ -31,6 +31,7 @@ STRING      \"{print}*\"
 "return"        { return RETURN; }
 "def"           { return DEF; }
 "print"         { return PRINT; }
+"println"       { return PRINTLN; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

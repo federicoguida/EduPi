@@ -1599,7 +1599,7 @@ yyreduce:
 
   case 26:
 #line 96 "parser.y"
-                { }
+                { (yyval.a) = newast('/',evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a)));}
 #line 1604 "parser.tab.c"
     break;
 

@@ -100,6 +100,10 @@ struct ast *evaluate(struct ast* tree){
               result=mul(tree->l, tree->r);
               free(tree);
               break;
+        case '/' :
+              result=rdiv(tree->l, tree->r);
+              free(tree);
+              break;
         case 'I' :
               result=tree;
               break;
@@ -466,6 +470,108 @@ struct ast * mul(struct ast* value1, struct ast* value2){
       return (struct ast *)result;
 }
 
+
+struct ast *rdiv(struct ast* value1, struct ast* value2){
+      struct value *val1= malloc(sizeof(struct value));
+      struct value *val2= malloc(sizeof(struct value));
+      struct value *result= malloc(sizeof(struct value));
+      struct integerType *intValue1;
+      struct integerType *intValue2;
+      struct realType *realValue1;
+      struct realType *realValue2;
+      struct realType *realResult;
+      double dbres;
+      switch(value1->nodetype){
+          case 'I' :
+                  intValue1=malloc(sizeof(struct integerType));
+                  val1=(struct value *)value1;
+                  intValue1=(struct integerType *)val1->structType;
+                  switch(value2->nodetype){
+                    case 'I' :
+                      realResult=malloc(sizeof(struct realType));
+                      intValue2=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue2=(struct integerType *)val2->structType;
+                      dbres= (double)intValue1->value / (double)intValue2->value ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      free(intValue1);
+                      free(intValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'R' :
+                      realResult=malloc(sizeof(struct realType));
+                      realValue2=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue2=(struct realType *)val2->structType;
+                      dbres= (double)intValue1->value / realValue2->value ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      free(intValue1);
+                      free(realValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'S' :
+                      yyerror("invalid operation.. String cannot div with double type ");
+                      break;
+                  }
+                  break ;
+
+          case 'R' :
+                  realValue1=malloc(sizeof(struct realType));
+                  val1=(struct value *)value1;
+                  realValue1=(struct realType *)val1->structType;
+                  switch(value2->nodetype){
+                    case 'I' :
+                      realResult=malloc(sizeof(struct realType));
+                      intValue2=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue2=(struct integerType *)val2->structType;
+                      dbres= realValue1->value / (double)intValue2->value ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      free(realValue1);
+                      free(intValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'R' :
+                      realResult=malloc(sizeof(struct realType));
+                      realValue2=malloc(sizeof(struct realType));
+                      val2=(struct value *)value2;
+                      realValue2=(struct realType *)val2->structType;
+                      dbres= realValue1->value / realValue2->value ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      free(realValue1);
+                      free(realValue2);
+                      free(val1);
+                      free(val2);
+                      break;
+                    case 'S' :
+                      yyerror("invalid operation.. String cannot div with double type ");
+                      exit(1);
+                  }
+                  result->nodetype='R';
+                  realResult->value=dbres;
+                  result->structType=realResult;
+                  break ;
+          
+          case 'S' :
+                      yyerror("invalid operation.. String cannot div ");
+                      exit(1);
+          default: printf("internal error");
+      }
+
+      return (struct ast *)result;
+}
+
 struct ast * sub(struct ast* value1, struct ast* value2){
       struct value *val1= malloc(sizeof(struct value));
       struct value *val2= malloc(sizeof(struct value));
@@ -580,25 +686,8 @@ struct ast * sub(struct ast* value1, struct ast* value2){
                   break ;
           
           case 'S' :
-                  stringValue1=malloc(sizeof(struct stringType));
-                  val1=(struct value *)value1;
-                  stringValue1=(struct stringType *)val1->structType;
-                  stringResult=malloc(sizeof(struct stringType));
-                  switch(value2->nodetype){
-                    case 'I' :
-                      yyerror("invalid operation.. String cannot substract ");
-                      exit(1);
-                      break;
-                    case 'R' :
-                      yyerror("invalid operation.. String cannot substract ");
-                      exit(1);
-                      break;
-                    case 'S' :
-                      yyerror("invalid operation.. String cannot substract ");
-                      exit(1);
-                      break;
-                  }
-                  
+                  yyerror("Cannot substract string type");
+                  exit(1);
                   break ;
 
           default: printf("internal error");

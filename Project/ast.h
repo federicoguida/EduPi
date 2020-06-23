@@ -43,6 +43,7 @@ struct ast *or(struct ast* value1, struct ast* value2);
 struct ast *rdiv(struct ast* value1, struct ast* value2);
 struct ast *evaluate(struct ast* value);
 struct ast *negateValue(struct ast* tree);
+struct ast *compare(int type, struct ast *l, struct ast *r);
 char * printString(char * value);
 void println(struct ast *val);
 void print(struct ast *val);

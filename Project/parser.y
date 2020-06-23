@@ -89,7 +89,7 @@ tail: /* nothing */
 | statement { }
 ; 
 
-exp: exp CMP exp { }
+exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | exp ADDOP exp { $$ = newast('+',evaluate($1),evaluate($3)); }
 | exp SUBOP exp {$$ = newast('-',evaluate($1),evaluate($3)); }
 | exp MULOP exp { $$ = newast('*',evaluate($1),evaluate($3));}

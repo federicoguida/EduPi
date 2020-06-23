@@ -116,12 +116,7 @@ struct ast *evaluate(struct ast* tree){
         case 'M' :
               result=negateValue(tree->l);
               break;
-        case '1': result=cmp('>', result); break;
-        case '2':  break;
-        case '3':  break;
-        case '4':  break;
-        case '5':  break;
-        case '6':  break;
+        case 'CMP': result=cmp(tree); break;
 
         default: printf("internal error debug");
     }
@@ -129,8 +124,9 @@ struct ast *evaluate(struct ast* tree){
 
 }
 
-struct ast* cmp(int value, struct ast * tree){
-    
+struct ast* cmp(struct ast * tree){
+    struct value* r=malloc(sizeof(struct value));
+    switch(nodetype)
 
 
 }

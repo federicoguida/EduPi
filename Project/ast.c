@@ -116,7 +116,11 @@ struct ast *evaluate(struct ast* tree){
         case 'M' :
               result=negateValue(tree->l);
               break;
-        case '1': result=cmp('>', result); break;
+        case 'O' :
+              result=or(tree->l,tree->r);
+              free(tree);
+              break;
+        case '1':  break;
         case '2':  break;
         case '3':  break;
         case '4':  break;
@@ -129,10 +133,39 @@ struct ast *evaluate(struct ast* tree){
 
 }
 
-struct ast* cmp(int value, struct ast * tree){
-    
+
+struct ast *or(struct ast* value1, struct ast* value2){
+      struct value *val1= malloc(sizeof(struct value));
+      struct value *val2= malloc(sizeof(struct value));
+      struct value *result= malloc(sizeof(struct value));
+      struct integerType *intValue1;
+      struct integerType *intValue2;
+      struct integerType *intResult;
+      int res;     
+    struct realType *realValue1;
+      struct realType *realValue2;
+      struct realType *realResult;
+      double dbres;
+      struct stringType *stringValue1;
+      struct stringType *stringValue2;
+      struct stringType *stringResult;
+      char * str1;
+      char * str2;
+      char * stres;
+              intValue1=malloc(sizeof(struct integerType));
+              val1=(struct value *)value1;
+              intValue1=(struct integerType *)val1->structType;
+              intResult=malloc(sizeof(struct integerType));
+              intValue2=malloc(sizeof(struct integerType));
+              val2=(struct value *)value2;
+              intValue2=(struct integerType *)val2->structType;
+              res=(intValue1->value || intValue2->value);
+              result->nodetype='I';
+              intResult->value=res;
+              result->structType=intResult;
 
 
+  return (struct ast *)result;
 }
 
 
@@ -706,21 +739,6 @@ struct ast * sub(struct ast* value1, struct ast* value2){
       }
 
       return (struct ast *)result;
-}
-
-struct ast *
-newcmp(int cmptype, struct ast *l, struct ast *r)
-{
-  struct ast *a = malloc(sizeof(struct ast));
-  
-  if(!a) {
-    yyerror("out of space");
-    exit(0);
-  }
-  a->nodetype = '0' + cmptype;
-  a->l = l;
-  a->r = r;
-  return a;
 }
 
 

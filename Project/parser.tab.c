@@ -1575,7 +1575,7 @@ yyreduce:
 
   case 22:
 #line 92 "parser.y"
-                 { }
+                 { (yyval.a) = newcmp((yyvsp[-1].fn),evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
 #line 1580 "parser.tab.c"
     break;
 
@@ -1605,7 +1605,7 @@ yyreduce:
 
   case 27:
 #line 97 "parser.y"
-               { }
+               {(yyval.a) = newast('O',evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
 #line 1610 "parser.tab.c"
     break;
 

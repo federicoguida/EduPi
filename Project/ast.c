@@ -5,6 +5,13 @@
 #  include <math.h>
 #  include "ast.h"
 
+
+char * clearString( char * str){
+    char * result;
+    result=strndup(str+1, strlen(str)-2);
+    return result;
+}
+
 struct ast *
 newInteger(int nodetype , int value)
 {
@@ -48,7 +55,7 @@ newString(int nodetype , char * value)
     exit(0);
   }
   a->nodetype = nodetype;
-  s->value=value;
+  s->value=clearString(value);
   a->structType = s;
   return (struct ast *)a;
 }
@@ -100,12 +107,9 @@ struct ast *evaluate(struct ast* tree){
 
 }
 
-char * printString(char * string){
-  char * result=malloc(sizeof(string));
-  char * token;
-  
-  return result;
-}
+
+
+    
 
 
 struct ast *sum(struct ast* value1, struct ast* value2){
@@ -123,6 +127,8 @@ struct ast *sum(struct ast* value1, struct ast* value2){
       struct stringType *stringValue1;
       struct stringType *stringValue2;
       struct stringType *stringResult;
+      char * str1;
+      char * str2;
       char * stres;
 
 
@@ -165,7 +171,7 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       stringValue1=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      dbres= intValue1->value + atof(stringValue1->value+1) ;
+                      dbres= intValue1->value + atof(stringValue1->value) ;
                       result->nodetype='R';
                       realResult->value=dbres;
                       result->structType=realResult;
@@ -249,8 +255,9 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       stringValue2=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue2=(struct stringType *)val2->structType;
-                      strcat(stres, printString(stringValue1->value));
-                      strcpy(stres, printString(stringValue2->value));
+                      str1=strdup(stringValue1->value);
+                      str2=strdup(stringValue2->value);
+                      strcat(str1,str2);
                       free(stringValue1);
                       free(stringValue2);
                       free(val1);
@@ -258,7 +265,7 @@ struct ast *sum(struct ast* value1, struct ast* value2){
                       break;
                   }
                   result->nodetype='S';
-                  stringResult->value=stres;
+                  stringResult->value=str1;
                   result->structType=stringResult;
                   break ;
 
@@ -295,7 +302,7 @@ void print(struct ast *val){
                     a=(struct value *)val;
                     s=(struct stringType *)a->structType;
                     char * stringa=s->value;
-                    printf("%s\n", printString(stringa));
+                    printf("%s\n", stringa);
                     free(s);
                     break;   
 

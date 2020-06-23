@@ -7,7 +7,7 @@
 alpha     [a-zA-Z]
 digit     [0-9]
 alnum     {alpha}|{digit}
-print     [ -~]
+print     [^\"]
 
 NAME        {alpha}+{alnum}*
 INTEGER     "0"|[1-9]{digit}*

@@ -1478,9 +1478,15 @@ yyreduce:
     break;
 
   case 22:
+<<<<<<< HEAD
 #line 92 "parser.y" /* yacc.c:1646  */
     { }
 #line 1484 "parser.tab.c" /* yacc.c:1646  */
+=======
+#line 92 "parser.y"
+                 { (yyval.a) = newcmp((yyvsp[-1].fn),evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
+#line 1580 "parser.tab.c"
+>>>>>>> e79f5d610147b07125130b9e839573b957449c02
     break;
 
   case 23:
@@ -1508,9 +1514,15 @@ yyreduce:
     break;
 
   case 27:
+<<<<<<< HEAD
 #line 97 "parser.y" /* yacc.c:1646  */
     { }
 #line 1514 "parser.tab.c" /* yacc.c:1646  */
+=======
+#line 97 "parser.y"
+               {(yyval.a) = newast('O',evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
+#line 1610 "parser.tab.c"
+>>>>>>> e79f5d610147b07125130b9e839573b957449c02
     break;
 
   case 28:

@@ -116,12 +116,68 @@ struct ast *evaluate(struct ast* tree){
         case 'M' :
               result=negateValue(tree->l);
               break;
+<<<<<<< HEAD
+        case 'O' :
+              result=or(tree->l,tree->r);
+              free(tree);
+              break;
+        case '1':  break;
+        case '2':  break;
+        case '3':  break;
+        case '4':  break;
+        case '5':  break;
+        case '6':  break;
+
+=======
+>>>>>>> 7c9698abe4214caf637a12cc7b74eff2df7acf82
         default: printf("internal error debug");
     }
     return result;
 
 }
 
+<<<<<<< HEAD
+=======
+
+<<<<<<< HEAD
+struct ast *or(struct ast* value1, struct ast* value2){
+      struct value *val1= malloc(sizeof(struct value));
+      struct value *val2= malloc(sizeof(struct value));
+      struct value *result= malloc(sizeof(struct value));
+      struct integerType *intValue1;
+      struct integerType *intValue2;
+      struct integerType *intResult;
+      int res;     
+    struct realType *realValue1;
+      struct realType *realValue2;
+      struct realType *realResult;
+      double dbres;
+      struct stringType *stringValue1;
+      struct stringType *stringValue2;
+      struct stringType *stringResult;
+      char * str1;
+      char * str2;
+      char * stres;
+              intValue1=malloc(sizeof(struct integerType));
+              val1=(struct value *)value1;
+              intValue1=(struct integerType *)val1->structType;
+              intResult=malloc(sizeof(struct integerType));
+              intValue2=malloc(sizeof(struct integerType));
+              val2=(struct value *)value2;
+              intValue2=(struct integerType *)val2->structType;
+              res=(intValue1->value || intValue2->value);
+              result->nodetype='I';
+              intResult->value=res;
+              result->structType=intResult;
+
+
+  return (struct ast *)result;
+}
+=======
+>>>>>>> 7c9698abe4214caf637a12cc7b74eff2df7acf82
+
+
+>>>>>>> e79f5d610147b07125130b9e839573b957449c02
 struct ast *negateValue(struct ast* tree){
   struct value * a=malloc(sizeof(struct value));
   struct integerType * i;

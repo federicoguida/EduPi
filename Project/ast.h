@@ -39,6 +39,7 @@ struct ast *newReal(int nodetype, double value);
 struct ast *sum(struct ast* value1, struct ast* value2);
 struct ast *sub(struct ast* value1, struct ast* value2);
 struct ast *mul(struct ast* value1, struct ast* value2);
+struct ast *or(struct ast* value1, struct ast* value2);
 struct ast *rdiv(struct ast* value1, struct ast* value2);
 struct ast *evaluate(struct ast* value);
 struct ast *negateValue(struct ast* tree);

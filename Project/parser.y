@@ -94,7 +94,7 @@ exp: exp CMP exp { }
 | exp SUBOP exp {$$ = newast('-',evaluate($1),evaluate($3)); }
 | exp MULOP exp { $$ = newast('*',evaluate($1),evaluate($3));}
 | exp DIVOP exp { $$ = newast('/',evaluate($1),evaluate($3));}
-| exp OROP exp { }
+| exp OROP exp {$$ = newast('O',evaluate($1),evaluate($3)); }
 | exp ANDOP exp { }
 | NOTOP exp { }
 | ABSOP exp { }

@@ -375,7 +375,20 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                       free(val2);
                       break;
                     case 'S' :
-                      
+                      stringValue1=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      stringResult=malloc(sizeof(struct stringType));
+                      int mult=intValue1->value;
+                      char *stringa=strdup(stringValue1->value);
+                      stringa=strmul(stringa,mult);
+                      result->nodetype='S';
+                      stringResult->value=stringa;
+                      result->structType=stringResult;
+                      free(intValue1);
+                      free(stringValue1);
+                      free(val1);
+                      free(val2);
                       break;
                   }
                   break ;
@@ -430,6 +443,10 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                       result->nodetype='S';
                       stringResult->value=stringa;
                       result->structType=stringResult;
+                      free(intValue1);
+                      free(realValue1);
+                      free(val1);
+                      free(val2);
                       break;
                     case 'R' :
                       yyerror("invalid operation.. String cannot mul with double type ");

@@ -188,7 +188,6 @@ struct ast *negateValue(struct ast* tree){
           yyerror("Cannot negate String");
           exit(1);
           break;
-
   }
 
   return (struct ast* )a;
@@ -358,6 +357,7 @@ struct ast * mul(struct ast* value1, struct ast* value2){
       char * str1;
       char * str2;
       char * stres;
+      int mult; char *stringa;
 
       switch(value1->nodetype){
           case 'I' :
@@ -411,7 +411,6 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                       break;
                   }
                   break ;
-
           case 'R' :
                   realValue1=malloc(sizeof(struct realType));
                   val1=(struct value *)value1;
@@ -423,6 +422,9 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                       val2=(struct value *)value2;
                       intValue1=(struct integerType *)val2->structType;
                       dbres=realValue1->value * (double)intValue1->value ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       free(realValue1);
                       free(intValue1);
                       free(val1);
@@ -432,28 +434,37 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                       realValue2=malloc(sizeof(struct realType));
                       val2=(struct value *)value2;
                       realValue2=(struct realType *)val2->structType;
-                      dbres= realValue1->value * realValue2->value ;
+                      dbres= realValue1->value * realValue2->value;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       free(realValue1);
                       free(realValue2);
                       free(val1);
                       free(val2);
                       break;
                     case 'S' :
-                      yyerror("invalid operation.. String cannot mul with double type ");
-                      exit(1);
+                      stringValue1=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      stringResult=malloc(sizeof(struct stringType));
+                      mult=(int)realValue1->value;
+                      stringa=strdup(stringValue1->value);
+                      stringa=strmul(stringa,mult);
+                      result->nodetype='S';
+                      stringResult->value=stringa;
+                      result->structType=stringResult;
+                      free(stringValue1);
+                      free(realValue1);
+                      free(val1);
+                      free(val2);
                   }
-                  result->nodetype='R';
-                  realResult->value=dbres;
-                  result->structType=realResult;
                   break ;
-          
           case 'S' :
                   stringValue1=malloc(sizeof(struct stringType));
                   val1=(struct value *)value1;
                   stringValue1=(struct stringType *)val1->structType;
                   stringResult=malloc(sizeof(struct stringType));
-                  int mult;
-                  char *stringa;
                   switch(value2->nodetype){
                     case 'I' :
                       intValue1=malloc(sizeof(struct integerType));
@@ -466,7 +477,7 @@ struct ast * mul(struct ast* value1, struct ast* value2){
                       stringResult->value=stringa;
                       result->structType=stringResult;
                       free(intValue1);
-                      free(realValue1);
+                      free(stringValue1);
                       free(val1);
                       free(val2);
                       break;

@@ -47,9 +47,9 @@
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
-%type <a> statement if_statement for_statement while_statement do_while_statement declarations declaration inits init exp tail else_if optional_else type value value_list functionB explist
+%type <a> statement if_statement for_statement while_statement do_while_statement declarations declaration inits init exp tail else_if optional_else value value_list functionB explist
 %type <sl> symlist
-
+%type <type> type
 %start program
 
 %%
@@ -111,9 +111,9 @@ declarations: declarations declaration { }
 | declaration { }
 ;
 
-declaration: type NAME SEMI { }
-| LST NAME SEMI { }
-| PERI NAME SEMI { }
+declaration: type NAME SEMI { varType($1,$2);}
+| LST NAME SEMI { varType($1,$2); }
+| PERI NAME SEMI { varType($1,$2); }
 ;
 
 type: INT { }
@@ -125,7 +125,7 @@ inits: inits init { }
 | init { }
 ;
 
-init: type NAME ASSIGN exp SEMI { evaluate(newasgn((int)$1, $2, evaluate($4))); }
+init: type NAME ASSIGN exp SEMI { evaluate(newasgn($1, $2, evaluate($4))); }
 | NAME ASSIGN exp SEMI { evaluate(newsasgn($1, evaluate($3))); }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }

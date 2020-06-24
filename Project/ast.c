@@ -87,6 +87,10 @@ struct ast *newsasgn(struct symbol *s, struct ast *v) {
   return (struct ast *)a;
 }
 
+void varType(int type, struct symbol *s){
+    s->nodetype=type;
+}
+
 /********************************WORKING ON VARIABLE********************************/
 
 struct ast *newInteger(int nodetype, int value) {

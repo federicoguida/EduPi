@@ -45,7 +45,7 @@ struct ast *newref(struct symbol *s) {
     yyerror("out of space");
     exit(0);
   }
-  a->nodetype = 'N';
+  a->nodetype = 'V';
   a->s = s;
   return (struct ast *)a;
 }
@@ -190,7 +190,7 @@ struct ast *evaluate(struct ast *tree) {
               sym=(struct symasgn *)tree;
               sym->s->v=(struct value*)evaluate(sym->v);
               break;
-        case 'N' :
+        case 'V' :
               s=((struct symref*)tree)->s; result=(struct ast*)s->v;
             break;
         case 1: result = compare(1,tree->l,tree->r); break; // >

@@ -102,7 +102,7 @@ exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | exp ANDOP exp {$$ = newast('A',evaluate($1),evaluate($3)); }
 | NOTOP exp { $$ = newast('N', evaluate($2), NULL); }
 | ABSOP exp ABSOP { $$ = newast('|', evaluate($2), NULL); }
-| LPAREN exp LPAREN { }
+| LPAREN exp RPAREN { $$=evaluate($2); }
 | SUBOP exp %prec UMINUS { $$ = newast('M',evaluate($2),NULL); }
 | value 
 ;

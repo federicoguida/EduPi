@@ -1704,7 +1704,7 @@ yyreduce:
 
   case 44:
 #line 126 "parser.y"
-                                { evaluate(newasgn((yyvsp[-4].a), (yyvsp[-3].s),(yyvsp[-1].a))); }
+                                { evaluate(newasgn((yyvsp[-4].a), (yyvsp[-3].s),evaluate((yyvsp[-1].a)))); }
 #line 1709 "parser.tab.c"
     break;
 

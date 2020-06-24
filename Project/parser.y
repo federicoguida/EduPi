@@ -111,9 +111,9 @@ declarations: declarations declaration { }
 | declaration { }
 ;
 
-declaration: type NAME SEMI { }
-| LST NAME SEMI { }
-| PERI NAME SEMI { }
+declaration: type NAME SEMI { varType((int)$1,$2);}
+| LST NAME SEMI { varType($1,$2); }
+| PERI NAME SEMI { varType($1,$2); }
 ;
 
 type: INT { }

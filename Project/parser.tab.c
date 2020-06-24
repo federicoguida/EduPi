@@ -1663,19 +1663,19 @@ yyreduce:
 
   case 37:
 #line 114 "parser.y"
-                            { }
+                            { varType((int)(yyvsp[-2].a),(yyvsp[-1].s));}
 #line 1668 "parser.tab.c"
     break;
 
   case 38:
 #line 115 "parser.y"
-                { }
+                { varType((yyvsp[-2].i),(yyvsp[-1].s)); }
 #line 1674 "parser.tab.c"
     break;
 
   case 39:
 #line 116 "parser.y"
-                 { }
+                 { varType((yyvsp[-2].i),(yyvsp[-1].s)); }
 #line 1680 "parser.tab.c"
     break;
 

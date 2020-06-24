@@ -18,9 +18,9 @@ STRING      \"{print}*\"
 
 "list"          { return LST; }
 "periferica"    { return PERI; }
-"integer"       { yylval.type = 1; return INT; }
-"real"          { yylval.type = 2; return RL; }
-"string"        { yylval.type = 3; return STR; }
+"integer"       { yylval.type = 'I'; return INT; }
+"real"          { yylval.type = 'R'; return RL; }
+"string"        { yylval.type = 'S'; return STR; }
 "if"            { return IF; }
 "else"          { return ELSE; }
 "do"            { return DO; }
@@ -62,7 +62,7 @@ STRING      \"{print}*\"
 
  /* debug hack */
 
-{NAME}      { return NAME; } /*yylval.s = lookup(yytext);*/
+{NAME}      { yylval.s = lookup(yytext); return NAME; } 
 {INTEGER}   { yylval.i = atoi(yytext); return INTEGER;}
 {REAL}      { yylval.r = atof(yytext); return REAL; }
 {STRING}    { yylval.string = malloc(yyleng * sizeof(char));

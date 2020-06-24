@@ -19,6 +19,7 @@
 }
 
  /* declare tokens */
+%token <type> STR INT RL
 %token <i> INTEGER
 %token <r> REAL
 %token <string> STRING
@@ -29,7 +30,6 @@
 %token <s> NAME
 %token <fn> FUNC
 %token EOL
-%token <type> STR INT RL
 %token <i> LST PERI IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF 
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
@@ -123,14 +123,14 @@ inits: inits init { }
 | init { }
 ;
 
-init: type NAME ASSIGN exp SEMI {  }
+init: type NAME ASSIGN exp SEMI { evaluate(newasgn($1, $2,$4)); }
 | NAME ASSIGN exp SEMI { }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }
  /* da aggiungere la periferica */
 ;
 
-value: NAME { }
+value: NAME { $$=evaluate(newref($1)); }
 | INTEGER { $$ = newInteger('I', $1); }
 | REAL { $$= newReal('R', $1); }
 | STRING { $$= newString('S', $1); }
@@ -143,8 +143,8 @@ value_list: value_list COMMA exp { }
 functions: functions functionB 
 | functionB ;
 
-functionB: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3)); treefree($3); }
-| PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3)); treefree($3); }
+functionB: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3));  }
+| PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3));  }
 ;
 
 explist: exp { }

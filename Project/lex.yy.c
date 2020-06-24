@@ -900,17 +900,17 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 21 "lexer.l"
-{ yylval.type = 1; return INT; }
+{ yylval.type = 'I'; return INT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 22 "lexer.l"
-{ yylval.type = 2; return RL; }
+{ yylval.type = 'R'; return RL; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 23 "lexer.l"
-{ yylval.type = 3; return STR; }
+{ yylval.type = 'S'; return STR; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
@@ -1091,7 +1091,7 @@ YY_RULE_SETUP
 case 41:
 YY_RULE_SETUP
 #line 65 "lexer.l"
-{ return NAME; } /*yylval.s = lookup(yytext);*/
+{ yylval.s = lookup(yytext); return NAME; } 
 	YY_BREAK
 case 42:
 YY_RULE_SETUP

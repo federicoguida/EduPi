@@ -37,7 +37,7 @@ void symlistfree(struct symlist *sl);
 
 struct ast *newref(struct symbol *s);
 struct ast *newasgn(int type,struct symbol *s, struct ast *v);
-
+struct ast *newsasgn(struct symbol *s, struct ast *v);
 
 
 

@@ -124,7 +124,7 @@ inits: inits init { }
 ;
 
 init: type NAME ASSIGN exp SEMI { evaluate(newasgn($1, $2,$4)); }
-| NAME ASSIGN exp SEMI { }
+| NAME ASSIGN exp SEMI { evaluate(newsasgn($1,$3)); }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }
  /* da aggiungere la periferica */

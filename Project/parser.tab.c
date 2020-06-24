@@ -1710,7 +1710,7 @@ yyreduce:
 
   case 45:
 #line 127 "parser.y"
-                       { }
+                       { evaluate(newsasgn((yyvsp[-3].s),(yyvsp[-1].a))); }
 #line 1715 "parser.tab.c"
     break;
 

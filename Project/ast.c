@@ -74,6 +74,22 @@ newasgn(int type, struct symbol *s, struct ast *v)
   return (struct ast *)a;
 }
 
+struct ast *newsasgn(struct symbol *s, struct ast *v)
+{
+  struct symasgn *a = malloc(sizeof(struct symasgn));
+  if(!a) {
+    yyerror("out of space");
+    exit(0);
+  }
+  a->nodetype = '=';
+  a->s = s;
+  a->v = v;
+  if( s->nodetype != v->nodetype){
+    yyerror("Invalid operation trying to ass %c to %c", s->nodetype,v->nodetype);
+    exit(1);
+  } 
+  return (struct ast *)a;
+}
 
 
 /********************************WORKING ON VARIABLE********************************/

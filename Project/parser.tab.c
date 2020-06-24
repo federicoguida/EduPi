@@ -1663,7 +1663,7 @@ yyreduce:
 
   case 37:
 #line 114 "parser.y"
-                            { varType((int)(yyvsp[-2].a),(yyvsp[-1].s));}
+                            { varType((yyvsp[-2].type),(yyvsp[-1].s));}
 #line 1668 "parser.tab.c"
     break;
 
@@ -1711,7 +1711,7 @@ yyreduce:
 
   case 45:
 #line 128 "parser.y"
-                                { evaluate(newasgn((int)(yyvsp[-4].a), (yyvsp[-3].s), evaluate((yyvsp[-1].a)))); }
+                                { evaluate(newasgn((yyvsp[-4].type), (yyvsp[-3].s), evaluate((yyvsp[-1].a)))); }
 #line 1716 "parser.tab.c"
     break;
 

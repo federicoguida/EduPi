@@ -61,6 +61,8 @@ struct ast *newasgn(int type, struct symbol *s, struct ast *v) {
   a->s = s;
   a->v = v;
   if( s->nodetype != v->nodetype){
+      if(s->nodetype == 'R' && v->nodetype == 'I' || 'R' ) 
+        return (struct ast *)a;
     yyerror("Invalid operation trying to ass %c to %c", s->nodetype,v->nodetype);
     exit(1);
   } 
@@ -77,6 +79,8 @@ struct ast *newsasgn(struct symbol *s, struct ast *v) {
   a->s = s;
   a->v = v;
   if( s->nodetype != v->nodetype){
+      if(s->nodetype == 'R' && v->nodetype == 'I' || 'R' ) 
+        return (struct ast *)a;
     yyerror("Invalid operation trying to ass %c to %c", s->nodetype,v->nodetype);
     exit(1);
   } 

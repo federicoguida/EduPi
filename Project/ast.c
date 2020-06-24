@@ -152,7 +152,7 @@ struct ast *evaluate(struct ast *tree) {
     struct symasgn *sym;
     struct symbol *s;
     struct value *v;
-    switch(tree->nodetype){
+    switch(tree->nodetype) {
         case '+' :
               result=sum(tree->l, tree->r);
               break;
@@ -164,6 +164,9 @@ struct ast *evaluate(struct ast *tree) {
               break;
         case '/' :
               result=rdiv(tree->l, tree->r);
+              break;
+        case '|' :
+              result=abss(tree->l);
               break;
         case 'I' :
               result=tree;

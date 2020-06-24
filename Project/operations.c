@@ -1264,3 +1264,39 @@ struct ast *rdiv(struct ast *value1, struct ast *value2) {
       }
       return (struct ast *)result;
 }
+
+struct ast *abss(struct ast *tree) {
+  struct value *a=malloc(sizeof(struct value));
+  struct integerType *i;
+  struct realType *r;
+  int inresult; 
+  double dbresult;
+  switch(tree->nodetype) {
+    case 'I' :  
+          a=(struct value *)tree;
+          i=malloc(sizeof(struct integerType));
+          i=(struct integerType *)a->structType;
+          inresult=abs(i->value);
+          i->value=inresult;
+          a->nodetype='I';
+          a->structType=i;
+          break;
+    case 'R' :
+          a=(struct value *)tree;
+          r=malloc(sizeof(struct realType));
+          r=(struct realType *)a->structType;
+          dbresult=fabs(r->value);
+          r->value=dbresult;
+          a->nodetype='R';
+          a->structType=r;
+          break;
+    case 'S' :
+          yyerror("Cannot negate String");
+          exit(1);
+          break;
+    default: 
+        printf("Internal error"); 
+        exit(1);
+  }
+  return (struct ast* )a;
+}

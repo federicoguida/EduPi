@@ -246,7 +246,7 @@ struct ast *not(struct ast *tree) {
   struct integerType *i;
   struct realType *r;
   struct stringType *s;
-  struct integerType *intResut=malloc(struct integerType);
+  struct integerType *intResult=malloc(sizeof(struct integerType));
   int inresult;
 
   switch(tree->nodetype) {

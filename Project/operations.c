@@ -6,7 +6,7 @@
 #  include "operations.h"
 
 char *clearString(char *str) {
-    char * result;
+    char *result;
     result=strndup(str+1, strlen(str)-2);
     return result;
 }
@@ -127,7 +127,7 @@ struct ast *orr(struct ast *value1, struct ast *value2) {
               result->structType=intResult;
               break;
 
-        default: printf("internal error");
+        default: printf("Internal error"); exit(1);
       }
       return (struct ast *)result;
 }
@@ -236,7 +236,7 @@ struct ast *and(struct ast *value1, struct ast *value2) {
               result->structType=intResult;
               break;
 
-        default: printf("internal error");
+        default: printf("Internal error"); exit(1);
       }
       return (struct ast *)result;
 }
@@ -268,6 +268,9 @@ struct ast *not(struct ast *tree) {
           s=(struct stringType *)a->structType;
           inresult=!(s->value);
           break;
+    default:
+        printf("Internal error"); 
+        exit(1);
   }
   intResult->value=inresult;
   a->nodetype='I';
@@ -303,8 +306,10 @@ struct ast *negateValue(struct ast *tree) {
           yyerror("Cannot negate String");
           exit(1);
           break;
+    default: 
+        printf("Internal error"); 
+        exit(1);
   }
-
   return (struct ast* )a;
 }
 
@@ -818,6 +823,9 @@ struct ast *compare(int type, struct ast *l, struct ast *r) {
             }
         break;
         /*FINE CASO <=*/
+        default:
+            printf("Internal error"); 
+            exit(1);
       }
       return (struct ast *)result;
 }
@@ -930,7 +938,7 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                   }
                   break ;
 
-          default: printf("internal error");
+          default: printf("Internal error"); exit(1);
       }
       return (struct ast *)result;
 }
@@ -1028,7 +1036,7 @@ struct ast *sub(struct ast *value1, struct ast *value2) {
                   exit(1);
                   break ;
 
-          default: printf("internal error");
+          default: printf("Internal error"); exit(1);
       }
 
       return (struct ast *)result;
@@ -1166,7 +1174,7 @@ struct ast *mul(struct ast *value1, struct ast *value2) {
                   }
                   break ;
 
-          default: printf("internal error");
+          default: printf("Internal error"); exit(1);
       }
       return (struct ast *)result;
 }
@@ -1252,7 +1260,7 @@ struct ast *rdiv(struct ast *value1, struct ast *value2) {
                 yyerror("invalid operation.. String cannot div ");
                 exit(1);
 
-          default: printf("internal error");
+          default: printf("Internal error"); exit(1);
       }
       return (struct ast *)result;
 }

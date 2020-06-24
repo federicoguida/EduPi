@@ -200,7 +200,7 @@ struct ast *evaluate(struct ast *tree) {
         case 4: result = compare(4,tree->l,tree->r); break; // ==
         case 5: result = compare(5,tree->l,tree->r); break; // >=
         case 6: result = compare(6,tree->l,tree->r); break; // <=
-        default: printf("internal error debug");
+        default: printf("internal error debug"); exit(1);
     }
     return result;
 }
@@ -232,7 +232,7 @@ void print(struct ast *val) {
                     char * stringa=s->value;
                     printf("%s", stringa);
                     break;   
-        default: printf("Error");
+        default: printf("Error print"); exit(1);
     }
 }
 

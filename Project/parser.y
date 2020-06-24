@@ -47,7 +47,7 @@
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
-%type <a> statement if_statement for_statement while_statement do_while_statement declarations declaration inits init exp tail else_if optional_else value value_list functionB explist
+%type <a> statement if_statement for_statement while_statement do_while_statement declarations declaration inits init tail else_if optional_else exp value value_list functions functionB explist
 %type <sl> symlist
 %type <type> type
 %start program

@@ -10,10 +10,10 @@ digit     [0-9]
 alnum     {alpha}|{digit}
 print     [^\"]
 
-NAME        {alpha}+{alnum}*
-INTEGER     "0"|[1-9]{digit}*
-REAL        "0"|{digit}*"."{digit}+
-STRING      \"{print}*\"
+NAME      {alpha}+{alnum}*
+INTEGER   "0"|[1-9]{digit}*
+REAL      "0"|{digit}*"."{digit}+
+STRING    \"{print}*\"
 
 %%
 
@@ -50,9 +50,9 @@ STRING      \"{print}*\"
 ","     { return COMMA; }
 "="     { return ASSIGN; }
 
-"OR"    { return OROP; }
-"AND"   { return ANDOP; }
-"NOT"   { return NOTOP; }
+"OR"|"or"     { return OROP; }
+"AND"|"and"   { return ANDOP; }
+"NOT"|"not"   { return NOTOP; }
 
 ">"     { yylval.fn = 1; return CMP; }
 "<"     { yylval.fn = 2; return CMP; }
@@ -74,5 +74,5 @@ STRING      \"{print}*\"
 \\\n    printf("c> "); /* ignore line continuation */
 "\n"    { return EOL; }
 
-.	{ yyerror("Mystery character %c\n", *yytext); }
+.	{ yyerror("Mystery character %c\n", *yytext); exit(1); }
 %%

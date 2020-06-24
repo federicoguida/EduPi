@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,6 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 #ifndef YY_YY_PARSER_TAB_H_INCLUDED
 # define YY_YY_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
@@ -45,19 +49,19 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INTEGER = 258,
-    REAL = 259,
-    STRING = 260,
-    PRINT = 261,
-    PRINTLN = 262,
-    NAME = 263,
-    FUNC = 264,
-    EOL = 265,
-    LST = 266,
-    PERI = 267,
-    STR = 268,
-    INT = 269,
-    RL = 270,
+    STR = 258,
+    INT = 259,
+    RL = 260,
+    INTEGER = 261,
+    REAL = 262,
+    STRING = 263,
+    PRINT = 264,
+    PRINTLN = 265,
+    NAME = 266,
+    FUNC = 267,
+    EOL = 268,
+    LST = 269,
+    PERI = 270,
     IF = 271,
     ELSE = 272,
     DO = 273,
@@ -92,10 +96,9 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 9 "parser.y" /* yacc.c:1909  */
+#line 9 "parser.y"
 
     struct ast *a; /*Struttura albero*/
     double r; /*Indicherà i reali*/
@@ -105,10 +108,11 @@ union YYSTYPE
     struct symbol *s; /* Indicherà il simbolo */
     struct symlist *sl;  /* Lista di simboli */
     int fn; /* Indicherà quale funzione */
+    int type;
 
-#line 110 "parser.tab.h" /* yacc.c:1909  */
+#line 114 "parser.tab.h"
+
 };
-
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

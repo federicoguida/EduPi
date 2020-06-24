@@ -1,7 +1,8 @@
 %option noyywrap nodefault yylineno
 %{
-# include "ast.h"
-# include "parser.tab.h"
+#  include "ast.h"
+#  include "parser.tab.h"
+#  include "operations.h"
 %}
 
 alpha     [a-zA-Z]

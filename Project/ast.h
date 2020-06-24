@@ -18,7 +18,6 @@ struct symlist {
   struct symlist *next;
 };
 
-
 struct symref {
   int nodetype;			/* type N */
   struct symbol *s;
@@ -30,27 +29,14 @@ struct symasgn {
   struct ast *v;		/* value */
 };
 
-
 struct symlist *newsymlist(struct symbol *sym, struct symlist *next);
 void symlistfree(struct symlist *sl);
-
 
 struct ast *newref(struct symbol *s);
 struct ast *newasgn(int type,struct symbol *s, struct ast *v);
 struct ast *newsasgn(struct symbol *s, struct ast *v);
 
-
-
-
-
-
-
-
-
 /********************************WORKING ON VARIABLE********************************/
-
-
-
 
 struct ast {
     int nodetype; 
@@ -84,20 +70,13 @@ struct fncall {			/* built-in function */
   struct ast *l;
   enum bifs functype;
 };
-struct ast *newast(int nodetype, struct ast* value1, struct ast* value2);
+
+struct ast *newast(int nodetype, struct ast *value1, struct ast *value2);
 struct ast *newInteger(int nodetype, int value);
-struct ast *newString(int nodetype, char * value);
+struct ast *newString(int nodetype, char *value);
 struct ast *newReal(int nodetype, double value);
-struct ast *sum(struct ast* value1, struct ast* value2); //da spostare
-struct ast *sub(struct ast* value1, struct ast* value2); //da spostare
-struct ast *mul(struct ast* value1, struct ast* value2); //da spostare
-struct ast *orr(struct ast* value1, struct ast* value2); //da spostare
-struct ast *and(struct ast* value1, struct ast* value2); //da spostare
-struct ast *rdiv(struct ast* value1, struct ast* value2); //da spostare
-struct ast *evaluate(struct ast* value);
-struct ast *negateValue(struct ast* tree); //da spostare
-struct ast *compare(int type, struct ast *l, struct ast *r); //da spostare
-char * printString(char * value);
+struct ast *evaluate(struct ast *value);
+char * printString(char *value);
 void println(struct ast *val);
 void print(struct ast *val);
 

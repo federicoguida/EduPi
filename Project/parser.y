@@ -4,6 +4,7 @@
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include "ast.h"
+#  include "operations.h"
 %}
 
 %union{
@@ -55,6 +56,7 @@
 
 program: /* nothing */
 | program statement EOL { yyerrok; printf("\n> ");}
+| program EOL { yyerrok; printf("\n> ");}
 ;
 
 statement: if_statement { }
@@ -123,8 +125,8 @@ inits: inits init { }
 | init { }
 ;
 
-init: type NAME ASSIGN exp SEMI { evaluate(newasgn($1, $2,evaluate($4))); }
-| NAME ASSIGN exp SEMI { evaluate(newsasgn($1,$3)); }
+init: type NAME ASSIGN exp SEMI { evaluate(newasgn((int)$1, $2, evaluate($4))); }
+| NAME ASSIGN exp SEMI { evaluate(newsasgn($1, evaluate($3))); }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }
  /* da aggiungere la periferica */

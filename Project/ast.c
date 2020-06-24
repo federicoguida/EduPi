@@ -151,19 +151,15 @@ struct ast *evaluate(struct ast *tree) {
     switch(tree->nodetype){
         case '+' :
               result=sum(tree->l, tree->r);
-              free(tree);
               break;
         case '-' :
               result=sub(tree->l, tree->r);
-              free(tree);
               break;
         case '*' :
               result=mul(tree->l, tree->r);
-              free(tree);
               break;
         case '/' :
               result=rdiv(tree->l, tree->r);
-              free(tree);
               break;
         case 'I' :
               result=tree;
@@ -179,11 +175,12 @@ struct ast *evaluate(struct ast *tree) {
               break;
         case 'O' :
               result=orr(tree->l,tree->r);
-              free(tree);
               break;
         case 'A' :
               result=and(tree->l,tree->r);
-              free(tree);
+              break;
+        case 'N' :
+              result=not(tree->l);
               break;
         case '=' :
               sym=malloc(sizeof(struct symasgn));

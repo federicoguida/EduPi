@@ -18,9 +18,9 @@ STRING      \"{print}*\"
 
 "list"          { return LST; }
 "periferica"    { return PERI; }
-"string"        { return STR; }
-"integer"       { return INT; }
-"real"          { return RL; }
+"integer"       { yylval.type = 1; return INT; }
+"real"          { yylval.type = 2; return RL; }
+"string"        { yylval.type = 3; return STR; }
 "if"            { return IF; }
 "else"          { return ELSE; }
 "do"            { return DO; }

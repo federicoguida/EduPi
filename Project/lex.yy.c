@@ -393,10 +393,10 @@ static const flex_int16_t yy_accept[125] =
        41,   41,   41,    8,   41,   41,    6,   41,   41,   41,
        41,   41,   41,   41,   45,   33,   34,   41,   41,   14,
        41,   10,   41,   41,   41,   41,   41,   41,   41,   41,
-       41,   41,    7,   41,    1,   41,   41,    5,   41,   41,
+       41,   41,    7,   41,    1,   41,   41,    4,   41,   41,
 
        41,   12,   41,   41,   41,   15,   41,   41,    9,   41,
-       41,   41,   41,   13,    3,   41,    4,   41,   16,   11,
+       41,   41,   41,   13,    5,   41,    3,   41,   16,   11,
        41,   41,    2,    0
     } ;
 
@@ -900,17 +900,17 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 21 "lexer.l"
-{ return STR; }
+{ yylval.type = 1; return INT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 22 "lexer.l"
-{ return INT; }
+{ yylval.type = 2; return RL; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 23 "lexer.l"
-{ return RL; }
+{ yylval.type = 3; return STR; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP

@@ -1,3 +1,57 @@
+/********************************WORKING ON VARIABLE********************************/
+struct symbol {
+    char * name;
+    int nodetype;
+    struct value *v;
+    struct ast *func;
+    struct symlist *syms;
+};
+
+#define NHASH 9997
+struct symbol symtab[NHASH];
+
+struct symbol *lookup(char*);
+
+/* list of symbols, for an argument list */
+struct symlist {
+  struct symbol *sym;
+  struct symlist *next;
+};
+
+
+struct symref {
+  int nodetype;			/* type N */
+  struct symbol *s;
+};
+
+struct symasgn {
+  int nodetype;			/* type = */
+  struct symbol *s;
+  struct ast *v;		/* value */
+};
+
+
+struct symlist *newsymlist(struct symbol *sym, struct symlist *next);
+void symlistfree(struct symlist *sl);
+
+
+struct ast *newref(struct symbol *s);
+struct ast *newasgn(struct symbol *s, struct ast *v);
+
+
+
+
+
+
+
+
+
+
+/********************************WORKING ON VARIABLE********************************/
+
+
+
+
 struct ast {
     int nodetype; 
     struct ast *l;

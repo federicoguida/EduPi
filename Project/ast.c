@@ -5,6 +5,75 @@
 #  include <math.h>
 #  include "ast.h"
 
+/********************************WORKING ON VARIABLE********************************/
+
+static unsigned
+symhash(char *sym)
+{
+  unsigned int hash = 0;
+  unsigned c;
+
+  while(c = *sym++) hash = hash*9 ^ c;
+
+  return hash;
+}
+
+struct symbol *
+lookup(char* sym)
+{
+  struct symbol *sp = &symtab[symhash(sym)%NHASH];
+  int scount = NHASH;		/* how many have we looked at */
+
+  while(--scount >= 0) {
+    if(sp->name && !strcmp(sp->name, sym)) { return sp; }
+
+    if(!sp->name) {		/* new entry */
+      sp->name = strdup(sym);
+      sp->v = NULL;
+      sp->func = NULL;
+      sp->syms = NULL;
+      return sp;
+    }
+
+    if(++sp >= symtab+NHASH) sp = symtab; /* try the next entry */
+  }
+  yyerror("symbol table overflow\n");
+  abort(); /* tried them all, table is full */
+
+}
+
+struct ast *
+newref(struct symbol *s)
+{
+  struct symref *a = malloc(sizeof(struct symref));
+  
+  if(!a) {
+    yyerror("out of space");
+    exit(0);
+  }
+  a->nodetype = 'N';
+  a->s = s;
+  return (struct ast *)a;
+}
+
+struct ast *
+newasgn(struct symbol *s, struct ast *v)
+{
+  struct symasgn *a = malloc(sizeof(struct symasgn));
+  
+  if(!a) {
+    yyerror("out of space");
+    exit(0);
+  }
+  a->nodetype = '=';
+  a->s = s;
+  a->v = v;
+  return (struct ast *)a;
+}
+
+
+
+/********************************WORKING ON VARIABLE********************************/
 char * clearString( char * str) {
     char * result;
     result=strndup(str+1, strlen(str)-2);

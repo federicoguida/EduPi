@@ -15,6 +15,7 @@
     struct symbol *s; /* Indicherà il simbolo */
     struct symlist *sl;  /* Lista di simboli */
     int fn; /* Indicherà quale funzione */
+    int type;
 }
 
  /* declare tokens */
@@ -28,7 +29,8 @@
 %token <s> NAME
 %token <fn> FUNC
 %token EOL
-%token <i> LST PERI STR INT RL IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF 
+%token <type> STR INT RL
+%token <i> LST PERI IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF 
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
 
@@ -121,7 +123,7 @@ inits: inits init { }
 | init { }
 ;
 
-init: type NAME ASSIGN exp SEMI { }
+init: type NAME ASSIGN exp SEMI {  }
 | NAME ASSIGN exp SEMI { }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }

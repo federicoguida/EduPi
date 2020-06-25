@@ -97,6 +97,60 @@ void varType(int type, struct symbol *s){
 
 /********************************WORKING ON VARIABLE********************************/
 
+/*****************FLOW*/
+struct ast *
+newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *el)
+{
+  struct flow *a = malloc(sizeof(struct flow));
+  
+  if(!a) {
+    yyerror("out of space");
+    exit(0);
+  }
+  a->nodetype = nodetype;
+  a->cond = cond;
+  a->tl = tl;
+  a->el = el;
+  return (struct ast *)a;
+}
+/*****************FLOW*/
+
+
+/********** BUILT*/
+struct ast *
+newfunc(int functype, struct ast *l)
+{
+  struct fncall *a = malloc(sizeof(struct fncall));
+  
+  if(!a) {
+    yyerror("out of space");
+    exit(0);
+  }
+  a->nodetype = 'L';
+  a->l = l;
+  a->functype = functype;
+  return (struct ast *)a;
+}
+
+
+void callbuiltin(struct fncall *f){
+    struct ast* a=malloc(sizeof(struct ast));
+    enum bifs functype = f->functype;
+    a = evaluate(f->l);
+
+    switch(functype) {
+      case B_print:
+      print(a);
+      break;
+      case B_println:
+      println(a);
+      break;
+     default:
+    yyerror("Unknown built-in function %d", functype);
+  }
+}
+/***********B*/
+
 struct ast *newInteger(int nodetype, int value) {
   struct value *a = malloc(sizeof(struct value));
   struct integerType *i = malloc(sizeof(struct integerType));

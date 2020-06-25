@@ -137,7 +137,7 @@ value_list: value_list COMMA exp { }
 functions: functions functionR { }
 | functions functionV { }
 | functionV { }
-| functionsR { }
+| functionR { }
 ;
 
 functionV: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3)); }

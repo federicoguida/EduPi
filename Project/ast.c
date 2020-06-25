@@ -302,13 +302,11 @@ void ifop(struct flow *f){
     if(i->value!=0){
       if( f->tl) {
       evaluate(f->tl);
-    }else
-    printf("ciao");
+    }else{}
     } else {
       if( f->el) {
        evaluate((f->el));
-      } else
-      printf("ciao");
+      } else{}
     }
 }
 

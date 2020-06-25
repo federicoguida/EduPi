@@ -255,6 +255,12 @@ struct ast *evaluate(struct ast *tree) {
         case 'V' :
               s=((struct symref*)tree)->s; result=(struct ast*)s->v;
             break;
+        case 'F' :
+              ifop((struct flow *)tree);
+              break;
+        case 'L' :
+              callbuiltin((struct fncall *)tree); 
+              break;
         case 1: result = compare(1,tree->l,tree->r); break; // >
         case 2: result = compare(2,tree->l,tree->r); break; // <
         case 3: result = compare(3,tree->l,tree->r); break; // !=
@@ -264,6 +270,18 @@ struct ast *evaluate(struct ast *tree) {
         default: printf("internal error debug"); exit(1);
     }
     return result;
+}
+
+void ifop(struct flow *f){
+    struct value *v=malloc(sizeof(struct value));
+    v=(struct value*)evaluate(f->cond);
+    struct integerType *i=malloc(sizeof(struct integerType));
+    i=(struct integerType*)v->structType;
+    if(i->value!=0){
+      printf("ciao");
+    }else{
+      printf("not ciao");
+    }
 }
 
 void print(struct ast *val) {

@@ -27,8 +27,6 @@ STRING    \"{print}*\"
 "do"            { return DO; }
 "while"         { return WHILE; }
 "for"           { return FOR; }
-"continue"      { return CONTINUE; }
-"break"         { return BREAK; }
 "return"        { return RETURN; }
 "def"           { return DEF; }
 "print"         { return PRINT; }

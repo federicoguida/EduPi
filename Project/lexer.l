@@ -33,6 +33,7 @@ STRING    \"{print}*\"
 "def"           { return DEF; }
 "print"         { return PRINT; }
 "println"       { return PRINTLN; }
+"time"          { return TIME; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

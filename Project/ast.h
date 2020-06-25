@@ -80,6 +80,7 @@ struct ast *evaluate(struct ast *value);
 char * printString(char *value);
 void println(struct ast *val);
 void print(struct ast *val);
+struct ast *date();
 
 void treefree(struct ast *);
 /* interface to the lexer */

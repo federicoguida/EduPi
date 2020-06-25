@@ -27,6 +27,7 @@
 /*function*/
 %token PRINT
 %token PRINTLN
+%token TIME
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
@@ -47,7 +48,7 @@
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
-%type <a> statement if_statement for_statement while_statement do_while_statement declarations declaration inits init tail else_if optional_else exp value value_list functions functionB explist
+%type <a> statement if_statement for_statement while_statement do_while_statement declarations declaration inits init tail else_if optional_else exp value value_list functions functionR functionV explist
 %type <sl> symlist
 %type <type> type
 %start program
@@ -104,7 +105,8 @@ exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | ABSOP exp ABSOP { $$ = newast('|', evaluate($2), NULL); }
 | LPAREN exp RPAREN { $$=evaluate($2); }
 | SUBOP exp %prec UMINUS { $$ = newast('M',evaluate($2),NULL); }
-| value 
+| value
+| functionR
 ;
 
 declarations: declarations declaration { }
@@ -129,6 +131,7 @@ init: type NAME ASSIGN exp SEMI { evaluate(newasgn($1, $2, evaluate($4))); }
 | NAME ASSIGN exp SEMI { evaluate(newsasgn($1, evaluate($3))); }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }
+| NAME ASSIGN functionV  { evaluate(newsasgn($1, evaluate($3))); }
  /* da aggiungere la periferica */
 ;
 
@@ -142,10 +145,17 @@ value_list: value_list COMMA exp { }
 | exp { }
 ;
 
-functions: functions functionB 
-| functionB ;
+functionR: TIME LPAREN RPAREN  { $$ = date(); } 
+;
 
-functionB: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3));  }
+
+functions: functions functionV 
+| functionV
+| functions functionR
+| functionR 
+;
+
+functionV: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3));  }
 | PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3));  }
 ;
 

@@ -1,8 +1,10 @@
+#  define _GNU_SOURCE
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include <stdarg.h>
 #  include <string.h>
 #  include <math.h>
+#  include <time.h>
 #  include "ast.h"
 #  include "operations.h"
 
@@ -242,6 +244,18 @@ void print(struct ast *val) {
 void println(struct ast *val) {
   print(val); 
   printf("\n");
+}
+
+
+struct ast *date(){
+    struct value *a=malloc(sizeof(struct value));
+    struct stringType *s=malloc(sizeof(struct stringType));
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    asprintf(&(s->value),"%d-%02d-%02d %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    a->nodetype='S';
+    a->structType=s;
+    return (struct ast*)a;
 }
 
 void yyerror(char *s, ...) {

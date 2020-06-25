@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,6 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 #ifndef YY_YY_PARSER_TAB_H_INCLUDED
 # define YY_YY_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
@@ -53,49 +57,49 @@ extern int yydebug;
     STRING = 263,
     PRINT = 264,
     PRINTLN = 265,
-    NAME = 266,
-    FUNC = 267,
-    EOL = 268,
-    LST = 269,
-    PERI = 270,
-    IF = 271,
-    ELSE = 272,
-    DO = 273,
-    WHILE = 274,
-    FOR = 275,
-    CONTINUE = 276,
-    BREAK = 277,
-    RETURN = 278,
-    DEF = 279,
-    ADDOP = 280,
-    SUBOP = 281,
-    MULOP = 282,
-    DIVOP = 283,
-    ABSOP = 284,
-    OROP = 285,
-    ANDOP = 286,
-    NOTOP = 287,
-    LPAREN = 288,
-    RPAREN = 289,
-    LBRACK = 290,
-    RBRACK = 291,
-    LBRACE = 292,
-    RBRACE = 293,
-    SEMI = 294,
-    DOT = 295,
-    COMMA = 296,
-    ASSIGN = 297,
-    CMP = 298,
-    UMINUS = 299
+    TIME = 266,
+    NAME = 267,
+    FUNC = 268,
+    EOL = 269,
+    LST = 270,
+    PERI = 271,
+    IF = 272,
+    ELSE = 273,
+    DO = 274,
+    WHILE = 275,
+    FOR = 276,
+    CONTINUE = 277,
+    BREAK = 278,
+    RETURN = 279,
+    DEF = 280,
+    ADDOP = 281,
+    SUBOP = 282,
+    MULOP = 283,
+    DIVOP = 284,
+    ABSOP = 285,
+    OROP = 286,
+    ANDOP = 287,
+    NOTOP = 288,
+    LPAREN = 289,
+    RPAREN = 290,
+    LBRACK = 291,
+    RBRACK = 292,
+    LBRACE = 293,
+    RBRACE = 294,
+    SEMI = 295,
+    DOT = 296,
+    COMMA = 297,
+    ASSIGN = 298,
+    CMP = 299,
+    UMINUS = 300
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 10 "parser.y" /* yacc.c:1909  */
+#line 10 "parser.y"
 
     struct ast *a; /*Struttura albero*/
     double r; /*Indicherà i reali*/
@@ -107,9 +111,9 @@ union YYSTYPE
     int fn; /* Indicherà quale funzione */
     int type;
 
-#line 111 "parser.tab.h" /* yacc.c:1909  */
-};
+#line 115 "parser.tab.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

@@ -65,9 +65,9 @@ statement: if_statement { }
 | while_statement { }
 | declarations { }
 | inits { }
-| exp SEMI { }
+| exp { }
 | functions { }
-| statement statement { }
+| statement SEMI statement { }
 ;
 
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { }
@@ -81,7 +81,7 @@ while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
 ;
 
 tail: /* nothing */
-| statement tail { }
+| statement SEMI tail { }
 ;
 
 exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
@@ -104,9 +104,9 @@ declarations: declarations declaration { }
 | declaration { }
 ;
 
-declaration: type NAME SEMI { varType($1,$2);}
-| LST NAME SEMI { varType($1,$2); }
-| PERI NAME SEMI { varType($1,$2); }
+declaration: type NAME { varType($1,$2);}
+| LST NAME { varType($1,$2); }
+| PERI NAME { varType($1,$2); }
 ;
 
 type: INT { }
@@ -118,10 +118,10 @@ inits: inits init { }
 | init { }
 ;
 
-init: type NAME ASSIGN exp SEMI { evaluate(newasgn($1, $2, evaluate($4))); }
-| NAME ASSIGN exp SEMI { evaluate(newsasgn($1, evaluate($3))); }
-| LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
-| NAME ASSIGN LBRACK value_list RBRACK SEMI { }
+init: type NAME ASSIGN exp { evaluate(newasgn($1, $2, evaluate($4))); }
+| NAME ASSIGN exp { evaluate(newsasgn($1, evaluate($3))); }
+| LST NAME ASSIGN LBRACK value_list RBRACK { }
+| NAME ASSIGN LBRACK value_list RBRACK { }
  /* da aggiungere la periferica */
 ;
 
@@ -141,11 +141,11 @@ functions: functions functionR { }
 | functionR { }
 ;
 
-functionV: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3)); }
-| PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3)); }
+functionV: PRINT LPAREN exp RPAREN { print(evaluate($3)); }
+| PRINTLN LPAREN exp RPAREN { println(evaluate($3)); }
 ;
 
-functionR: TIME LPAREN RPAREN SEMI { $$ = date(); } 
+functionR: TIME LPAREN RPAREN { $$ = date(); } 
 ;
 
 explist: exp { }

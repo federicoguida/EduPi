@@ -1469,7 +1469,7 @@ yyreduce:
     {
   case 3:
 #line 59 "parser.y"
-                    { printf("\n> ");}
+                    { evaluate((yyvsp[0].a)); printf("\n> ");}
 #line 1474 "parser.tab.c"
     break;
 
@@ -1661,13 +1661,13 @@ yyreduce:
 
   case 37:
 #line 111 "parser.y"
-                                { evaluate(newasgn((yyvsp[-4].type), (yyvsp[-3].s), evaluate((yyvsp[-1].a)))); }
+                                { (yyval.a) = newasgn((yyvsp[-4].type), (yyvsp[-3].s), evaluate((yyvsp[-1].a))); }
 #line 1666 "parser.tab.c"
     break;
 
   case 38:
 #line 112 "parser.y"
-                       { evaluate(newsasgn((yyvsp[-3].s), evaluate((yyvsp[-1].a)))); }
+                       { (yyval.a) = newsasgn((yyvsp[-3].s), evaluate((yyvsp[-1].a))); }
 #line 1672 "parser.tab.c"
     break;
 
@@ -1685,13 +1685,13 @@ yyreduce:
 
   case 41:
 #line 115 "parser.y"
-                             { evaluate(newasgn((yyvsp[-3].type), (yyvsp[-2].s), evaluate((yyvsp[0].a)))); }
+                             { (yyval.a) =  newasgn((yyvsp[-3].type), (yyvsp[-2].s), evaluate((yyvsp[0].a))); }
 #line 1690 "parser.tab.c"
     break;
 
   case 42:
 #line 116 "parser.y"
-                        { evaluate(newsasgn((yyvsp[-2].s), evaluate((yyvsp[0].a)))); }
+                        { (yyval.a) = newsasgn((yyvsp[-2].s), evaluate((yyvsp[0].a))); }
 #line 1696 "parser.tab.c"
     break;
 
@@ -1733,13 +1733,13 @@ yyreduce:
 
   case 49:
 #line 130 "parser.y"
-                                        { print(evaluate((yyvsp[-2].a))); }
+                                        { (yyval.a) = newfunc((yyvsp[-4].fn), (yyvsp[-2].a)); }
 #line 1738 "parser.tab.c"
     break;
 
   case 50:
 #line 131 "parser.y"
-                                 { println(evaluate((yyvsp[-2].a))); }
+                                 { (yyval.a) = newfunc((yyvsp[-4].fn), (yyvsp[-2].a)); }
 #line 1744 "parser.tab.c"
     break;
 

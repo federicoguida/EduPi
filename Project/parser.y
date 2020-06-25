@@ -25,8 +25,8 @@
 %token <r> REAL
 %token <string> STRING
 /*function*/
-%token PRINT
-%token PRINTLN
+%token <fn>PRINT
+%token <fn>PRINTLN
 %token TIME
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
@@ -56,7 +56,7 @@
 %%
 
 program: /* nothing */
-| program statement { printf("\n> ");}
+| program statement { evaluate($2); printf("\n> ");}
 | program EOL
 ;
 
@@ -108,12 +108,12 @@ type: INT { }
 | RL { }
 ;
 
-init: type NAME ASSIGN exp SEMI { evaluate(newasgn($1, $2, evaluate($4))); }
-| NAME ASSIGN exp SEMI { evaluate(newsasgn($1, evaluate($3))); }
+init: type NAME ASSIGN exp SEMI { $$ = newasgn($1, $2, evaluate($4)); }
+| NAME ASSIGN exp SEMI { $$ = newsasgn($1, evaluate($3)); }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }
-| type NAME ASSIGN functionR { evaluate(newasgn($1, $2, evaluate($4))); }
-| NAME ASSIGN functionR { evaluate(newsasgn($1, evaluate($3))); }
+| type NAME ASSIGN functionR { $$ =  newasgn($1, $2, evaluate($4)); }
+| NAME ASSIGN functionR { $$ = newsasgn($1, evaluate($3)); }
  /* da aggiungere la periferica */
 ;
 
@@ -127,8 +127,8 @@ value_list: value_list COMMA exp { }
 | exp { }
 ;
 
-functionV: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3)); }
-| PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3)); }
+functionV: PRINT LPAREN exp RPAREN SEMI { $$ = newfunc($1, $3); }
+| PRINTLN LPAREN exp RPAREN SEMI { $$ = newfunc($1, $3); }
 ;
 
 functionR: TIME LPAREN RPAREN SEMI { $$ = date(); } 

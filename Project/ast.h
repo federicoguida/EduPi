@@ -62,6 +62,13 @@ struct realType{
     double value;
 };
 
+struct flow {
+  int nodetype;
+  struct ast *cond;
+  struct ast *tail;     /*tail*/
+  struct ast *el;       /*else*/
+};
+
 enum bifs {			/* built-in functions */
   B_printf = 1,
 };
@@ -77,10 +84,13 @@ struct ast *newInteger(int nodetype, int value);
 struct ast *newString(int nodetype, char *value);
 struct ast *newReal(int nodetype, double value);
 struct ast *evaluate(struct ast *value);
+
+struct ast *newflow(int nodetype, struct ast *cond, struct ast *tail, struct ast *el);
+struct ast *if_code(struct ast *cond, struct ast *tail, struct ast *el);
+
 char * printString(char *value);
 void println(struct ast *val);
 void print(struct ast *val);
-struct ast *date();
 
 void treefree(struct ast *);
 /* interface to the lexer */

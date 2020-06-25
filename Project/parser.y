@@ -56,18 +56,18 @@
 %%
 
 program: /* nothing */
-| program statement EOL { yyerrok; printf("\n> ");}
-| program EOL { yyerrok; printf("\n> ");}
+| program statement EOL { printf("\n> ");}
+| program EOL { printf("\n> ");}
 ;
 
 statement: if_statement { }
 | for_statement { }
 | while_statement { }
-| do_while_statement { }
-| functionsV { }
-| exp SEMI { }
 | declarations { }
 | inits { }
+| functionsV { }
+| functionsR { }
+| exp SEMI { }
 ;
 
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { }
@@ -78,9 +78,6 @@ for_statement: FOR LPAREN init SEMI exp SEMI exp RPAREN LBRACE tail RBRACE { }
 ; /*da rivedere*/
 
 while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
-;
-
-do_while_statement: DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
 ;
 
 tail: /* nothing */
@@ -99,7 +96,9 @@ exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | LPAREN exp RPAREN { $$=evaluate($2); }
 | SUBOP exp %prec UMINUS { $$ = newast('M',evaluate($2),NULL); }
 | value { }
-| functionsR { }
+
+| TIME LPAREN RPAREN { $$ = date(); }
+| NAME ASSIGN exp { evaluate(newsasgn($1, evaluate($3))); }
 ;
 
 declarations: declarations declaration { }
@@ -149,7 +148,7 @@ functionV: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3)); }
 | PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3)); }
 ;
 
-functionR: TIME LPAREN RPAREN { $$ = date(); } 
+functionR: TIME LPAREN RPAREN SEMI { $$ = date(); } 
 ;
 
 explist: exp { }

@@ -52,8 +52,10 @@ struct ast *newref(struct symbol *s) {
   return (struct ast *)a;
 }
 
-struct ast *newasgn(int type, struct symbol *s, struct ast *v) {
+struct ast *newasgn(int type, struct symbol *s, struct ast *v)
+{
   struct symasgn *a = malloc(sizeof(struct symasgn));
+
   if(!a) {
     yyerror("out of space");
     exit(0);
@@ -63,7 +65,7 @@ struct ast *newasgn(int type, struct symbol *s, struct ast *v) {
   a->s = s;
   a->v = v;
   if( s->nodetype != v->nodetype){
-      if(s->nodetype == 'R' && v->nodetype == 'I' || 'R' ) 
+    if(s->nodetype == 'R' && ( v->nodetype == 'I' || v->nodetype == 'R') ) 
         return (struct ast *)a;
     yyerror("Invalid operation trying to ass %c to %c", s->nodetype,v->nodetype);
     exit(1);
@@ -81,7 +83,7 @@ struct ast *newsasgn(struct symbol *s, struct ast *v) {
   a->s = s;
   a->v = v;
   if( s->nodetype != v->nodetype){
-      if(s->nodetype == 'R' && v->nodetype == 'I' || 'R' ) 
+      if(s->nodetype == 'R' && ( v->nodetype == 'I' || v->nodetype == 'R') ) 
         return (struct ast *)a;
     yyerror("Invalid operation trying to ass %c to %c", s->nodetype,v->nodetype);
     exit(1);

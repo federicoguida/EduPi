@@ -278,9 +278,9 @@ void ifop(struct flow *f){
     struct integerType *i=malloc(sizeof(struct integerType));
     i=(struct integerType*)v->structType;
     if(i->value!=0){
-      printf("ciao");
+      evaluate(f->tl);
     }else{
-      printf("not ciao");
+      printf("Non entro IF");
     }
 }
 

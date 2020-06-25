@@ -70,8 +70,7 @@ statement: if_statement { }
 | functionV { }
 ;
 
-if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { }
-| IF LPAREN exp RPAREN LBRACE tail RBRACE ELSE LBRACE tail RBRACE { }
+if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE  { $$=(newflow('F',evaluate($3),$6,NULL)); }
 ;
 
 for_statement: FOR LPAREN init SEMI exp SEMI exp RPAREN LBRACE tail RBRACE { }

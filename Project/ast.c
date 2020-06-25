@@ -300,9 +300,15 @@ void ifop(struct flow *f){
     struct integerType *i=malloc(sizeof(struct integerType));
     i=(struct integerType*)v->structType;
     if(i->value!=0){
+      if( f->tl) {
       evaluate(f->tl);
-    }else{
-      printf("Non entro IF");
+    }else
+    printf("ciao");
+    } else {
+      if( f->el) {
+       evaluate((f->el));
+      } else
+      printf("ciao");
     }
 }
 

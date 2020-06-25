@@ -29,6 +29,12 @@ struct symasgn {
   struct ast *v;		/* value */
 };
 
+struct symdecl {
+  int nodetype;
+  int type;
+  struct symbol *s;
+};
+
 struct symlist *newsymlist(struct symbol *sym, struct symlist *next);
 void symlistfree(struct symlist *sl);
 
@@ -36,7 +42,7 @@ struct ast *newref(struct symbol *s);
 struct ast *newasgn(int type,struct symbol *s, struct ast *v);
 struct ast *newsasgn(struct symbol *s, struct ast *v);
 void varType(int type, struct symbol *s);
-
+struct ast *newsymdecl(int node, struct symbol *s);
 /********************************WORKING ON VARIABLE********************************/
 
 
@@ -66,7 +72,7 @@ struct fncall {			/* built-in function */
 };
 
 struct ast *newfunc(int functype, struct ast *l);
-void callbuiltin(struct fncall *f);
+struct ast *callbuiltin(struct fncall *f);
 /*****************BUiLT*/
 
 

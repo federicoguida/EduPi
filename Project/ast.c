@@ -91,6 +91,19 @@ struct ast *newsasgn(struct symbol *s, struct ast *v) {
   return (struct ast *)a;
 }
 
+struct ast *newsymdecl(int node, struct symbol *s){
+  struct symdecl *a=malloc(sizeof(struct symdecl));
+  if(!a) {
+    yyerror("out of space");
+    exit(0);
+  }
+  a->nodetype = 'X' ;
+  a->type = node;
+  a->s=s;
+
+  return (struct ast *)a;
+}
+
 void varType(int type, struct symbol *s){
     s->nodetype=type;
 }
@@ -133,7 +146,7 @@ newfunc(int functype, struct ast *l)
 }
 
 
-void callbuiltin(struct fncall *f){
+struct ast* callbuiltin(struct fncall *f){
     struct ast* a=malloc(sizeof(struct ast));
     enum bifs functype = f->functype;
     a = evaluate(f->l);
@@ -141,9 +154,11 @@ void callbuiltin(struct fncall *f){
     switch(functype) {
       case B_print:
       print(a);
+      return a;
       break;
       case B_println:
       println(a);
+      return a;
       break;
      default:
     yyerror("Unknown built-in function %d", functype);
@@ -207,9 +222,11 @@ struct ast *newast(int nodetype, struct ast *l, struct ast *r) {
 
 struct ast *evaluate(struct ast *tree) {
     struct ast *result=malloc(sizeof(struct ast));
+    struct ast *temp=malloc(sizeof(struct ast));
     struct symasgn *sym;
     struct symbol *s;
     struct value *v;
+    struct symdecl *sde;
     switch(tree->nodetype) {
         case '+' :
               result=sum(tree->l, tree->r);
@@ -255,19 +272,24 @@ struct ast *evaluate(struct ast *tree) {
         case 'V' :
               s=((struct symref*)tree)->s; result=(struct ast*)s->v;
             break;
+        case 'X' :
+              sde=(struct symdecl*)tree;
+              varType(sde->type,sde->s);
+              break;
         case 'F' :
               ifop((struct flow *)tree);
               break;
         case 'L' :
-              callbuiltin((struct fncall *)tree); 
+              result=callbuiltin((struct fncall *)tree); 
               break;
+        case 'Z': temp=evaluate(tree->l); result=evaluate(tree->r); free(temp); break;
         case 1: result = compare(1,tree->l,tree->r); break; // >
         case 2: result = compare(2,tree->l,tree->r); break; // <
         case 3: result = compare(3,tree->l,tree->r); break; // !=
         case 4: result = compare(4,tree->l,tree->r); break; // ==
         case 5: result = compare(5,tree->l,tree->r); break; // >=
         case 6: result = compare(6,tree->l,tree->r); break; // <=
-        default: printf("internal error debug"); exit(1);
+        default: printf("internal error debug"); 
     }
     return result;
 }

@@ -79,8 +79,12 @@ for_statement: FOR LPAREN init SEMI exp SEMI exp RPAREN LBRACE tail RBRACE { }
 while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
 ;
 
-tail: /* nothing */
-| statement tail { }
+tail: { $$ = NULL; }
+| statement tail { { if ($2 == NULL)
+	                $$ = $1;
+                      else
+			$$ = newast('Z', $1, $2);
+                    } }
 ;
 
 exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
@@ -94,17 +98,17 @@ exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | ABSOP exp ABSOP { $$ = newast('|', evaluate($2), NULL); }
 | LPAREN exp RPAREN { $$=evaluate($2); }
 | SUBOP exp %prec UMINUS { $$ = newast('M',evaluate($2),NULL); }
-| value { }
+| value 
 ;
 
-declaration: type NAME SEMI { varType($1,$2);}
-| LST NAME SEMI { varType($1,$2); }
-| PERI NAME SEMI { varType($1,$2); }
+declaration: type NAME SEMI { $$ = newsymdecl($1, $2);}
+| LST NAME SEMI { $$ = newsymdecl($1, $2); }
+| PERI NAME SEMI { $$ = newsymdecl($1, $2); }
 ;
 
-type: INT { }
-| STR { }
-| RL { }
+type: INT 
+| STR 
+| RL 
 ;
 
 init: type NAME ASSIGN exp SEMI { $$ = newasgn($1, $2, evaluate($4)); }
@@ -116,7 +120,7 @@ init: type NAME ASSIGN exp SEMI { $$ = newasgn($1, $2, evaluate($4)); }
  /* da aggiungere la periferica */
 ;
 
-value: NAME { $$=evaluate(newref($1)); }
+value: NAME { $$ = newref($1); }
 | INTEGER { $$ = newInteger('I', $1); }
 | REAL { $$= newReal('R', $1); }
 | STRING { $$= newString('S', $1); }

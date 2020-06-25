@@ -564,11 +564,11 @@ static const yytype_int8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    58,    58,    59,    60,    63,    64,    65,    66,    67,
-      68,    69,    70,    73,    76,    79,    82,    83,    86,    87,
-      88,    89,    90,    91,    92,    93,    94,    95,    96,    97,
-     100,   101,   102,   105,   106,   107,   110,   111,   112,   113,
-     114,   115,   119,   120,   121,   122,   125,   126,   129,   130,
-     133
+      68,    69,    70,    73,    76,    79,    82,    83,    90,    91,
+      92,    93,    94,    95,    96,    97,    98,    99,   100,   101,
+     104,   105,   106,   109,   110,   111,   114,   115,   116,   117,
+     118,   119,   123,   124,   125,   126,   129,   130,   133,   134,
+     137
 };
 #endif
 
@@ -1469,7 +1469,7 @@ yyreduce:
     {
   case 3:
 #line 59 "parser.y"
-                    { if((yyvsp[0].a)!=NULL) evaluate((yyvsp[0].a)); printf("\n> ");}
+                    { evaluate((yyvsp[0].a)); printf("\n> ");}
 #line 1474 "parser.tab.c"
     break;
 
@@ -1539,212 +1539,198 @@ yyreduce:
 #line 1540 "parser.tab.c"
     break;
 
-  case 17:
-#line 83 "parser.y"
-                 { }
+  case 16:
+#line 82 "parser.y"
+      { (yyval.a) = NULL; }
 #line 1546 "parser.tab.c"
     break;
 
+  case 17:
+#line 83 "parser.y"
+                 { { if ((yyvsp[0].a) == NULL)
+	                (yyval.a) = (yyvsp[-1].a);
+                      else
+			(yyval.a) = newast('Z', (yyvsp[-1].a), (yyvsp[0].a));
+                    } }
+#line 1556 "parser.tab.c"
+    break;
+
   case 18:
-#line 86 "parser.y"
+#line 90 "parser.y"
                  { (yyval.a) = newast((yyvsp[-1].fn) ,evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
-#line 1552 "parser.tab.c"
+#line 1562 "parser.tab.c"
     break;
 
   case 19:
-#line 87 "parser.y"
+#line 91 "parser.y"
                 { (yyval.a) = newast('+',evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
-#line 1558 "parser.tab.c"
+#line 1568 "parser.tab.c"
     break;
 
   case 20:
-#line 88 "parser.y"
+#line 92 "parser.y"
                 {(yyval.a) = newast('-',evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
-#line 1564 "parser.tab.c"
+#line 1574 "parser.tab.c"
     break;
 
   case 21:
-#line 89 "parser.y"
+#line 93 "parser.y"
                 { (yyval.a) = newast('*',evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
-#line 1570 "parser.tab.c"
+#line 1580 "parser.tab.c"
     break;
 
   case 22:
-#line 90 "parser.y"
+#line 94 "parser.y"
                 { (yyval.a) = newast('/',evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
-#line 1576 "parser.tab.c"
+#line 1586 "parser.tab.c"
     break;
 
   case 23:
-#line 91 "parser.y"
+#line 95 "parser.y"
                {(yyval.a) = newast('O',evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
-#line 1582 "parser.tab.c"
+#line 1592 "parser.tab.c"
     break;
 
   case 24:
-#line 92 "parser.y"
+#line 96 "parser.y"
                 {(yyval.a) = newast('A',evaluate((yyvsp[-2].a)),evaluate((yyvsp[0].a))); }
-#line 1588 "parser.tab.c"
+#line 1598 "parser.tab.c"
     break;
 
   case 25:
-#line 93 "parser.y"
+#line 97 "parser.y"
             { (yyval.a) = newast('N', evaluate((yyvsp[0].a)), NULL); }
-#line 1594 "parser.tab.c"
+#line 1604 "parser.tab.c"
     break;
 
   case 26:
-#line 94 "parser.y"
+#line 98 "parser.y"
                   { (yyval.a) = newast('|', evaluate((yyvsp[-1].a)), NULL); }
-#line 1600 "parser.tab.c"
+#line 1610 "parser.tab.c"
     break;
 
   case 27:
-#line 95 "parser.y"
+#line 99 "parser.y"
                     { (yyval.a)=evaluate((yyvsp[-1].a)); }
-#line 1606 "parser.tab.c"
+#line 1616 "parser.tab.c"
     break;
 
   case 28:
-#line 96 "parser.y"
+#line 100 "parser.y"
                          { (yyval.a) = newast('M',evaluate((yyvsp[0].a)),NULL); }
-#line 1612 "parser.tab.c"
-    break;
-
-  case 29:
-#line 97 "parser.y"
-        { }
-#line 1618 "parser.tab.c"
+#line 1622 "parser.tab.c"
     break;
 
   case 30:
-#line 100 "parser.y"
-                            { varType((yyvsp[-2].type),(yyvsp[-1].s));}
-#line 1624 "parser.tab.c"
+#line 104 "parser.y"
+                            { (yyval.a) = newsymdecl((yyvsp[-2].type), (yyvsp[-1].s));}
+#line 1628 "parser.tab.c"
     break;
 
   case 31:
-#line 101 "parser.y"
-                { varType((yyvsp[-2].i),(yyvsp[-1].s)); }
-#line 1630 "parser.tab.c"
+#line 105 "parser.y"
+                { (yyval.a) = newsymdecl((yyvsp[-2].i), (yyvsp[-1].s)); }
+#line 1634 "parser.tab.c"
     break;
 
   case 32:
-#line 102 "parser.y"
-                 { varType((yyvsp[-2].i),(yyvsp[-1].s)); }
-#line 1636 "parser.tab.c"
-    break;
-
-  case 33:
-#line 105 "parser.y"
-          { }
-#line 1642 "parser.tab.c"
-    break;
-
-  case 34:
 #line 106 "parser.y"
-      { }
-#line 1648 "parser.tab.c"
-    break;
-
-  case 35:
-#line 107 "parser.y"
-     { }
-#line 1654 "parser.tab.c"
+                 { (yyval.a) = newsymdecl((yyvsp[-2].i), (yyvsp[-1].s)); }
+#line 1640 "parser.tab.c"
     break;
 
   case 36:
-#line 110 "parser.y"
+#line 114 "parser.y"
                                 { (yyval.a) = newasgn((yyvsp[-4].type), (yyvsp[-3].s), evaluate((yyvsp[-1].a))); }
-#line 1660 "parser.tab.c"
+#line 1646 "parser.tab.c"
     break;
 
   case 37:
-#line 111 "parser.y"
+#line 115 "parser.y"
                        { (yyval.a) = newsasgn((yyvsp[-3].s), evaluate((yyvsp[-1].a))); }
-#line 1666 "parser.tab.c"
+#line 1652 "parser.tab.c"
     break;
 
   case 38:
-#line 112 "parser.y"
+#line 116 "parser.y"
                                                 { }
-#line 1672 "parser.tab.c"
+#line 1658 "parser.tab.c"
     break;
 
   case 39:
-#line 113 "parser.y"
+#line 117 "parser.y"
                                             { }
-#line 1678 "parser.tab.c"
+#line 1664 "parser.tab.c"
     break;
 
   case 40:
-#line 114 "parser.y"
+#line 118 "parser.y"
                              { (yyval.a) =  newasgn((yyvsp[-3].type), (yyvsp[-2].s), evaluate((yyvsp[0].a))); }
-#line 1684 "parser.tab.c"
+#line 1670 "parser.tab.c"
     break;
 
   case 41:
-#line 115 "parser.y"
+#line 119 "parser.y"
                         { (yyval.a) = newsasgn((yyvsp[-2].s), evaluate((yyvsp[0].a))); }
-#line 1690 "parser.tab.c"
+#line 1676 "parser.tab.c"
     break;
 
   case 42:
-#line 119 "parser.y"
-            { (yyval.a)=evaluate(newref((yyvsp[0].s))); }
-#line 1696 "parser.tab.c"
+#line 123 "parser.y"
+            { (yyval.a) = newref((yyvsp[0].s)); }
+#line 1682 "parser.tab.c"
     break;
 
   case 43:
-#line 120 "parser.y"
+#line 124 "parser.y"
           { (yyval.a) = newInteger('I', (yyvsp[0].i)); }
-#line 1702 "parser.tab.c"
+#line 1688 "parser.tab.c"
     break;
 
   case 44:
-#line 121 "parser.y"
+#line 125 "parser.y"
        { (yyval.a)= newReal('R', (yyvsp[0].r)); }
-#line 1708 "parser.tab.c"
+#line 1694 "parser.tab.c"
     break;
 
   case 45:
-#line 122 "parser.y"
+#line 126 "parser.y"
          { (yyval.a)= newString('S', (yyvsp[0].string)); }
-#line 1714 "parser.tab.c"
+#line 1700 "parser.tab.c"
     break;
 
   case 46:
-#line 125 "parser.y"
+#line 129 "parser.y"
                                  { }
-#line 1720 "parser.tab.c"
+#line 1706 "parser.tab.c"
     break;
 
   case 47:
-#line 126 "parser.y"
+#line 130 "parser.y"
       { }
-#line 1726 "parser.tab.c"
+#line 1712 "parser.tab.c"
     break;
 
   case 48:
-#line 129 "parser.y"
+#line 133 "parser.y"
                                         { (yyval.a) = newfunc((yyvsp[-4].fn), (yyvsp[-2].a)); }
-#line 1732 "parser.tab.c"
+#line 1718 "parser.tab.c"
     break;
 
   case 49:
-#line 130 "parser.y"
+#line 134 "parser.y"
                                  { (yyval.a) = newfunc((yyvsp[-4].fn), (yyvsp[-2].a)); }
-#line 1738 "parser.tab.c"
+#line 1724 "parser.tab.c"
     break;
 
   case 50:
-#line 133 "parser.y"
+#line 137 "parser.y"
                                    { (yyval.a) = date(); }
-#line 1744 "parser.tab.c"
+#line 1730 "parser.tab.c"
     break;
 
 
-#line 1748 "parser.tab.c"
+#line 1734 "parser.tab.c"
 
       default: break;
     }
@@ -1976,5 +1962,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 140 "parser.y"
+#line 144 "parser.y"
 

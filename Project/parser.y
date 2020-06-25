@@ -64,21 +64,14 @@ statement: if_statement { }
 | for_statement { }
 | while_statement { }
 | do_while_statement { }
+| functionsV { }
+| exp SEMI { }
 | declarations { }
 | inits { }
-| functions { }
 ;
 
-if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE else_if optional_else { }
-| IF LPAREN exp RPAREN LBRACE tail RBRACE optional_else { }
-;
-
-else_if: else_if ELSE IF LPAREN exp RPAREN LBRACE tail RBRACE { }
-| ELSE IF LPAREN exp RPAREN LBRACE tail RBRACE { }
-;
-
-optional_else: /* empty */
-| ELSE LBRACE tail RBRACE { }
+if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { }
+| IF LPAREN exp RPAREN LBRACE tail RBRACE ELSE LBRACE tail RBRACE { }
 ;
 
 for_statement: FOR LPAREN init SEMI exp SEMI exp RPAREN LBRACE tail RBRACE { }
@@ -92,7 +85,7 @@ do_while_statement: DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN LBRACE tail RB
 
 tail: /* nothing */
 | statement { }
-; 
+;
 
 exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | exp ADDOP exp { $$ = newast('+',evaluate($1),evaluate($3)); }
@@ -105,8 +98,8 @@ exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | ABSOP exp ABSOP { $$ = newast('|', evaluate($2), NULL); }
 | LPAREN exp RPAREN { $$=evaluate($2); }
 | SUBOP exp %prec UMINUS { $$ = newast('M',evaluate($2),NULL); }
-| value
-| functionR
+| value { }
+| functionsR { }
 ;
 
 declarations: declarations declaration { }
@@ -144,18 +137,19 @@ value_list: value_list COMMA exp { }
 | exp { }
 ;
 
-functionR: TIME LPAREN RPAREN  { $$ = date(); } 
+functionsV: functionsV functionV { }
+| functionV { }
 ;
 
-
-functions: functions functionV 
-| functionV
-| functions functionR
-| functionR 
+functionsR: functionsR functionR { }
+| functionR { }
 ;
 
-functionV: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3));  }
-| PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3));  }
+functionV: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3)); }
+| PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3)); }
+;
+
+functionR: TIME LPAREN RPAREN { $$ = date(); } 
 ;
 
 explist: exp { }

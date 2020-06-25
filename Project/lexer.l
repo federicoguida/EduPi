@@ -29,8 +29,8 @@ STRING    \"{print}*\"
 "for"           { return FOR; }
 "return"        { return RETURN; }
 "def"           { return DEF; }
-"print"         { return PRINT; }
-"println"       { return PRINTLN; }
+"print"         { yylval.fn = B_print; return PRINT; }
+"println"       { yylval.fn = B_println; return PRINTLN; }
 "time"          { return TIME; }
 
 "+"     { return ADDOP; }

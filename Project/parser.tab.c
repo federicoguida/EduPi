@@ -1469,7 +1469,7 @@ yyreduce:
     {
   case 3:
 #line 59 "parser.y"
-                    { evaluate((yyvsp[0].a)); printf("\n> ");}
+                    { if((yyvsp[0].a)!=NULL) evaluate((yyvsp[0].a)); printf("\n> ");}
 #line 1474 "parser.tab.c"
     break;
 

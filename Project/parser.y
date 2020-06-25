@@ -65,9 +65,8 @@ statement: if_statement { }
 | while_statement { }
 | declarations { }
 | inits { }
-| functionsV { }
-| functionsR { }
 | exp SEMI { }
+| functions { }
 ;
 
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { }
@@ -136,12 +135,10 @@ value_list: value_list COMMA exp { }
 | exp { }
 ;
 
-functionsV: functionsV functionV { }
+functions: functions functionR { }
+| functions functionV { }
 | functionV { }
-;
-
-functionsR: functionsR functionR { }
-| functionR { }
+| functionsR { }
 ;
 
 functionV: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3)); }

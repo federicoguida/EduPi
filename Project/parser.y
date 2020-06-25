@@ -67,6 +67,7 @@ statement: if_statement { }
 | inits { }
 | exp SEMI { }
 | functions { }
+| statement statement { }
 ;
 
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { }
@@ -80,7 +81,7 @@ while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
 ;
 
 tail: /* nothing */
-| statement { }
+| statement tail { }
 ;
 
 exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }

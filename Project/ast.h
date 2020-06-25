@@ -39,6 +39,37 @@ void varType(int type, struct symbol *s);
 
 /********************************WORKING ON VARIABLE********************************/
 
+
+/******************************FLOW*/
+
+struct flow {
+  int nodetype;			/* type I or W */
+  struct ast *cond;		/* condition */
+  struct ast *tl;		/* then or do list */
+  struct ast *el;		/* optional else list */
+};
+
+/**********************BUiLT*/
+
+struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *tr);
+void ifop(struct flow *f);
+/******************************FLOW*/
+enum bifs {			/* built-in functions */
+  B_print=1,
+  B_println=2,
+};
+
+struct fncall {			/* built-in function */
+  int nodetype;			/* type F */
+  struct ast *l;
+  enum bifs functype;
+};
+
+struct ast *newfunc(int functype, struct ast *l);
+void callbuiltin(struct fncall *f);
+/*****************BUiLT*/
+
+
 struct ast {
     int nodetype; 
     struct ast *l;
@@ -62,35 +93,16 @@ struct realType{
     double value;
 };
 
-struct flow {
-  int nodetype;
-  struct ast *cond;
-  struct ast *tail;     /*tail*/
-  struct ast *el;       /*else*/
-};
-
-enum bifs {			/* built-in functions */
-  B_printf = 1,
-};
-
-struct fncall {			/* built-in function */
-  int nodetype;			/* type F */
-  struct ast *l;
-  enum bifs functype;
-};
 
 struct ast *newast(int nodetype, struct ast *value1, struct ast *value2);
 struct ast *newInteger(int nodetype, int value);
 struct ast *newString(int nodetype, char *value);
 struct ast *newReal(int nodetype, double value);
 struct ast *evaluate(struct ast *value);
-
-struct ast *newflow(int nodetype, struct ast *cond, struct ast *tail, struct ast *el);
-struct ast *if_code(struct ast *cond, struct ast *tail, struct ast *el);
-
 char * printString(char *value);
 void println(struct ast *val);
 void print(struct ast *val);
+struct ast *date();
 
 void treefree(struct ast *);
 /* interface to the lexer */

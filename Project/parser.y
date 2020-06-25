@@ -56,18 +56,18 @@
 %%
 
 program: /* nothing */
-| program statement EOL { printf("\n> ");}
-| program EOL { printf("\n> ");}
+| program statement { printf("\n> ");}
+| program EOL
 ;
 
 statement: if_statement { }
 | for_statement { }
 | while_statement { }
-| declarations { }
-| inits { }
-| exp { }
-| functions { }
-| statement SEMI statement { }
+| declaration { }
+| init { }
+| exp SEMI { }
+| functionR { }
+| functionV { }
 ;
 
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { }
@@ -81,7 +81,7 @@ while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }
 ;
 
 tail: /* nothing */
-| statement SEMI tail { }
+| statement tail { }
 ;
 
 exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
@@ -100,13 +100,9 @@ exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | NAME ASSIGN exp { evaluate(newsasgn($1, evaluate($3))); }
 ;
 
-declarations: declarations declaration { }
-| declaration { }
-;
-
-declaration: type NAME { varType($1,$2);}
-| LST NAME { varType($1,$2); }
-| PERI NAME { varType($1,$2); }
+declaration: type NAME SEMI { varType($1,$2);}
+| LST NAME SEMI { varType($1,$2); }
+| PERI NAME SEMI { varType($1,$2); }
 ;
 
 type: INT { }
@@ -114,14 +110,10 @@ type: INT { }
 | RL { }
 ;
 
-inits: inits init { }
-| init { }
-;
-
-init: type NAME ASSIGN exp { evaluate(newasgn($1, $2, evaluate($4))); }
-| NAME ASSIGN exp { evaluate(newsasgn($1, evaluate($3))); }
-| LST NAME ASSIGN LBRACK value_list RBRACK { }
-| NAME ASSIGN LBRACK value_list RBRACK { }
+init: type NAME ASSIGN exp SEMI { evaluate(newasgn($1, $2, evaluate($4))); }
+| NAME ASSIGN exp SEMI { evaluate(newsasgn($1, evaluate($3))); }
+| LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
+| NAME ASSIGN LBRACK value_list RBRACK SEMI { }
  /* da aggiungere la periferica */
 ;
 
@@ -135,17 +127,11 @@ value_list: value_list COMMA exp { }
 | exp { }
 ;
 
-functions: functions functionR { }
-| functions functionV { }
-| functionV { }
-| functionR { }
+functionV: PRINT LPAREN exp RPAREN SEMI { print(evaluate($3)); }
+| PRINTLN LPAREN exp RPAREN SEMI { println(evaluate($3)); }
 ;
 
-functionV: PRINT LPAREN exp RPAREN { print(evaluate($3)); }
-| PRINTLN LPAREN exp RPAREN { println(evaluate($3)); }
-;
-
-functionR: TIME LPAREN RPAREN { $$ = date(); } 
+functionR: TIME LPAREN RPAREN SEMI { $$ = date(); } 
 ;
 
 explist: exp { }

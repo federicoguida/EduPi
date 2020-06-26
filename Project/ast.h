@@ -17,7 +17,7 @@ struct symlist {
   struct symbol *sym;
   struct symlist *next;
 };
-ciao
+
 struct symref {
   int nodetype;			/* type N */
   struct symbol *s;

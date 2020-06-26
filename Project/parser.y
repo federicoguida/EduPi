@@ -56,8 +56,8 @@
 %%
 
 program: /* nothing */
-| program statement { evaluate($2); printf("\n> ");}
-| program EOL
+| program statement { evaluate($2); }
+| program EOL { printf("\n> "); }
 ;
 
 statement: if_statement { }
@@ -73,7 +73,7 @@ statement: if_statement { }
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE  { $$=(newflow('F',evaluate($3),$6,NULL)); }
 | IF LPAREN exp RPAREN LBRACE tail RBRACE ELSE LBRACE tail RBRACE { $$=(newflow('F',evaluate($3),$6,$10)); };
 
-for_statement: FOR LPAREN init SEMI exp SEMI exp RPAREN LBRACE tail RBRACE { }
+for_statement: FOR LPAREN init exp SEMI exp RPAREN LBRACE tail RBRACE { }
 ; /*da rivedere*/
 
 while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { }

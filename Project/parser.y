@@ -64,23 +64,24 @@ statement: if_statement { }
 | for_statement { }
 | while_statement { }
 | do_while_statement { }
-| declaration { }
-| init { }
+| declaration SEMI { }
+| init SEMI { }
 | exp SEMI { }
-| functionV { }
+| functionV SEMI { }
 ;
 
-if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE  { $$=(newflow('F',$3,$6,NULL)); }
-| IF LPAREN exp RPAREN LBRACE tail RBRACE ELSE LBRACE tail RBRACE { $$=(newflow('F',$3,$6,$10)); };
+if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('F', $3, $6, NULL, NULL); }
+| IF LPAREN exp RPAREN LBRACE tail RBRACE ELSE LBRACE tail RBRACE { $$=newflow('F', $3, $6, $10, NULL); }
+;
 
-for_statement: FOR LPAREN init exp SEMI exp RPAREN LBRACE tail RBRACE { }
-; /*da rivedere*/
+for_statement: FOR LPAREN init SEMI exp SEMI init RPAREN LBRACE tail RBRACE { $$=newflow('Q', $5, $10, $7, $3); }
+;
 
-while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('W', $3, $6, NULL); }
+while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('W', $3, $6, NULL, NULL); }
 ;
 
 do_while_statement: DO LBRACE tail RBRACE while_statement { $$=newast('Z', $3, $5); }
-| DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN SEMI { $$=newflow('D', $7, $3, NULL); }
+| DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN SEMI { $$=newflow('D', $7, $3, NULL, NULL); }
 ;
 
 tail: { $$ = NULL; }
@@ -107,9 +108,9 @@ exp: exp CMP exp { $$ = newast($2 ,$1,$3); }
 | functionR
 ;
 
-declaration: type NAME SEMI { $$ = newsymdecl($1, $2);}
-| LST NAME SEMI { $$ = newsymdecl($1, $2); }
-| PERI NAME SEMI { $$ = newsymdecl($1, $2); }
+declaration: type NAME { $$ = newsymdecl($1, $2);}
+| LST NAME { $$ = newsymdecl($1, $2); }
+| PERI NAME { $$ = newsymdecl($1, $2); }
 ;
 
 type: INT 
@@ -117,10 +118,10 @@ type: INT
 | RL 
 ;
 
-init: type NAME ASSIGN exp SEMI { $$ = newasgn($1, $2, $4); }
-| NAME ASSIGN exp SEMI { $$ = newsasgn($1, $3); }
-| LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
-| NAME ASSIGN LBRACK value_list RBRACK SEMI { }
+init: type NAME ASSIGN exp { $$ = newasgn($1, $2, $4); }
+| NAME ASSIGN exp { $$ = newsasgn($1, $3); }
+| LST NAME ASSIGN LBRACK value_list RBRACK { }
+| NAME ASSIGN LBRACK value_list RBRACK { }
  /* da aggiungere la periferica */
 ;
 
@@ -134,8 +135,8 @@ value_list: value_list COMMA exp { }
 | exp { }
 ;
 
-functionV: PRINT LPAREN exp RPAREN SEMI { $$ = newfunc($1, $3); }
-| PRINTLN LPAREN exp RPAREN SEMI { $$ = newfunc($1, $3); }
+functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
+| PRINTLN LPAREN exp RPAREN { $$ = newfunc($1, $3); }
 ;
 
 functionR: TIME LPAREN RPAREN { $$ = date(); } 

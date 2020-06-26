@@ -52,13 +52,14 @@ struct flow {
   struct ast *cond;		/* condition */
   struct ast *tl;		/* then or do list */
   struct ast *el;		/* optional else list */
+  struct ast *in;  /* for init */
 };
 
-struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *tr);
+struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *tr, struct ast *in);
 void ifop(struct flow *f);
 void whileop(struct flow *f);
 void dowhileop(struct flow *f);
-
+void forop(struct flow *f);
 /******************************FLOW*/
 
 /**********************BUiLT*/

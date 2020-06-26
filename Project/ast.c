@@ -96,9 +96,7 @@ struct ast *newsymdecl(int node, struct symbol *s){
 /********************************WORKING ON VARIABLE********************************/
 
 /*****************FLOW*/
-struct ast *
-newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *el)
-{
+struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *el, struct ast *in) {
   struct flow *a = malloc(sizeof(struct flow));
   
   if(!a) {
@@ -109,6 +107,7 @@ newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *el)
   a->cond = cond;
   a->tl = tl;
   a->el = el;
+  a->in = in;
   return (struct ast *)a;
 }
 /*****************FLOW*/
@@ -272,6 +271,9 @@ struct ast *evaluate(struct ast *tree) {
         case 'D' :
               dowhileop((struct flow *)tree);
               break;
+        case 'Q' :
+              forop((struct flow *)tree);
+              break;
         case 'L' :
               result=callbuiltin((struct fncall *)tree); 
               break;
@@ -327,6 +329,22 @@ void dowhileop(struct flow *f) {
       i=(struct integerType*)v->structType;
     }while(i->value != 0); 
   }
+}
+
+void forop(struct flow *f) { 
+    evaluate(f->in);
+    struct value *v=malloc(sizeof(struct value));
+    v=(struct value*)evaluate(f->cond);
+    struct integerType *i=malloc(sizeof(struct integerType));
+    i=(struct integerType*)v->structType;
+    if(f->tl || f->in || f->el) {
+        while(i->value) {
+          evaluate(f->tl);
+          evaluate(f->el);
+          v=(struct value*)evaluate(f->cond);
+          i=(struct integerType*)v->structType;
+        }
+    }
 }
 
 void print(struct ast *val) {

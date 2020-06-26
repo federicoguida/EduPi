@@ -319,8 +319,9 @@ void whileop(struct flow *f) {
   struct integerType *i=malloc(sizeof(struct integerType));
   i=(struct integerType*)v->structType;
   if(f->tl) { 
-    while(i->value != 0)
+    while(i->value != 0){
       evaluate(f->tl);
+    } 
   }
 }
 

@@ -75,7 +75,7 @@ if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE  { $$=(newflow('F',evaluat
 for_statement: FOR LPAREN init exp SEMI exp RPAREN LBRACE tail RBRACE { }
 ; /*da rivedere*/
 
-while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('W', evaluate($3), evaluate($6), NULL); }
+while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('W', evaluate($3), $6, NULL); }
 ;
 
 tail: { $$ = NULL; }

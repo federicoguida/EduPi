@@ -260,7 +260,7 @@ eval(struct ast *a)
     
     if( ((struct flow *)a)->tl) {
       while( eval(((struct flow *)a)->cond) != 0)
-	v = eval(((struct flow *)a)->tl);
+	      v = eval(((struct flow *)a)->tl);
     }
     break;			/* last value is value */
 	              

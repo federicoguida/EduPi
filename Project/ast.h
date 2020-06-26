@@ -49,7 +49,7 @@ struct ast *newsymdecl(int node, struct symbol *s);
 /******************************FLOW*/
 
 struct flow {
-  int nodetype;			/* type I or W */
+  int nodetype;			/* type F or W */
   struct ast *cond;		/* condition */
   struct ast *tl;		/* then or do list */
   struct ast *el;		/* optional else list */
@@ -59,6 +59,7 @@ struct flow {
 
 struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *tr);
 void ifop(struct flow *f);
+void whileop(struct flow *f);
 /******************************FLOW*/
 enum bifs {			/* built-in functions */
   B_print=1,
@@ -66,7 +67,7 @@ enum bifs {			/* built-in functions */
 };
 
 struct fncall {			/* built-in function */
-  int nodetype;			/* type F */
+  int nodetype;			/* type L */
   struct ast *l;
   enum bifs functype;
 };

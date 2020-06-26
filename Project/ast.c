@@ -279,6 +279,9 @@ struct ast *evaluate(struct ast *tree) {
         case 'F' :
               ifop((struct flow *)tree);
               break;
+        case 'W' :
+              whileop((struct flow *)tree);
+              break;
         case 'L' :
               result=callbuiltin((struct fncall *)tree); 
               break;
@@ -308,6 +311,17 @@ void ifop(struct flow *f){
        evaluate((f->el));
       } else{}
     }
+}
+
+void whileop(struct flow *f) {
+  struct value *v=malloc(sizeof(struct value));
+  v=(struct value*)f->cond;
+  struct integerType *i=malloc(sizeof(struct integerType));
+  i=(struct integerType*)v->structType;
+  if(f->tl) { 
+    while(i->value != 0)
+      evaluate(f->tl);
+  }
 }
 
 void print(struct ast *val) {
@@ -345,7 +359,6 @@ void println(struct ast *val) {
   print(val); 
   printf("\n");
 }
-
 
 struct ast *date(){
     struct value *a=malloc(sizeof(struct value));

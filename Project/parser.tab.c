@@ -1440,7 +1440,7 @@ yyreduce:
 
   case 15:
 #line 78 "parser.y" /* yacc.c:1646  */
-    { }
+    { (yyval.a)=newflow('W', evaluate((yyvsp[-4].a)), evaluate((yyvsp[-1].a)), NULL); }
 #line 1445 "parser.tab.c" /* yacc.c:1646  */
     break;
 

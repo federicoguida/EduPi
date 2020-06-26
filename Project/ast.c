@@ -296,7 +296,7 @@ struct ast *evaluate(struct ast *tree) {
 
 void ifop(struct flow *f){
     struct value *v=malloc(sizeof(struct value));
-    v=(struct value*)evaluate(f->cond);
+    v=(struct value*)f->cond;
     struct integerType *i=malloc(sizeof(struct integerType));
     i=(struct integerType*)v->structType;
     if(i->value!=0){

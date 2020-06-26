@@ -55,12 +55,13 @@ struct flow {
   struct ast *el;		/* optional else list */
 };
 
-/**********************BUiLT*/
-
 struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *tr);
 void ifop(struct flow *f);
 void whileop(struct flow *f);
+
 /******************************FLOW*/
+
+/**********************BUiLT*/
 enum bifs {			/* built-in functions */
   B_print=1,
   B_println=2,

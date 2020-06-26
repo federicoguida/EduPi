@@ -87,7 +87,8 @@ extern int yydebug;
     COMMA = 297,
     ASSIGN = 298,
     CMP = 299,
-    UMINUS = 300
+    MODOP = 300,
+    UMINUS = 301
   };
 #endif
 
@@ -108,7 +109,7 @@ union YYSTYPE
     int fn; /* Indicherà quale funzione */
     int type;
 
-#line 112 "parser.tab.h" /* yacc.c:1909  */
+#line 113 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

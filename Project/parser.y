@@ -43,7 +43,7 @@
 %left ANDOP
 %left OROP
 %left ADDOP SUBOP
-%left MULOP DIVOP
+%left MULOP DIVOP MODOP
 %right NOTOP
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
@@ -96,6 +96,7 @@ exp: exp CMP exp { $$ = newast($2 ,$1,$3); }
 | exp SUBOP exp {$$ = newast('-',$1,$3); }
 | exp MULOP exp { $$ = newast('*',$1,$3); }
 | exp DIVOP exp { $$ = newast('/',$1,$3); }
+| exp MODOP exp { $$ = newast('%', $1, $3); }
 | exp OROP exp {$$ = newast('O',$1,$3); }
 | exp ANDOP exp {$$ = newast('A',$1,$3); }
 | NOTOP exp { $$ = newast('N', $2, NULL); }

@@ -226,6 +226,9 @@ struct ast *evaluate(struct ast *tree) {
         case '/' :
               result=rdiv(evaluate(tree->l), evaluate(tree->r));
               break;
+        case '%' :
+              result=mod(evaluate(tree->l), evaluate(tree->r));
+              break;
         case '|' :
               result=abss(evaluate(tree->l));
               break;

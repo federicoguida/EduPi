@@ -1268,6 +1268,52 @@ struct ast *rdiv(struct ast *value1, struct ast *value2) {
       return (struct ast *)result;
 }
 
+struct ast *mod(struct ast *value1, struct ast *value2) {
+      struct value *val1= malloc(sizeof(struct value));
+      struct value *val2= malloc(sizeof(struct value));
+      struct value *result= malloc(sizeof(struct value));
+      struct integerType *intValue1;
+      struct integerType *intValue2;
+      struct integerType *intResult;
+      int inres;
+      switch(value1->nodetype){
+          case 'I' :
+                  intValue1=malloc(sizeof(struct integerType));
+                  val1=(struct value *)value1;
+                  intValue1=(struct integerType *)val1->structType;
+                  switch(value2->nodetype){
+                    case 'I' :
+                      intResult=malloc(sizeof(struct integerType));
+                      intValue2=malloc(sizeof(struct integerType));
+                      val2=(struct value *)value2;
+                      intValue2=(struct integerType *)val2->structType;
+                      inres=(intValue1->value) % (intValue2->value);
+                      result->nodetype='I';
+                      intResult->value=inres;
+                      result->structType=intResult;
+                      break;
+                    case 'R' :
+                      yyerror("invalid operation.. Integer cannot mod with Real type ");
+                      exit(1);
+                    case 'S' :
+                      yyerror("invalid operation.. Integer cannot mod with String type ");
+                      exit(1);
+                  }
+                  break ;
+
+          case 'R' :
+                yyerror("invalid operation.. Real cannot mod ");
+                exit(1);
+          
+          case 'S' :
+                yyerror("invalid operation.. String cannot mod ");
+                exit(1);
+
+          default: printf("Internal error"); exit(1);
+      }
+      return (struct ast *)result;
+}
+
 struct ast *abss(struct ast *tree) {
   struct value *a=malloc(sizeof(struct value));
   struct integerType *i;

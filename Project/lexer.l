@@ -37,6 +37,7 @@ STRING    \"{print}*\"
 "-"     { return SUBOP; }
 "*"     { return MULOP; }
 "/"     { return DIVOP; }
+"%"     { return MODOP; }
 "|"     { return ABSOP; }
 "("     { return LPAREN; }
 ")"     { return RPAREN; }

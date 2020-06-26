@@ -27,6 +27,7 @@ struct symbol *lookup(char* sym) {
 
     if(!sp->name) {		/* new entry */
       sp->name = strdup(sym);
+      sp->nodetype=NULL;
       sp->v = NULL;
       sp->func = NULL;
       sp->syms = NULL;
@@ -64,12 +65,6 @@ struct ast *newasgn(int type, struct symbol *s, struct ast *v)
   s->nodetype = type;
   a->s = s;
   a->v = v;
-  if( s->nodetype != v->nodetype){
-    if(s->nodetype == 'R' && ( v->nodetype == 'I' || v->nodetype == 'R') ) 
-        return (struct ast *)a;
-    yyerror("Invalid operation trying to ass %c to %c", s->nodetype,v->nodetype);
-    exit(1);
-  } 
   return (struct ast *)a;
 }
 
@@ -82,12 +77,6 @@ struct ast *newsasgn(struct symbol *s, struct ast *v) {
   a->nodetype = '=';
   a->s = s;
   a->v = v;
-  if( s->nodetype != v->nodetype){
-      if(s->nodetype == 'R' && ( v->nodetype == 'I' || v->nodetype == 'R') ) 
-        return (struct ast *)a;
-    yyerror("Invalid operation trying to ass %c to %c", s->nodetype,v->nodetype);
-    exit(1);
-  } 
   return (struct ast *)a;
 }
 
@@ -102,10 +91,6 @@ struct ast *newsymdecl(int node, struct symbol *s){
   a->s=s;
 
   return (struct ast *)a;
-}
-
-void varType(int type, struct symbol *s){
-    s->nodetype=type;
 }
 
 /********************************WORKING ON VARIABLE********************************/
@@ -227,21 +212,22 @@ struct ast *evaluate(struct ast *tree) {
     struct symbol *s;
     struct value *v;
     struct symdecl *sde;
+    struct symbol sv;
     switch(tree->nodetype) {
         case '+' :
-              result=sum(tree->l, tree->r);
+              result=sum(evaluate(tree->l), evaluate(tree->r));
               break;
         case '-' :
-              result=sub(tree->l, tree->r);
+              result=sub(evaluate(tree->l), evaluate(tree->r));
               break;
         case '*' :
-              result=mul(tree->l, tree->r);
+              result=mul(evaluate(tree->l), evaluate(tree->r));
               break;
         case '/' :
-              result=rdiv(tree->l, tree->r);
+              result=rdiv(evaluate(tree->l), evaluate(tree->r));
               break;
         case '|' :
-              result=abss(tree->l);
+              result=abss(evaluate(tree->l));
               break;
         case 'I' :
               result=tree;
@@ -253,28 +239,26 @@ struct ast *evaluate(struct ast *tree) {
               result=tree;
               break;
         case 'M' :
-              result=negateValue(tree->l);
+              result=negateValue(evaluate(tree->l));
               break;
         case 'O' :
-              result=orr(tree->l,tree->r);
+              result=orr(evaluate(tree->l), evaluate(tree->r));
               break;
         case 'A' :
-              result=and(tree->l,tree->r);
+              result=and(evaluate(tree->l), evaluate(tree->r));
               break;
         case 'N' :
-              result=not(tree->l);
+              result=not(evaluate(tree->l));
               break;
         case '=' :
-              sym=malloc(sizeof(struct symasgn));
-              sym=(struct symasgn *)tree;
-              sym->s->v=(struct value*)evaluate(sym->v);
+              ((struct symasgn *)tree)->s->v=(struct value*)(evaluate(evaluate(((struct symasgn *)tree)->v)));
               break;
         case 'V' :
-              s=((struct symref*)tree)->s; result=(struct ast*)s->v;
+              s=lookup(((struct symref*)tree)->s->name);
+              result=(struct ast*)(s->v); 
             break;
         case 'X' :
-              sde=(struct symdecl*)tree;
-              varType(sde->type,sde->s);
+              ((struct symdecl*)tree)->s->nodetype=((struct symdecl*)tree)->type;
               break;
         case 'F' :
               ifop((struct flow *)tree);
@@ -285,13 +269,13 @@ struct ast *evaluate(struct ast *tree) {
         case 'L' :
               result=callbuiltin((struct fncall *)tree); 
               break;
-        case 'Z': temp=evaluate(tree->l); result=evaluate(tree->r); free(temp); break;
-        case 1: result = compare(1,tree->l,tree->r); break; // >
-        case 2: result = compare(2,tree->l,tree->r); break; // <
-        case 3: result = compare(3,tree->l,tree->r); break; // !=
-        case 4: result = compare(4,tree->l,tree->r); break; // ==
-        case 5: result = compare(5,tree->l,tree->r); break; // >=
-        case 6: result = compare(6,tree->l,tree->r); break; // <=
+        case 'Z': temp=evaluate(tree->l); result=evaluate(tree->r);  break;
+        case 1: result = compare(1,evaluate(tree->l), evaluate(tree->r)); break; // >
+        case 2: result = compare(2,evaluate(tree->l), evaluate(tree->r)); break; // <
+        case 3: result = compare(3,evaluate(tree->l), evaluate(tree->r)); break; // !=
+        case 4: result = compare(4,evaluate(tree->l), evaluate(tree->r)); break; // ==
+        case 5: result = compare(5,evaluate(tree->l), evaluate(tree->r)); break; // >=
+        case 6: result = compare(6,evaluate(tree->l), evaluate(tree->r)); break; // <=
         default: printf("internal error debug"); 
     }
     return result;
@@ -321,6 +305,8 @@ void whileop(struct flow *f) {
   if(f->tl) { 
     while(i->value != 0){
       evaluate(f->tl);
+      v=(struct value*)evaluate(f->cond);
+      i=(struct integerType*)v->structType;
     } 
   }
 }

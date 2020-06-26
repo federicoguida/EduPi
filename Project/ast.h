@@ -41,7 +41,6 @@ void symlistfree(struct symlist *sl);
 struct ast *newref(struct symbol *s);
 struct ast *newasgn(int type,struct symbol *s, struct ast *v);
 struct ast *newsasgn(struct symbol *s, struct ast *v);
-void varType(int type, struct symbol *s);
 struct ast *newsymdecl(int node, struct symbol *s);
 /********************************WORKING ON VARIABLE********************************/
 

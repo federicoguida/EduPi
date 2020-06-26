@@ -69,13 +69,13 @@ statement: if_statement { }
 | functionV { }
 ;
 
-if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE  { $$=(newflow('F',evaluate($3),$6,NULL)); }
-| IF LPAREN exp RPAREN LBRACE tail RBRACE ELSE LBRACE tail RBRACE { $$=(newflow('F',evaluate($3),$6,$10)); };
+if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE  { $$=(newflow('F',$3,$6,NULL)); }
+| IF LPAREN exp RPAREN LBRACE tail RBRACE ELSE LBRACE tail RBRACE { $$=(newflow('F',$3,$6,$10)); };
 
 for_statement: FOR LPAREN init exp SEMI exp RPAREN LBRACE tail RBRACE { }
 ; /*da rivedere*/
 
-while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('W', evaluate($3), $6, NULL); }
+while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('W', $3, $6, NULL); }
 ;
 
 tail: { $$ = NULL; }
@@ -86,17 +86,17 @@ tail: { $$ = NULL; }
                     } }
 ;
 
-exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
-| exp ADDOP exp { $$ = newast('+',evaluate($1),evaluate($3)); }
-| exp SUBOP exp {$$ = newast('-',evaluate($1),evaluate($3)); }
-| exp MULOP exp { $$ = newast('*',evaluate($1),evaluate($3)); }
-| exp DIVOP exp { $$ = newast('/',evaluate($1),evaluate($3)); }
-| exp OROP exp {$$ = newast('O',evaluate($1),evaluate($3)); }
-| exp ANDOP exp {$$ = newast('A',evaluate($1),evaluate($3)); }
-| NOTOP exp { $$ = newast('N', evaluate($2), NULL); }
-| ABSOP exp ABSOP { $$ = newast('|', evaluate($2), NULL); }
-| LPAREN exp RPAREN { $$=evaluate($2); }
-| SUBOP exp %prec UMINUS { $$ = newast('M',evaluate($2),NULL); }
+exp: exp CMP exp { $$ = newast($2 ,$1,$3); }
+| exp ADDOP exp { $$ = newast('+',$1,$3); }
+| exp SUBOP exp {$$ = newast('-',$1,$3); }
+| exp MULOP exp { $$ = newast('*',$1,$3); }
+| exp DIVOP exp { $$ = newast('/',$1,$3); }
+| exp OROP exp {$$ = newast('O',$1,$3); }
+| exp ANDOP exp {$$ = newast('A',$1,$3); }
+| NOTOP exp { $$ = newast('N', $2, NULL); }
+| ABSOP exp ABSOP { $$ = newast('|', $2, NULL); }
+| LPAREN exp RPAREN { $$=$2; }
+| SUBOP exp %prec UMINUS { $$ = newast('M',$2,NULL); }
 | value 
 | functionR
 ;
@@ -111,8 +111,8 @@ type: INT
 | RL 
 ;
 
-init: type NAME ASSIGN exp SEMI { $$ = newasgn($1, $2, evaluate($4)); }
-| NAME ASSIGN exp SEMI { $$ = newsasgn($1, evaluate($3)); }
+init: type NAME ASSIGN exp SEMI { $$ = newasgn($1, $2, $4); }
+| NAME ASSIGN exp SEMI { $$ = newsasgn($1, $3); }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }
  /* da aggiungere la periferica */

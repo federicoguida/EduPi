@@ -66,7 +66,6 @@ statement: if_statement { }
 | declaration { }
 | init { }
 | exp SEMI { }
-| functionR { }
 | functionV { }
 ;
 
@@ -99,6 +98,7 @@ exp: exp CMP exp { $$ = newast($2 ,evaluate($1),evaluate($3)); }
 | LPAREN exp RPAREN { $$=evaluate($2); }
 | SUBOP exp %prec UMINUS { $$ = newast('M',evaluate($2),NULL); }
 | value 
+| functionR
 ;
 
 declaration: type NAME SEMI { $$ = newsymdecl($1, $2);}
@@ -115,8 +115,6 @@ init: type NAME ASSIGN exp SEMI { $$ = newasgn($1, $2, evaluate($4)); }
 | NAME ASSIGN exp SEMI { $$ = newsasgn($1, evaluate($3)); }
 | LST NAME ASSIGN LBRACK value_list RBRACK SEMI { }
 | NAME ASSIGN LBRACK value_list RBRACK SEMI { }
-| type NAME ASSIGN functionR { $$ =  newasgn($1, $2, evaluate($4)); }
-| NAME ASSIGN functionR { $$ = newsasgn($1, evaluate($3)); }
  /* da aggiungere la periferica */
 ;
 
@@ -134,7 +132,7 @@ functionV: PRINT LPAREN exp RPAREN SEMI { $$ = newfunc($1, $3); }
 | PRINTLN LPAREN exp RPAREN SEMI { $$ = newfunc($1, $3); }
 ;
 
-functionR: TIME LPAREN RPAREN SEMI { $$ = date(); } 
+functionR: TIME LPAREN RPAREN { $$ = date(); } 
 ;
 
 explist: exp { }

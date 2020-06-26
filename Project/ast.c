@@ -27,7 +27,7 @@ struct symbol *lookup(char* sym) {
 
     if(!sp->name) {		/* new entry */
       sp->name = strdup(sym);
-      sp->nodetype=NULL;
+      sp->nodetype=-1;
       sp->v = NULL;
       sp->func = NULL;
       sp->syms = NULL;
@@ -286,23 +286,23 @@ struct ast *evaluate(struct ast *tree) {
 
 void ifop(struct flow *f){
     struct value *v=malloc(sizeof(struct value));
-    v=(struct value*)f->cond;
+    v=(struct value*)evaluate(f->cond);
     struct integerType *i=malloc(sizeof(struct integerType));
     i=(struct integerType*)v->structType;
     if(i->value!=0){
-      if( f->tl) {
+      if(f->tl) {
       evaluate(f->tl);
-    }else{}
+    }
     } else {
-      if( f->el) {
+      if(f->el) {
        evaluate((f->el));
-      } else{}
+      }
     }
 }
 
 void whileop(struct flow *f) {
   struct value *v=malloc(sizeof(struct value));
-  v=(struct value*)f->cond;
+  v=(struct value*)evaluate(f->cond);
   struct integerType *i=malloc(sizeof(struct integerType));
   i=(struct integerType*)v->structType;
   if(f->tl) { 
@@ -313,11 +313,10 @@ void whileop(struct flow *f) {
     } 
   }
 }
+
 void dowhileop(struct flow *f) {
   struct value *v=malloc(sizeof(struct value));
-  v=(struct value*)f->cond;
   struct integerType *i=malloc(sizeof(struct integerType));
-  i=(struct integerType*)v->structType;
   if(f->tl) { 
     do{
       evaluate(f->tl);

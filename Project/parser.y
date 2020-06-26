@@ -48,7 +48,7 @@
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
-%type <a> statement if_statement for_statement while_statement declaration init tail exp value value_list functionR functionV explist
+%type <a> statement if_statement for_statement while_statement dowhile_statement declaration init tail exp value value_list functionR functionV explist
 %type <sl> symlist
 %type <type> type
 %start program
@@ -63,6 +63,7 @@ program: /* nothing */
 statement: if_statement { }
 | for_statement { }
 | while_statement { }
+| dowhile_statement { }
 | declaration { }
 | init { }
 | exp SEMI { }
@@ -76,6 +77,8 @@ for_statement: FOR LPAREN init exp SEMI exp RPAREN LBRACE tail RBRACE { }
 ; /*da rivedere*/
 
 while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('W', $3, $6, NULL); }
+;
+dowhile_statement: DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN SEMI { $$=newflow('D', $7, $3, NULL); }
 ;
 
 tail: { $$ = NULL; }

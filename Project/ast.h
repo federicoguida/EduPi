@@ -57,6 +57,7 @@ struct flow {
 struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *tr);
 void ifop(struct flow *f);
 void whileop(struct flow *f);
+void dowhileop(struct flow *f);
 
 /******************************FLOW*/
 

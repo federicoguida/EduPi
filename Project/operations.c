@@ -342,10 +342,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -355,15 +351,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare IntegerType to StringType");
                     exit(1);
                 }
+                break;
               case 'R':
                 realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
@@ -377,10 +370,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -390,15 +379,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare realType to StringType");
                     exit(1);
                 }
+                break;
               case 'S':
                 stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
@@ -407,11 +393,9 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                   case 'I':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'R':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'S':
                     stringValue2=malloc(sizeof(struct stringType));
                     val2=(struct value*)r;
@@ -420,14 +404,11 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(stringValue1);
-                    free(stringValue2);
                     break;
                 }
+                break;
             }
-        break;
+            break;
         /*Cambio case e vado nel minore*/
         case 2:
             switch(l->nodetype){
@@ -444,10 +425,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -457,15 +434,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare IntegerType to StringType");
                     exit(1);
                 }
+                break;
               case 'R':
                 realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
@@ -479,10 +453,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -492,15 +462,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare realType to StringType");
                     exit(1);
                 }
+                break;
               case 'S':
                 stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
@@ -509,11 +476,9 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                   case 'I':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'R':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'S':
                     stringValue2=malloc(sizeof(struct stringType));
                     val2=(struct value*)r;
@@ -522,14 +487,11 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(stringValue1);
-                    free(stringValue2);
                     break;
                 }
+                break;
             }
-        break;
+            break;
         /*FINE CASO MINORE*/
         /*Cambio !=*/
         case 3:
@@ -547,10 +509,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -560,15 +518,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare IntegerType to StringType");
                     exit(1);
                 }
+                break;
               case 'R':
                 realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
@@ -582,10 +537,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -595,15 +546,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare realType to StringType");
                     exit(1);
                 }
+                break;
               case 'S':
                 stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
@@ -612,11 +560,9 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                   case 'I':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'R':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'S':
                     stringValue2=malloc(sizeof(struct stringType));
                     val2=(struct value*)r;
@@ -625,14 +571,11 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(stringValue1);
-                    free(stringValue2);
                     break;
                 }
+                break;
             }
-        break;
+            break;
         /*FINE CASO !=*/
         /* CASO == */
         case 4:
@@ -650,10 +593,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -663,15 +602,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare IntegerType to StringType");
                     exit(1);
                 }
+                break;
               case 'R':
                 realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
@@ -685,10 +621,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -698,15 +630,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare realType to StringType");
                     exit(1);
                 }
+                break;
               case 'S':
                 stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
@@ -715,11 +644,9 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                   case 'I':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'R':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'S':
                     stringValue2=malloc(sizeof(struct stringType));
                     val2=(struct value*)r;
@@ -728,14 +655,11 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(stringValue1);
-                    free(stringValue2);
                     break;
                 }
+                break;
             }
-        break;
+            break;
         /*FINE CASO ==*/
         /* CASO >= */
         case 5:
@@ -753,10 +677,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -766,15 +686,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare IntegerType to StringType");
                     exit(1);
                 }
+                break;
               case 'R':
                 realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
@@ -788,10 +705,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -801,15 +714,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare realType to StringType");
                     exit(1);
                 }
+                break;
               case 'S':
                 stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
@@ -818,11 +728,9 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                   case 'I':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'R':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'S':
                     stringValue2=malloc(sizeof(struct stringType));
                     val2=(struct value*)r;
@@ -831,14 +739,11 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(stringValue1);
-                    free(stringValue2);
                     break;
                 }
+                break;
             }
-        break;
+            break;
         /*FINE CASO ==*/
         /* CASO >= */
         case 6:
@@ -856,10 +761,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -869,15 +770,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(intValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare IntegerType to StringType");
                     exit(1);
                 }
+                break;
               case 'R':
                 realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
@@ -891,10 +789,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(intValue2);
                     break;
                   case 'R':
                     realValue2=malloc(sizeof(struct realType));
@@ -904,15 +798,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(realValue1);
-                    free(realValue2);
                     break;
                   case 'S':
                     yyerror("Cannot compare realType to StringType");
                     exit(1);
                 }
+                break;
               case 'S':
                 stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
@@ -921,11 +812,9 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                   case 'I':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'R':
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
-                    break;
                   case 'S':
                     stringValue2=malloc(sizeof(struct stringType));
                     val2=(struct value*)r;
@@ -934,14 +823,11 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
-                    free(val1);
-                    free(val2);
-                    free(stringValue1);
-                    free(stringValue2);
                     break;
                 }
+                break;
             }
-        break;
+            break;
         /*FINE CASO <=*/
       }
       return (struct ast *)result;

@@ -80,8 +80,7 @@ for_statement: FOR LPAREN init SEMI exp SEMI init RPAREN LBRACE tail RBRACE { $$
 while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('W', $3, $6, NULL, NULL); }
 ;
 
-do_while_statement: DO LBRACE tail RBRACE while_statement { $$=newast('Z', $3, $5); }
-| DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN SEMI { $$=newflow('D', $7, $3, NULL, NULL); }
+do_while_statement: DO LBRACE tail RBRACE WHILE LPAREN exp RPAREN SEMI { $$=newflow('D', $7, $3, NULL, NULL); }
 ;
 
 tail: { $$ = NULL; }

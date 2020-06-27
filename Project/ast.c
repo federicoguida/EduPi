@@ -114,9 +114,7 @@ struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *
 
 
 /********** BUILT*/
-struct ast *
-newfunc(int functype, struct ast *l)
-{
+struct ast *newfunc(int functype, struct ast *l) {
   struct fncall *a = malloc(sizeof(struct fncall));
   
   if(!a) {
@@ -128,7 +126,6 @@ newfunc(int functype, struct ast *l)
   a->functype = functype;
   return (struct ast *)a;
 }
-
 
 struct ast* callbuiltin(struct fncall *f){
     struct ast* a=malloc(sizeof(struct ast));

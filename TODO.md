@@ -1,1 +1,3 @@
-- [x] Inviare presentazione
+- [ ] Funzioni definite da Utente
+- [ ] Liste
+- [ ] Tipo periferica

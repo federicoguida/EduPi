@@ -1,1 +1,1 @@
-- [ ] Inviare presentazione
+- [x] Inviare presentazione

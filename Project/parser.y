@@ -57,7 +57,6 @@
 
 program: /* nothing */
 | program statement { evaluate($2); }
-| program EOL { printf("\n> "); }
 ;
 
 statement: if_statement { }

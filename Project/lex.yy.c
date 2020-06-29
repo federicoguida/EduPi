@@ -1125,7 +1125,7 @@ case 48:
 /* rule 48 can match eol */
 YY_RULE_SETUP
 #line 75 "lexer.l"
-{ return EOL; }
+{ printf("> "); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
@@ -2155,6 +2155,5 @@ void yyfree (void * ptr )
 #define YYTABLES_NAME "yytables"
 
 #line 78 "lexer.l"
-
 
 

@@ -334,7 +334,7 @@ void forop(struct flow *f) {
     v=(struct value*)evaluate(f->cond);
     struct integerType *i=malloc(sizeof(struct integerType));
     i=(struct integerType*)v->structType;
-    if(f->tl || f->in || f->el) {
+    if(f->tl && f->in && f->el) {
         while(i->value) {
           evaluate(f->tl);
           evaluate(f->el);

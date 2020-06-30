@@ -240,6 +240,10 @@ struct ast *newast(int nodetype, struct ast *l, struct ast *r) {
   return a;
 }
 
+void testing(struct symasgn *tree){
+	
+}
+
 struct ast *evaluate(struct ast *tree) {
     struct ast *result=malloc(sizeof(struct ast));
     struct ast *temp=malloc(sizeof(struct ast));
@@ -289,7 +293,7 @@ struct ast *evaluate(struct ast *tree) {
               result=not(evaluate(tree->l));
               break;
         case '=' :
-              ((struct symasgn *)tree)->s->v=(struct value*)(evaluate(evaluate(((struct symasgn *)tree)->v)));
+              testing((struct symasgn*) tree);
               break;
         case 'V' :
               s=lookup(((struct symref*)tree)->s->name);

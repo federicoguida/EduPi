@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.6.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_PARSER_TAB_H_INCLUDED
 # define YY_YY_PARSER_TAB_H_INCLUDED
@@ -44,58 +45,63 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    STR = 258,
-    INT = 259,
-    RL = 260,
-    INTEGER = 261,
-    REAL = 262,
-    STRING = 263,
-    PRINT = 264,
-    PRINTLN = 265,
-    TIME = 266,
-    NAME = 267,
-    FUNC = 268,
-    EOL = 269,
-    LST = 270,
-    PERI = 271,
-    IF = 272,
-    ELSE = 273,
-    DO = 274,
-    WHILE = 275,
-    FOR = 276,
-    CONTINUE = 277,
-    BREAK = 278,
-    RETURN = 279,
-    DEF = 280,
-    ADDOP = 281,
-    SUBOP = 282,
-    MULOP = 283,
-    DIVOP = 284,
-    ABSOP = 285,
-    OROP = 286,
-    ANDOP = 287,
-    NOTOP = 288,
-    INCR = 289,
-    DECR = 290,
-    LPAREN = 291,
-    RPAREN = 292,
-    LBRACK = 293,
-    RBRACK = 294,
-    LBRACE = 295,
-    RBRACE = 296,
-    SEMI = 297,
-    DOT = 298,
-    COMMA = 299,
-    ASSIGN = 300,
-    CMP = 301,
-    MODOP = 302,
-    UMINUS = 303
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    STR = 258,                     /* STR  */
+    INT = 259,                     /* INT  */
+    RL = 260,                      /* RL  */
+    INTEGER = 261,                 /* INTEGER  */
+    REAL = 262,                    /* REAL  */
+    STRING = 263,                  /* STRING  */
+    PRINT = 264,                   /* PRINT  */
+    PRINTLN = 265,                 /* PRINTLN  */
+    TIME = 266,                    /* TIME  */
+    NAME = 267,                    /* NAME  */
+    FUNC = 268,                    /* FUNC  */
+    EOL = 269,                     /* EOL  */
+    LST = 270,                     /* LST  */
+    PERI = 271,                    /* PERI  */
+    IF = 272,                      /* IF  */
+    ELSE = 273,                    /* ELSE  */
+    DO = 274,                      /* DO  */
+    WHILE = 275,                   /* WHILE  */
+    FOR = 276,                     /* FOR  */
+    CONTINUE = 277,                /* CONTINUE  */
+    BREAK = 278,                   /* BREAK  */
+    RETURN = 279,                  /* RETURN  */
+    DEF = 280,                     /* DEF  */
+    ADDOP = 281,                   /* ADDOP  */
+    SUBOP = 282,                   /* SUBOP  */
+    MULOP = 283,                   /* MULOP  */
+    DIVOP = 284,                   /* DIVOP  */
+    ABSOP = 285,                   /* ABSOP  */
+    OROP = 286,                    /* OROP  */
+    ANDOP = 287,                   /* ANDOP  */
+    NOTOP = 288,                   /* NOTOP  */
+    INCR = 289,                    /* INCR  */
+    DECR = 290,                    /* DECR  */
+    LPAREN = 291,                  /* LPAREN  */
+    RPAREN = 292,                  /* RPAREN  */
+    LBRACK = 293,                  /* LBRACK  */
+    RBRACK = 294,                  /* RBRACK  */
+    LBRACE = 295,                  /* LBRACE  */
+    RBRACE = 296,                  /* RBRACE  */
+    SEMI = 297,                    /* SEMI  */
+    DOT = 298,                     /* DOT  */
+    COMMA = 299,                   /* COMMA  */
+    ASSIGN = 300,                  /* ASSIGN  */
+    CMP = 301,                     /* CMP  */
+    MODOP = 302,                   /* MODOP  */
+    UMINUS = 303                   /* UMINUS  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
@@ -114,7 +120,7 @@ union YYSTYPE
     int fn; /* Indicherà quale funzione */
     int type;
 
-#line 118 "parser.tab.h"
+#line 124 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

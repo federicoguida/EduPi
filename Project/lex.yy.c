@@ -1,5 +1,5 @@
 
-#line 3 "lex.yy.c"
+#line 2 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -594,8 +594,8 @@ char *yytext;
 #  include "ast.h"
 #  include "parser.tab.h"
 #  include "operations.h"
+#line 597 "lex.yy.c"
 #line 598 "lex.yy.c"
-#line 599 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -815,7 +815,7 @@ YY_DECL
 #line 18 "lexer.l"
 
 
-#line 819 "lex.yy.c"
+#line 818 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1146,7 +1146,7 @@ YY_RULE_SETUP
 #line 79 "lexer.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1150 "lex.yy.c"
+#line 1149 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

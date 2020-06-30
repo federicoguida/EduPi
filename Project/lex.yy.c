@@ -1128,13 +1128,13 @@ case 49:
 /* rule 49 can match eol */
 YY_RULE_SETUP
 #line 75 "lexer.l"
-{ printf("c> "); } /* ignore line continuation */
+{ } /* ignore line continuation */
 	YY_BREAK
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
 #line 76 "lexer.l"
-{ printf("\n> "); }
+{ }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
@@ -2166,3 +2166,15 @@ void yyfree (void * ptr )
 #line 79 "lexer.l"
 
 
+int main(int argc, char **argv) {
+
+  if(argc > 1) {
+    if(!(yyin = fopen(argv[1], "r"))) {
+      fprintf(stderr, "Not open file: %s\n", argv[1]);
+      exit(1);
+    }
+    return yyparse();
+  } else {
+    return yyparse();
+  }
+}

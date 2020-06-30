@@ -72,8 +72,21 @@ STRING    \"{print}*\"
 
 "//".*
 [ \t]   /* ignore white space */
-\\\n    { printf("c> "); } /* ignore line continuation */
-"\n"    { printf("\n> "); }
+\\\n    { } /* ignore line continuation */
+"\n"    { }
 
 .	{ yyerror("Mystery character %c\n", *yytext); exit(1); }
 %%
+
+int main(int argc, char **argv) {
+
+  if(argc > 1) {
+    if(!(yyin = fopen(argv[1], "r"))) {
+      fprintf(stderr, "Not open file: %s\n", argv[1]);
+      exit(1);
+    }
+    return yyparse();
+  } else {
+    return yyparse();
+  }
+}

@@ -341,7 +341,7 @@ void ifop(struct flow *f){
     if(i->value!=0){
       if(f->tl) {
       evaluate(f->tl);
-    }
+      }
     } else {
       if(f->el) {
        evaluate((f->el));

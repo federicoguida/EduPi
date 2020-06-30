@@ -53,8 +53,7 @@ struct ast *newref(struct symbol *s) {
   return (struct ast *)a;
 }
 
-struct ast *newasgn(int type, struct symbol *s, struct ast *v)
-{
+struct ast *newasgn(int type, struct symbol *s, struct ast *v) {
   struct symasgn *a = malloc(sizeof(struct symasgn));
 
   if(!a) {
@@ -70,6 +69,7 @@ struct ast *newasgn(int type, struct symbol *s, struct ast *v)
 
 struct ast *newsasgn(struct symbol *s, struct ast *v) {
   struct symasgn *a = malloc(sizeof(struct symasgn));
+
   if(!a) {
     yyerror("out of space");
     exit(0);
@@ -91,6 +91,46 @@ struct ast *newsymdecl(int node, struct symbol *s){
   a->s=s;
 
   return (struct ast *)a;
+}
+
+struct ast *newinc(int nodetype, struct symbol *s) { 
+  struct symref *a = malloc(sizeof(struct symref));
+
+  if(!a) {
+    yyerror("out of space");
+    exit(0);
+  }
+  a->nodetype = nodetype;
+  a->s = s;
+  return (struct ast *)a;
+}
+
+struct ast *incr(struct symbol *s) { 
+  struct integerType *i = malloc(sizeof(struct integerType));
+
+  if(s->v->nodetype != 'I') {
+    yyerror("Not increment type");
+    exit(1);
+  }
+  i = (struct integerType *)(s->v->structType);
+  i->value += 1;
+  s->v->nodetype = 'I';
+  s->v->structType = i;
+  return (struct ast*)(s->v);
+}
+
+struct ast *decr(struct symbol *s) { 
+  struct integerType *i = malloc(sizeof(struct integerType));
+
+  if(s->v->nodetype != 'I') {
+    yyerror("Not increment type");
+    exit(1);
+  }
+  i = (struct integerType *)(s->v->structType);
+  i->value -= 1;
+  s->v->nodetype = 'I';
+  s->v->structType = i;
+  return (struct ast*)(s->v);
 }
 
 /********************************WORKING ON VARIABLE********************************/
@@ -134,16 +174,15 @@ struct ast* callbuiltin(struct fncall *f){
 
     switch(functype) {
       case B_print:
-      print(a);
-      return a;
-      break;
+        print(a);
+        break;
       case B_println:
-      println(a);
-      return a;
-      break;
-     default:
-    yyerror("Unknown built-in function %d", functype);
+        println(a);
+        break;
+      default:
+        yyerror("Unknown built-in function %d", functype);
   }
+  return a;
 }
 /***********B*/
 
@@ -254,8 +293,16 @@ struct ast *evaluate(struct ast *tree) {
               break;
         case 'V' :
               s=lookup(((struct symref*)tree)->s->name);
-              result=(struct ast*)(s->v); 
-            break;
+              result=(struct ast*)(s->v);
+              break;
+        case 'P' :
+              s=lookup(((struct symref*)tree)->s->name);
+              result=incr(s);
+              break;
+        case 'E' :
+              s=lookup(((struct symref*)tree)->s->name);
+              result=decr(s);
+              break;
         case 'X' :
               ((struct symdecl*)tree)->s->nodetype=((struct symdecl*)tree)->type;
               break;

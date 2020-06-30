@@ -42,6 +42,9 @@ struct ast *newref(struct symbol *s);
 struct ast *newasgn(int type,struct symbol *s, struct ast *v);
 struct ast *newsasgn(struct symbol *s, struct ast *v);
 struct ast *newsymdecl(int node, struct symbol *s);
+struct ast *newinc(int nodetype, struct symbol *s);
+struct ast *incr(struct symbol *s);
+struct ast *decr(struct symbol *s);
 /********************************WORKING ON VARIABLE********************************/
 
 

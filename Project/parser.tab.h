@@ -80,19 +80,21 @@ extern int yydebug;
     OROP = 286,
     ANDOP = 287,
     NOTOP = 288,
-    LPAREN = 289,
-    RPAREN = 290,
-    LBRACK = 291,
-    RBRACK = 292,
-    LBRACE = 293,
-    RBRACE = 294,
-    SEMI = 295,
-    DOT = 296,
-    COMMA = 297,
-    ASSIGN = 298,
-    CMP = 299,
-    MODOP = 300,
-    UMINUS = 301
+    INCR = 289,
+    DECR = 290,
+    LPAREN = 291,
+    RPAREN = 292,
+    LBRACK = 293,
+    RBRACK = 294,
+    LBRACE = 295,
+    RBRACE = 296,
+    SEMI = 297,
+    DOT = 298,
+    COMMA = 299,
+    ASSIGN = 300,
+    CMP = 301,
+    MODOP = 302,
+    UMINUS = 303
   };
 #endif
 
@@ -112,7 +114,7 @@ union YYSTYPE
     int fn; /* Indicherà quale funzione */
     int type;
 
-#line 116 "parser.tab.h"
+#line 118 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

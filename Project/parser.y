@@ -33,7 +33,7 @@
 %token <fn> FUNC
 %token EOL
 %token <i> LST PERI IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF 
-%token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP
+%token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
 
  /* precedencies and associativities */
@@ -44,7 +44,7 @@
 %left OROP
 %left ADDOP SUBOP
 %left MULOP DIVOP MODOP
-%right NOTOP
+%right NOTOP INCR DECR
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
@@ -118,6 +118,8 @@ type: INT
 
 init: type NAME ASSIGN exp { $$ = newasgn($1, $2, $4); }
 | NAME ASSIGN exp { $$ = newsasgn($1, $3); }
+| NAME INCR { $$ = newinc('P', $1); }
+| NAME DECR { $$ = newinc('E', $1); }
 | LST NAME ASSIGN LBRACK value_list RBRACK { }
 | NAME ASSIGN LBRACK value_list RBRACK { }
  /* da aggiungere la periferica */

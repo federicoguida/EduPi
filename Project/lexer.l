@@ -38,6 +38,8 @@ STRING    \"{print}*\"
 "*"     { return MULOP; }
 "/"     { return DIVOP; }
 "%"     { return MODOP; }
+"++"    { return INCR; }
+"--"    { return DECR; }
 "|"     { return ABSOP; }
 "("     { return LPAREN; }
 ")"     { return RPAREN; }
@@ -61,7 +63,6 @@ STRING    \"{print}*\"
 ">="    { yylval.fn = 5; return CMP; }
 "<="    { yylval.fn = 6; return CMP; }
 
- /* debug hack */
 
 {NAME}      { yylval.s = lookup(yytext); return NAME; } 
 {INTEGER}   { yylval.i = atoi(yytext); return INTEGER;}
@@ -71,7 +72,7 @@ STRING    \"{print}*\"
 
 "//".*
 [ \t]   /* ignore white space */
-\\\n    printf("c> "); /* ignore line continuation */
+\\\n    { printf("c> "); } /* ignore line continuation */
 "\n"    { printf("> "); }
 
 .	{ yyerror("Mystery character %c\n", *yytext); exit(1); }

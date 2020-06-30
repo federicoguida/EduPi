@@ -240,8 +240,17 @@ struct ast *newast(int nodetype, struct ast *l, struct ast *r) {
   return a;
 }
 
-void testing(struct symasgn *tree){
-	
+void assign(struct symasgn *tree){
+	if(tree->s->nodetype!=tree->v->nodetype){
+		if(tree->s->nodetype=='R' && tree->v->nodetype=='I'){
+			tree->s->v=(struct value*)(evaluate(evaluate((tree)->v)));
+		}else{
+		yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, tree->v->nodetype );
+		exit(1);
+		}
+
+	}
+	tree->s->v=(struct value*)(evaluate(evaluate((tree)->v)));
 }
 
 struct ast *evaluate(struct ast *tree) {
@@ -293,7 +302,7 @@ struct ast *evaluate(struct ast *tree) {
               result=not(evaluate(tree->l));
               break;
         case '=' :
-              testing((struct symasgn*) tree);
+              assign((struct symasgn*) tree);
               break;
         case 'V' :
               s=lookup(((struct symref*)tree)->s->name);

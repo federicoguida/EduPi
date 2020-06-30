@@ -246,7 +246,7 @@ void assign(struct symasgn *tree){
 		if(tree->s->nodetype=='R' && v->nodetype=='I'){
 			tree->s->v=v;
 		}else{
-			yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, tree->v->nodetype );
+			yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, v->nodetype );
 			exit(1);
 		}
 	}

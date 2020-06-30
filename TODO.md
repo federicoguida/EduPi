@@ -1,5 +1,6 @@
 - [ ] Permettere operazioni come i++ i--
 - [ ] Controllo tipi 
+- [ ] Ottimizzazione della memoria
 - [ ] Funzioni definite da Utente
 - [ ] Liste
 - [ ] Tipo periferica

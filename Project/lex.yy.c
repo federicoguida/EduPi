@@ -1134,7 +1134,7 @@ case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
 #line 76 "lexer.l"
-{ printf("> "); }
+{ printf("\n> "); }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP

@@ -73,7 +73,7 @@ STRING    \"{print}*\"
 "//".*
 [ \t]   /* ignore white space */
 \\\n    { printf("c> "); } /* ignore line continuation */
-"\n"    { printf("> "); }
+"\n"    { printf("\n> "); }
 
 .	{ yyerror("Mystery character %c\n", *yytext); exit(1); }
 %%

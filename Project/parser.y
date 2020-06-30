@@ -31,7 +31,6 @@
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
-%token EOL
 %token <i> LST PERI IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF 
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
@@ -48,7 +47,7 @@
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
-%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value value_list functionR functionV explist
+%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist
 %type <sl> symlist
 %type <type> type
 %start program
@@ -120,19 +119,15 @@ init: type NAME ASSIGN exp { $$ = newasgn($1, $2, $4); }
 | NAME ASSIGN exp { $$ = newsasgn($1, $3); }
 | NAME INCR { $$ = newinc('P', $1); }
 | NAME DECR { $$ = newinc('E', $1); }
-| LST NAME ASSIGN LBRACK value_list RBRACK { }
-| NAME ASSIGN LBRACK value_list RBRACK { }
+| LST NAME ASSIGN LBRACK explist RBRACK { }
+| NAME ASSIGN LBRACK explist RBRACK { }
  /* da aggiungere la periferica */
 ;
 
 value: NAME { $$ = newref($1); }
 | INTEGER { $$ = newInteger('I', $1); }
-| REAL { $$= newReal('R', $1); }
-| STRING { $$= newString('S', $1); }
-;
-
-value_list: value_list COMMA exp { }
-| exp { }
+| REAL { $$ = newReal('R', $1); }
+| STRING { $$ = newString('S', $1); }
 ;
 
 functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
@@ -142,8 +137,8 @@ functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
 functionR: TIME LPAREN RPAREN { $$ = date(); } 
 ;
 
-explist: exp { }
-| exp COMMA explist { }
+explist: explist COMMA exp { }
+| exp { }
 ;
 
 %%

@@ -12,11 +12,12 @@ char *clearString(char *str) {
 }
 
 char *strmul(char *str, int n) {
-    char *result=strdup(str);
+    int len = (strlen(str)*n)+1;
+    char *result=malloc(sizeof(char)*len);
     if(!str || n<=0){
       return "";
     }
-    for(int i=0; i<n-1; i++){
+    for(int i=0; i<n; i++){
         strcat(result, str);
     }
     free(str);

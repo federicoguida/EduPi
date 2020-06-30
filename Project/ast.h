@@ -115,6 +115,7 @@ char * printString(char *value);
 void println(struct ast *val);
 void print(struct ast *val);
 struct ast *date();
+void assign(struct symasgn *tree);
 
 void treefree(struct ast *);
 /* interface to the lexer */

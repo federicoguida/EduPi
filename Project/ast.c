@@ -241,16 +241,16 @@ struct ast *newast(int nodetype, struct ast *l, struct ast *r) {
 }
 
 void assign(struct symasgn *tree){
-	if(tree->s->nodetype!=tree->v->nodetype){
-		if(tree->s->nodetype=='R' && tree->v->nodetype=='I'){
-			tree->s->v=(struct value*)(evaluate(evaluate((tree)->v)));
+	struct value* v=(struct value*)(evaluate(evaluate((tree)->v)));
+	if(tree->s->nodetype!=v->nodetype){
+		if(tree->s->nodetype=='R' && v->nodetype=='I'){
+			tree->s->v=v;
 		}else{
-		yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, tree->v->nodetype );
-		exit(1);
+			yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, tree->v->nodetype );
+			exit(1);
 		}
-
 	}
-	tree->s->v=(struct value*)(evaluate(evaluate((tree)->v)));
+	tree->s->v=v;
 }
 
 struct ast *evaluate(struct ast *tree) {

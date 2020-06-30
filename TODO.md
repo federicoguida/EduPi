@@ -1,4 +1,5 @@
 - [ ] Permettere operazioni come i++ i--
+- [ ] Controllo tipi 
 - [ ] Funzioni definite da Utente
 - [ ] Liste
 - [ ] Tipo periferica

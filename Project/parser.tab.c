@@ -1703,7 +1703,7 @@ yyreduce:
 
   case 44:
 #line 124 "parser.y"
-                                       { }
+                                       { (yyval.a) = newlsasgn((yyvsp[-4].s), (yyvsp[-1].l)); }
 #line 1708 "parser.tab.c"
     break;
 

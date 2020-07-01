@@ -121,7 +121,7 @@ init: type NAME ASSIGN exp { $$ = newasgn($1, $2, $4); }
 | NAME INCR { $$ = newinc('P', $1); }
 | NAME DECR { $$ = newinc('E', $1); }
 | LST NAME ASSIGN LBRACK value_list RBRACK { $$ = newlasgn($1, $2, $5); }
-| NAME ASSIGN LBRACK value_list RBRACK { }
+| NAME ASSIGN LBRACK value_list RBRACK { $$ = newlsasgn($1, $4); }
  /* da aggiungere la periferica */
 ;
 

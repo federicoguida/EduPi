@@ -458,16 +458,31 @@ struct ast* callbuiltin(struct fncall *f){
     switch(functype) {
 				case B_print:
 						a = evaluate(f->l);
+						if(!a){
+								yyerror("no arguments for print...");
+								free(a);
+								break;
+						}
 						print(a);
 						break;
 				case B_println:
 						a = evaluate(f->l);
+						if(!a){
+								yyerror("no arguments for print...");
+								free(a);
+								break;
+						}
 						println(a);
 						break;
 				case B_time:
 						a = date();
 						break;
 				case B_pop:
+						if(!f->s){
+								yyerror("no arguments for pop...");
+								free(a);
+								break;
+						}
 						a=pop(f->s);
 						break;
 				default:

@@ -32,6 +32,7 @@ STRING    \"{print}*\"
 "print"         { yylval.fn = B_print; return PRINT; }
 "println"       { yylval.fn = B_println; return PRINTLN; }
 "time"          { return TIME; }
+"pop"           { return POP; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

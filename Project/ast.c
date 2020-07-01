@@ -413,6 +413,18 @@ struct ast *newlsasgn(struct symbol *s, struct listexp *l) {
     return (struct ast *)a;
 }
 
+struct ast *pop(struct listexp **l) {
+  struct value *a = malloc(sizeof(struct value));
+  struct integerType *i = malloc(sizeof(struct integerType));
+
+  if(*l != NULL) {
+      a = (struct value *)evaluate(evaluate((*l)->exp));
+      struct listexp *tmp = *l;
+      *l = (*l)->next; 
+  }
+  return (struct ast *)a;
+}
+
 /**************LIST**********************/
 
 void ifop(struct flow *f){

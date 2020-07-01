@@ -60,6 +60,7 @@ struct listexp *newlist(int nodetype, struct ast *exp, struct listexp *next);
 void printList(struct listexp *l);
 struct ast *newlasgn(int type, struct symbol *s, struct listexp *l);
 struct ast *newlsasgn(struct symbol *s, struct listexp *l);
+struct ast *pop(struct listexp **l);
 /********************************END LIST**************************************/
 
 /******************************FLOW*/

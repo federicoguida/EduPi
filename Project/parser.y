@@ -141,7 +141,7 @@ functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
 ;
 
 functionR: TIME LPAREN RPAREN { $$ = date(); }
-| POP LPAREN value_list RPAREN { $$ = pop(&$3); }
+| POP LPAREN NAME RPAREN { $$ = pop($3); }
 ;
 
 explist: explist COMMA exp { }

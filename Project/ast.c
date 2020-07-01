@@ -8,163 +8,306 @@
 #  include "ast.h"
 #  include "operations.h"
 
-/********************************WORKING ON VARIABLE********************************/
-
+/********************************VARIABLE********************************/
 static unsigned symhash(char *sym) {
-  unsigned int hash = 0;
-  unsigned c;
-
-  while(c = *sym++) hash = hash*9 ^ c;
-
-  return hash;
+		unsigned int hash = 0;
+		unsigned c;
+		while(c = *sym++) hash = hash*9 ^ c;
+		return hash;
 }
 
 struct symbol *lookup(char* sym) {
-  struct symbol *sp = &symtab[symhash(sym)%NHASH];
-  int scount = NHASH;		/* how many have we looked at */
-  while(--scount >= 0) {
-    if(sp->name && !strcmp(sp->name, sym)) { return sp; }
+		struct symbol *sp = &symtab[symhash(sym)%NHASH];
+		int scount = NHASH;		/* how many have we looked at */
+		while(--scount >= 0) {
+			  if(sp->name && !strcmp(sp->name, sym)) { return sp; }
 
-    if(!sp->name) {		/* new entry */
-      sp->name = strdup(sym);
-      sp->nodetype=-1;
-      sp->v = NULL;
-      sp->func = NULL;
-      sp->syms = NULL;
-      return sp;
-    }
-
-    if(++sp >= symtab+NHASH) sp = symtab; /* try the next entry */
-  }
-  yyerror("symbol table overflow\n");
-  abort(); /* tried them all, table is full */
-
+				if(!sp->name) {		/* new entry */
+						sp->name = strdup(sym);
+						sp->nodetype=-1;
+						sp->v = NULL;
+						sp->func = NULL;
+						sp->syms = NULL;
+						return sp;
+				}
+			if(++sp >= symtab+NHASH) sp = symtab; /* try the next entry */
+		}
+		yyerror("symbol table overflow\n");
+		abort(); /* tried them all, table is full */
 }
 
 struct ast *newref(struct symbol *s) {
-  struct symref *a = malloc(sizeof(struct symref));
+  	struct symref *a = malloc(sizeof(struct symref));
   
-  if(!a) {
-    yyerror("out of space");
-    exit(0);
-  }
-  a->nodetype = 'V';
-  a->s = s;
-  return (struct ast *)a;
+  	if(!a) {
+				yyerror("out of space");
+				exit(0);
+  	}
+		a->nodetype = 'V';
+		a->s = s;
+  	return (struct ast *)a;
 }
 
 struct ast *newasgn(int type, struct symbol *s, struct ast *v) {
-  struct symasgn *a = malloc(sizeof(struct symasgn));
+  	struct symasgn *a = malloc(sizeof(struct symasgn));
 
-  if(!a) {
-    yyerror("out of space");
-    exit(0);
-  }
-  a->nodetype = '=';
-  s->nodetype = type;
-  a->s = s;
-  a->v = v;
-  return (struct ast *)a;
+		if(!a) {
+				yyerror("out of space");
+				exit(0);
+		}
+		a->nodetype = '=';
+		s->nodetype = type;
+		a->s = s;
+		a->v = v;
+  	return (struct ast *)a;
 }
 
 struct ast *newsasgn(struct symbol *s, struct ast *v) {
-  struct symasgn *a = malloc(sizeof(struct symasgn));
+		struct symasgn *a = malloc(sizeof(struct symasgn));
 
-  if(!a) {
-    yyerror("out of space");
-    exit(0);
-  }
-  a->nodetype = '=';
-  a->s = s;
-  a->v = v;
-  return (struct ast *)a;
+		if(!a) {
+				yyerror("out of space");
+				exit(0);
+		}
+		a->nodetype = '=';
+		a->s = s;
+		a->v = v;
+		return (struct ast *)a;
 }
 
 struct ast *newsymdecl(int node, struct symbol *s){
-  struct symdecl *a=malloc(sizeof(struct symdecl));
-  if(!a) {
-    yyerror("out of space");
-    exit(0);
-  }
-  a->nodetype = 'X' ;
-  a->type = node;
-  a->s=s;
+		struct symdecl *a=malloc(sizeof(struct symdecl));
+		if(!a) {
+				yyerror("out of space");
+				exit(0);
+		}
+		a->nodetype = 'X' ;
+		a->type = node;
+		a->s=s;
 
-  return (struct ast *)a;
+		return (struct ast *)a;
 }
 
 struct ast *newinc(int nodetype, struct symbol *s) { 
-  struct symref *a = malloc(sizeof(struct symref));
+		struct symref *a = malloc(sizeof(struct symref));
 
-  if(!a) {
-    yyerror("out of space");
-    exit(0);
-  }
-  a->nodetype = nodetype;
-  a->s = s;
-  return (struct ast *)a;
+		if(!a) {
+				yyerror("out of space");
+				exit(0);
+		}
+		a->nodetype = nodetype;
+		a->s = s;
+		return (struct ast *)a;
 }
 
 struct ast *incr(struct symbol *s) { 
-  struct integerType *i = malloc(sizeof(struct integerType));
+		struct integerType *i = malloc(sizeof(struct integerType));
 
-  if(s->v->nodetype != 'I') {
-    yyerror("Not increment type");
-    exit(1);
-  }
-  i = (struct integerType *)(s->v->structType);
-  i->value += 1;
-  s->v->nodetype = 'I';
-  s->v->structType = i;
-  return (struct ast*)(s->v);
+		if(s->v->nodetype != 'I') {
+				yyerror("Not increment type");
+				exit(1);
+		}
+		i = (struct integerType *)(s->v->structType);
+		i->value += 1;
+		s->v->nodetype = 'I';
+		s->v->structType = i;
+		return (struct ast*)(s->v);
 }
 
 struct ast *decr(struct symbol *s) { 
-  struct integerType *i = malloc(sizeof(struct integerType));
+		struct integerType *i = malloc(sizeof(struct integerType));
 
-  if(s->v->nodetype != 'I') {
-    yyerror("Not increment type");
-    exit(1);
-  }
-  i = (struct integerType *)(s->v->structType);
-  i->value -= 1;
-  s->v->nodetype = 'I';
-  s->v->structType = i;
-  return (struct ast*)(s->v);
+		if(s->v->nodetype != 'I') {
+				yyerror("Not increment type");
+				exit(1);
+		}
+		i = (struct integerType *)(s->v->structType);
+		i->value -= 1;
+		s->v->nodetype = 'I';
+		s->v->structType = i;
+		return (struct ast*)(s->v);
 }
 
-/********************************WORKING ON VARIABLE********************************/
+void assign(struct symasgn *tree) {
+		struct value* v=(struct value*)(evaluate(evaluate((tree)->v)));
+		if(tree->s->nodetype!=v->nodetype){
+				if(tree->s->nodetype=='R' && v->nodetype=='I'){
+						tree->s->v=v;
+				}else{
+						yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, v->nodetype );
+						exit(1);
+				}
+		}
+		if(tree->s->nodetype == 'Y') {
+				struct listexp *l = malloc(sizeof(struct listexp));
+				l = (struct listexp *)(evaluate(tree->v));
+				tree->s->l=l;
+		}
+		else
+				tree->s->v=v;
+}
+/********************************END-VARIABLE********************************/
 
-/*****************FLOW*/
+/********************************LIST****************************************/
+
+struct listexp *newlist(int nodetype, struct ast *exp, struct listexp *next) {
+    struct listexp *l = malloc(sizeof(struct value));
+
+    if(!l) {
+				yyerror("out of space");
+				exit(0);
+    }
+    l->nodetype = nodetype;
+    l->exp = exp;
+    l->next = next;
+    return l;
+}
+
+void printList(struct listexp *l) {
+    struct ast *a;
+    struct value *v;
+
+    while(l) {
+				a = evaluate(l->exp);
+				v = (struct value *)a;
+				print((struct ast *)v);
+				printf(" ");
+				l = l->next;
+    }
+}
+
+struct ast *newlasgn(int type, struct symbol *s, struct listexp *l) {
+    struct symasgn *a = malloc(sizeof(struct symasgn));
+
+    if(!a) {
+				yyerror("out of space");
+				exit(0);
+    }
+    a->nodetype = '=';
+    s->nodetype = type;
+    a->s = s;
+    a->v = (struct ast *)l;
+    return (struct ast *)a;
+}
+
+struct ast *newlsasgn(struct symbol *s, struct listexp *l) {
+    struct symasgn *a = malloc(sizeof(struct symasgn));
+
+    if(!a) {
+				yyerror("out of space");
+				exit(0);
+    }
+    a->nodetype = '=';
+    a->s = s;
+    a->v = (struct ast *)l;
+    return (struct ast *)a;
+}
+
+struct ast *pop(struct symbol *s) {
+		if(s->nodetype=='Y'){
+				if(s->l->exp != NULL) {
+						struct ast* a=malloc(sizeof(struct ast));
+						a=s->l->exp;
+						free(s->l);
+						s->l=s->l->next;
+						return a;
+				}
+		}else{
+				yyerror("Cannot pop %c TYPE", s->nodetype);
+				exit(1);
+		}
+}
+
+/**********************************END-LIST**********************************/
+
+/*********************************FLOW***************************************/
 struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *el, struct ast *in) {
-  struct flow *a = malloc(sizeof(struct flow));
-  
-  if(!a) {
-    yyerror("out of space");
-    exit(0);
-  }
-  a->nodetype = nodetype;
-  a->cond = cond;
-  a->tl = tl;
-  a->el = el;
-  a->in = in;
-  return (struct ast *)a;
+		struct flow *a = malloc(sizeof(struct flow));
+		
+		if(!a) {
+				yyerror("out of space");
+				exit(0);
+		}
+		a->nodetype = nodetype;
+		a->cond = cond;
+		a->tl = tl;
+		a->el = el;
+		a->in = in;
+		return (struct ast *)a;
 }
-/*****************FLOW*/
+
+void ifop(struct flow *f){
+    struct value *v=malloc(sizeof(struct value));
+    v=(struct value*)evaluate(f->cond);
+    struct integerType *i=malloc(sizeof(struct integerType));
+    i=(struct integerType*)v->structType;
+    if(i->value!=0){
+				if(f->tl) {
+					evaluate(f->tl);
+      	}
+    } else {
+				if(f->el) {
+					evaluate((f->el));
+				}
+    }
+}
+
+void whileop(struct flow *f) {
+		struct value *v=malloc(sizeof(struct value));
+		v=(struct value*)evaluate(f->cond);
+		struct integerType *i=malloc(sizeof(struct integerType));
+		i=(struct integerType*)v->structType;
+		if(f->tl) { 
+				while(i->value != 0){
+						evaluate(f->tl);
+						v=(struct value*)evaluate(f->cond);
+						i=(struct integerType*)v->structType;
+				} 
+		}
+}
+
+void dowhileop(struct flow *f) {
+		struct value *v=malloc(sizeof(struct value));
+		struct integerType *i=malloc(sizeof(struct integerType));
+		if(f->tl) { 
+				do{
+						evaluate(f->tl);
+						v=(struct value*)evaluate(f->cond);
+						i=(struct integerType*)v->structType;
+				}while(i->value != 0); 
+		}
+}
+
+void forop(struct flow *f) { 
+    evaluate(f->in);
+    struct value *v=malloc(sizeof(struct value));
+    v=(struct value*)evaluate(f->cond);
+    struct integerType *i=malloc(sizeof(struct integerType));
+    i=(struct integerType*)v->structType;
+    if(f->tl && f->in && f->el) {
+        while(i->value) {
+						evaluate(f->tl);
+						evaluate(f->el);
+						v=(struct value*)evaluate(f->cond);
+						i=(struct integerType*)v->structType;
+        }
+    }
+}
+/*********************************END-FLOW*************************************/
 
 
-/********** BUILT*/
+/************************************************************************BUILT*/
 struct ast *newfunc(int functype, struct ast *l) {
-  struct fncall *a = malloc(sizeof(struct fncall));
-  
-  if(!a) {
-    yyerror("out of space");
-    exit(0);
-  }
-  a->nodetype = 'L';
-  a->l = l;
-  a->functype = functype;
-  return (struct ast *)a;
+		struct fncall *a = malloc(sizeof(struct fncall));
+		
+		if(!a) {
+				yyerror("out of space");
+				exit(0);
+		}
+		a->nodetype = 'L';
+		a->l = l;
+		a->functype = functype;
+		return (struct ast *)a;
 }
 
 struct ast* callbuiltin(struct fncall *f){
@@ -173,19 +316,77 @@ struct ast* callbuiltin(struct fncall *f){
     a = evaluate(f->l);
 
     switch(functype) {
-      case B_print:
-        print(a);
-        break;
-      case B_println:
-        println(a);
-        break;
-      default:
-        yyerror("Unknown built-in function %d", functype);
-  }
-  return a;
+				case B_print:
+						print(a);
+						break;
+				case B_println:
+						println(a);
+						break;
+				default:
+						yyerror("Unknown built-in function %d", functype);
+ 		}
+  	return a;
 }
-/***********B*/
 
+void print(struct ast *val) {
+    struct value *a= malloc(sizeof(struct value));
+    struct integerType *i;
+    struct realType *r;
+    struct stringType *s;
+    struct listexp *l;
+    switch(val->nodetype){
+        case 'I' :  
+                    i=malloc(sizeof(struct integerType));
+                    a=(struct value *)val;
+                    i=(struct integerType *)a->structType;
+                    int intero= i->value;
+                    printf("%d", intero);
+                    break;
+        case 'R' :
+                    r=malloc(sizeof(struct realType));
+                    a=(struct value *)val;
+                    r=(struct realType *)a->structType;
+                    double reale= r->value;
+                    printf("%g", reale);
+                    break;
+        case 'S' :
+                    s=malloc(sizeof(struct stringType));
+                    a=(struct value *)val;
+                    s=(struct stringType *)a->structType;
+                    char * stringa=s->value;
+                    printf("%s", stringa);
+                    break;   
+        case 'Y' :
+                    l=malloc(sizeof(struct listexp));
+                    l=(struct listexp *)val;
+                    printf("[ ");
+                    printList(l);
+                    printf("]");
+                    break;
+        default: printf("Error print"); exit(1);
+    }
+}
+
+void println(struct ast *val) {
+		print(val); 
+		printf("\n");
+}
+
+struct ast *date(){
+    struct value *a=malloc(sizeof(struct value));
+    struct stringType *s=malloc(sizeof(struct stringType));
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    asprintf(&(s->value),"%d-%02d-%02d %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    a->nodetype='S';
+    a->structType=s;
+    return (struct ast*)a;
+}
+/*******************************************************************END-BUILT*/
+
+
+
+/*****************************INIT*******************************************/
 struct ast *newInteger(int nodetype, int value) {
   struct value *a = malloc(sizeof(struct value));
   struct integerType *i = malloc(sizeof(struct integerType));
@@ -239,26 +440,9 @@ struct ast *newast(int nodetype, struct ast *l, struct ast *r) {
     a->r = r;
   return a;
 }
+/*****************************END-INIT*******************************************/
 
-void assign(struct symasgn *tree) {
-	struct value* v=(struct value*)(evaluate(evaluate((tree)->v)));
-	if(tree->s->nodetype!=v->nodetype){
-		if(tree->s->nodetype=='R' && v->nodetype=='I'){
-			tree->s->v=v;
-		}else{
-			yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, v->nodetype );
-			exit(1);
-		}
-	}
-  if(tree->s->nodetype == 'Y') {
-    struct listexp *l = malloc(sizeof(struct listexp));
-    l = (struct listexp *)(evaluate(tree->v));
-    tree->s->l=l;
-  }
-	else
-    tree->s->v=v;
-}
-
+/****************************EVALUATE*******************************************/
 struct ast *evaluate(struct ast *tree) {
     struct ast *result=malloc(sizeof(struct ast));
     struct ast *temp=malloc(sizeof(struct ast));
@@ -357,188 +541,7 @@ struct ast *evaluate(struct ast *tree) {
     }
     return result;
 }
-
-/**************LIST**********************/
-
-struct listexp *newlist(int nodetype, struct ast *exp, struct listexp *next) {
-    struct listexp *l = malloc(sizeof(struct value));
-
-    if(!l) {
-      yyerror("out of space");
-      exit(0);
-    }
-    l->nodetype = nodetype;
-    l->exp = exp;
-    l->next = next;
-    return l;
-}
-
-void printList(struct listexp *l) {
-    struct ast *a;
-    struct value *v;
-
-    while(l) {
-      a = evaluate(l->exp);
-      v = (struct value *)a;
-      print((struct ast *)v);
-      printf(" ");
-      l = l->next;
-    }
-}
-
-struct ast *newlasgn(int type, struct symbol *s, struct listexp *l) {
-    struct symasgn *a = malloc(sizeof(struct symasgn));
-
-    if(!a) {
-      yyerror("out of space");
-      exit(0);
-    }
-    a->nodetype = '=';
-    s->nodetype = type;
-    a->s = s;
-    a->v = (struct ast *)l;
-    return (struct ast *)a;
-}
-
-struct ast *newlsasgn(struct symbol *s, struct listexp *l) {
-    struct symasgn *a = malloc(sizeof(struct symasgn));
-
-    if(!a) {
-      yyerror("out of space");
-      exit(0);
-    }
-    a->nodetype = '=';
-    a->s = s;
-    a->v = (struct ast *)l;
-    return (struct ast *)a;
-}
-
-struct ast *pop(struct listexp **l) {
-  struct value *a = malloc(sizeof(struct value));
-  struct integerType *i = malloc(sizeof(struct integerType));
-
-  if(*l != NULL) {
-      a = (struct value *)evaluate(evaluate((*l)->exp));
-      struct listexp *tmp = *l;
-      *l = (*l)->next; 
-  }
-  return (struct ast *)a;
-}
-
-/**************LIST**********************/
-
-void ifop(struct flow *f){
-    struct value *v=malloc(sizeof(struct value));
-    v=(struct value*)evaluate(f->cond);
-    struct integerType *i=malloc(sizeof(struct integerType));
-    i=(struct integerType*)v->structType;
-    if(i->value!=0){
-      if(f->tl) {
-      evaluate(f->tl);
-      }
-    } else {
-      if(f->el) {
-       evaluate((f->el));
-      }
-    }
-}
-
-void whileop(struct flow *f) {
-  struct value *v=malloc(sizeof(struct value));
-  v=(struct value*)evaluate(f->cond);
-  struct integerType *i=malloc(sizeof(struct integerType));
-  i=(struct integerType*)v->structType;
-  if(f->tl) { 
-    while(i->value != 0){
-      evaluate(f->tl);
-      v=(struct value*)evaluate(f->cond);
-      i=(struct integerType*)v->structType;
-    } 
-  }
-}
-
-void dowhileop(struct flow *f) {
-  struct value *v=malloc(sizeof(struct value));
-  struct integerType *i=malloc(sizeof(struct integerType));
-  if(f->tl) { 
-    do{
-      evaluate(f->tl);
-      v=(struct value*)evaluate(f->cond);
-      i=(struct integerType*)v->structType;
-    }while(i->value != 0); 
-  }
-}
-
-void forop(struct flow *f) { 
-    evaluate(f->in);
-    struct value *v=malloc(sizeof(struct value));
-    v=(struct value*)evaluate(f->cond);
-    struct integerType *i=malloc(sizeof(struct integerType));
-    i=(struct integerType*)v->structType;
-    if(f->tl && f->in && f->el) {
-        while(i->value) {
-          evaluate(f->tl);
-          evaluate(f->el);
-          v=(struct value*)evaluate(f->cond);
-          i=(struct integerType*)v->structType;
-        }
-    }
-}
-
-void print(struct ast *val) {
-    struct value *a= malloc(sizeof(struct value));
-    struct integerType *i;
-    struct realType *r;
-    struct stringType *s;
-    struct listexp *l;
-    switch(val->nodetype){
-        case 'I' :  
-                    i=malloc(sizeof(struct integerType));
-                    a=(struct value *)val;
-                    i=(struct integerType *)a->structType;
-                    int intero= i->value;
-                    printf("%d", intero);
-                    break;
-        case 'R' :
-                    r=malloc(sizeof(struct realType));
-                    a=(struct value *)val;
-                    r=(struct realType *)a->structType;
-                    double reale= r->value;
-                    printf("%g", reale);
-                    break;
-        case 'S' :
-                    s=malloc(sizeof(struct stringType));
-                    a=(struct value *)val;
-                    s=(struct stringType *)a->structType;
-                    char * stringa=s->value;
-                    printf("%s", stringa);
-                    break;   
-        case 'Y' :
-                    l=malloc(sizeof(struct listexp));
-                    l=(struct listexp *)val;
-                    printf("[ ");
-                    printList(l);
-                    printf("]");
-                    break;
-        default: printf("Error print"); exit(1);
-    }
-}
-
-void println(struct ast *val) {
-  print(val); 
-  printf("\n");
-}
-
-struct ast *date(){
-    struct value *a=malloc(sizeof(struct value));
-    struct stringType *s=malloc(sizeof(struct stringType));
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-    asprintf(&(s->value),"%d-%02d-%02d %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-    a->nodetype='S';
-    a->structType=s;
-    return (struct ast*)a;
-}
+/****************************EVALUATE*******************************************/
 
 void yyerror(char *s, ...) {
   va_list ap;

@@ -1,7 +1,10 @@
+#  define _GNU_SOURCE
 #  include <stdio.h>
 #  include <stdlib.h>
+#  include <stdarg.h>
 #  include <string.h>
 #  include <math.h>
+#  include <time.h>
 #  include "ast.h"
 #  include "operations.h"
 
@@ -1254,6 +1257,7 @@ struct ast *rdiv(struct ast *value1, struct ast *value2) {
                     case 'S' :
                       yyerror("invalid operation.. String cannot div with double type ");
                       exit(1);
+                      break;
                   }
                   result->nodetype='R';
                   realResult->value=dbres;
@@ -1263,6 +1267,7 @@ struct ast *rdiv(struct ast *value1, struct ast *value2) {
           case 'S' :
                 yyerror("invalid operation.. String cannot div ");
                 exit(1);
+                break;
 
           default: printf("Internal error"); exit(1);
       }

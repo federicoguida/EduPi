@@ -1,10 +1,7 @@
-#  define _GNU_SOURCE
 #  include <stdio.h>
 #  include <stdlib.h>
-#  include <stdarg.h>
 #  include <string.h>
 #  include <math.h>
-#  include <time.h>
 #  include "ast.h"
 #  include "operations.h"
 
@@ -1355,3 +1352,4 @@ struct ast *abss(struct ast *tree) {
   }
   return (struct ast* )a;
 }
+

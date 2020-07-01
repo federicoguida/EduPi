@@ -150,3 +150,17 @@ void symlistfree(struct symlist *sl);
 extern int yylineno; /* from lexer */
 void yyerror(char *s, ...);
 /***********************END-OTHER UTILITY*/
+
+
+
+
+void dodef(struct symbol *name, struct symlist *syms, struct ast *func, struct ast *returnValue);
+
+struct ufncall {		/* user function */
+  int nodetype;			/* type C */
+  struct ast *l;		/* list of arguments */
+  struct symbol *s;
+};
+struct ast* calluser(struct ufncall *f);
+
+struct ast *newcall(struct symbol *s, struct ast *l);

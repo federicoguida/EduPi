@@ -1501,7 +1501,7 @@ yyreduce:
     {
   case 3:
 #line 62 "parser.y"
-                    { evaluate((yyvsp[0].a)); }
+                    { evaluate((yyvsp[0].a)); treefree((yyvsp[0].a)); }
 #line 1506 "parser.tab.c"
     break;
 

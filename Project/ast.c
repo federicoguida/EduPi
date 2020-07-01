@@ -128,8 +128,20 @@ struct ast* calluser(struct ufncall *f){
 
 void treefree(struct ast *a){
 		switch(a->nodetype) {
-			case 'K': case 'N':
+			case 'I': case 'R': case 'S':
+			free(((struct value *)a)->structType);
 			break;
+
+			case '+':
+			free(a->l);
+			free(a->r);
+			break;
+
+			case 'F': case 'W' : case 'D': case 'Q':
+			free( ((struct flow *)a)->cond);
+    	if( ((struct flow *)a)->tl) free( ((struct flow *)a)->tl);
+    	if( ((struct flow *)a)->el) free( ((struct flow *)a)->el);
+    	break;
 		}
 		free(a); /* always free the node itself */
 }
@@ -479,7 +491,7 @@ struct ast* callbuiltin(struct fncall *f){
 						break;
 				case B_pop:
 						if(!f->s){
-								yyerror("no arguments for pop...");
+								yyerror("no arguments for print...");
 								free(a);
 								break;
 						}

@@ -1,10 +1,9 @@
-/* calculator with AST */
-
 %{
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include "ast.h"
 #  include "operations.h"
+int yylex();
 %}
 
 %union{
@@ -17,6 +16,7 @@
     struct symlist *sl;  /* Lista di simboli */
     int fn; /* Indicherà quale funzione */
     int type;
+    struct listexp *l;
 }
 
  /* declare tokens */
@@ -50,6 +50,7 @@
 %type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist
 %type <sl> symlist
 %type <type> type
+%type <l> value_list
 %start program
 
 %%
@@ -119,8 +120,8 @@ init: type NAME ASSIGN exp { $$ = newasgn($1, $2, $4); }
 | NAME ASSIGN exp { $$ = newsasgn($1, $3); }
 | NAME INCR { $$ = newinc('P', $1); }
 | NAME DECR { $$ = newinc('E', $1); }
-| LST NAME ASSIGN LBRACK explist RBRACK { }
-| NAME ASSIGN LBRACK explist RBRACK { }
+| LST NAME ASSIGN LBRACK value_list RBRACK { $$ = newlasgn($1, $2, $5); }
+| NAME ASSIGN LBRACK value_list RBRACK { }
  /* da aggiungere la periferica */
 ;
 
@@ -135,6 +136,10 @@ functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
 ;
 
 functionR: TIME LPAREN RPAREN { $$ = date(); } 
+;
+
+value_list: exp COMMA value_list { $$ = newlist('Y', $1, $3); }
+| exp { $$ = newlist('Y', $1, NULL); }
 ;
 
 explist: explist COMMA exp { }

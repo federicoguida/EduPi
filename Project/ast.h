@@ -3,6 +3,7 @@ struct symbol {
     char * name;
     int nodetype;
     struct value *v;
+    struct listexp *l;
     struct ast *func;
     struct symlist *syms;
 };
@@ -47,6 +48,19 @@ struct ast *incr(struct symbol *s);
 struct ast *decr(struct symbol *s);
 /********************************WORKING ON VARIABLE********************************/
 
+/*******************************START LIST*************************************/
+
+struct listexp {
+  int nodetype;
+  struct ast *exp;
+  struct listexp *next;
+};
+
+struct listexp *newlist(int nodetype, struct ast *exp, struct listexp *next);
+void printList(struct listexp *l);
+struct ast *newlasgn(int type, struct symbol *s, struct listexp *l);
+struct ast *newlsasgn(struct symbol *s, struct listexp *l);
+/********************************END LIST**************************************/
 
 /******************************FLOW*/
 

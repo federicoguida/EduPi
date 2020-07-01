@@ -17,7 +17,7 @@ STRING    \"{print}*\"
 
 %%
 
-"list"          { return LST; }
+"list"          { yylval.type = 'Y'; return LST; }
 "periferica"    { return PERI; }
 "integer"       { yylval.type = 'I'; return INT; }
 "real"          { yylval.type = 'R'; return RL; }

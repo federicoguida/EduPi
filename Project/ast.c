@@ -240,7 +240,7 @@ struct ast *newast(int nodetype, struct ast *l, struct ast *r) {
   return a;
 }
 
-void assign(struct symasgn *tree){
+void assign(struct symasgn *tree) {
 	struct value* v=(struct value*)(evaluate(evaluate((tree)->v)));
 	if(tree->s->nodetype!=v->nodetype){
 		if(tree->s->nodetype=='R' && v->nodetype=='I'){
@@ -250,7 +250,13 @@ void assign(struct symasgn *tree){
 			exit(1);
 		}
 	}
-	tree->s->v=v;
+  if(tree->s->nodetype == 'Y') {
+    struct listexp *l = malloc(sizeof(struct listexp));
+    l = (struct listexp *)(tree->v);
+    tree->s->l=l;
+  }
+	else
+    tree->s->v=v;
 }
 
 struct ast *evaluate(struct ast *tree) {
@@ -289,6 +295,9 @@ struct ast *evaluate(struct ast *tree) {
         case 'R' :
               result=tree;
               break;
+        case 'Y' :
+              result=tree;
+              break;
         case 'M' :
               result=negateValue(evaluate(tree->l));
               break;
@@ -306,7 +315,10 @@ struct ast *evaluate(struct ast *tree) {
               break;
         case 'V' :
               s=lookup(((struct symref*)tree)->s->name);
-              result=(struct ast*)(s->v);
+              if(s->nodetype == 'Y') 
+                result=(struct ast *)(s->l);
+              else
+                result=(struct ast*)(s->v);
               break;
         case 'P' :
               s=lookup(((struct symref*)tree)->s->name);
@@ -345,6 +357,50 @@ struct ast *evaluate(struct ast *tree) {
     }
     return result;
 }
+
+/**************LIST**********************/
+
+struct listexp *newlist(int nodetype, struct ast *exp, struct listexp *next) {
+    struct listexp *l = malloc(sizeof(struct value));
+
+    if(!l) {
+      yyerror("out of space");
+      exit(0);
+    }
+    l->nodetype = nodetype;
+    l->exp = exp;
+    l->next = next;
+    return l;
+}
+
+void printList(struct listexp *l) {
+    struct ast *a;
+    struct value *v;
+
+    while(l) {
+      a = evaluate(l->exp);
+      v = (struct value *)a;
+      print((struct ast *)v);
+      printf(", ");
+      l = l->next;
+    }
+}
+
+struct ast *newlasgn(int type, struct symbol *s, struct listexp *l) {
+    struct symasgn *a = malloc(sizeof(struct symasgn));
+
+    if(!a) {
+      yyerror("out of space");
+      exit(0);
+    }
+    a->nodetype = '=';
+    s->nodetype = type;
+    a->s = s;
+    a->v = (struct ast *)l;
+    return (struct ast *)a;
+}
+
+/**************LIST**********************/
 
 void ifop(struct flow *f){
     struct value *v=malloc(sizeof(struct value));
@@ -409,6 +465,7 @@ void print(struct ast *val) {
     struct integerType *i;
     struct realType *r;
     struct stringType *s;
+    struct listexp *l;
     switch(val->nodetype){
         case 'I' :  
                     i=malloc(sizeof(struct integerType));
@@ -431,6 +488,13 @@ void print(struct ast *val) {
                     char * stringa=s->value;
                     printf("%s", stringa);
                     break;   
+        case 'Y' :
+                    l=malloc(sizeof(struct listexp));
+                    l=(struct listexp *)val;
+                    printf("[ ");
+                    printList(l);
+                    printf("]");
+                    break;
         default: printf("Error print"); exit(1);
     }
 }

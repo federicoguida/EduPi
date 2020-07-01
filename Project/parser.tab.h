@@ -101,7 +101,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 10 "parser.y"
+#line 9 "parser.y"
 
     struct ast *a; /*Struttura albero*/
     double r; /*Indicherà i reali*/
@@ -112,8 +112,9 @@ union YYSTYPE
     struct symlist *sl;  /* Lista di simboli */
     int fn; /* Indicherà quale funzione */
     int type;
+    struct listexp *l;
 
-#line 117 "parser.tab.h"
+#line 118 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

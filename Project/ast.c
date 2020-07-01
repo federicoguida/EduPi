@@ -9,142 +9,129 @@
 #  include "operations.h"
 
 /********************************USER-FUNC******************************/
-struct symlist *
-newsymlist(struct symbol *sym, struct symlist *next)
-{
-  struct symlist *sl = malloc(sizeof(struct symlist));
-  
-  if(!sl) {
-    yyerror("out of space");
-    exit(0);
-  }
-  sl->sym = sym;
-  sl->next = next;
-  return sl;
+struct symlist *newsymlist(struct symbol *sym, struct symlist *next){
+		struct symlist *sl = malloc(sizeof(struct symlist));
+		
+		if(!sl) {
+				yyerror("out of space");
+				exit(0);
+		}
+		sl->sym = sym;
+		sl->next = next;
+		return sl;
 }
 
-void
-symlistfree(struct symlist *sl)
-{
-  struct symlist *nsl;
+void symlistfree(struct symlist *sl){
+		struct symlist *nsl;
 
-  while(sl) {
-    nsl = sl->next;
-    free(sl);
-    sl = nsl;
-  }
+		while(sl) {
+				nsl = sl->next;
+				free(sl);
+				sl = nsl;
+		}
 }
 
-void
-dodef(struct symbol *name, struct symlist *syms, struct ast *func, struct ast *returnValue)
-{
-  if(name->syms) symlistfree(name->syms);
-  if(name->func) treefree(name->func);
-  name->syms = syms;
-  name->func = func;
-  name->returnValue=returnValue;
+void dodef(struct symbol *name, struct symlist *syms, struct ast *func, struct ast *returnValue){
+		if(name->syms) symlistfree(name->syms);
+		if(name->func) treefree(name->func);
+		name->syms = syms;
+		name->func = func;
+		name->returnValue=returnValue;
 }
 
-
-struct ast *
-newcall(struct symbol *s, struct ast *l)
-{
-  struct ufncall *a = malloc(sizeof(struct ufncall));
-  
-  if(!a) {
-    yyerror("out of space");
-    exit(0);
-  }
-  a->nodetype = 'C';
-  a->l = l;
-  a->s = s;
-  return (struct ast *)a;
+struct ast *newcall(struct symbol *s, struct ast *l){
+		struct ufncall *a = malloc(sizeof(struct ufncall));
+		
+		if(!a) {
+				yyerror("out of space");
+				exit(0);
+		}
+		a->nodetype = 'C';
+		a->l = l;
+		a->s = s;
+		return (struct ast *)a;
 }
 
 
 
-struct ast* calluser(struct ufncall *f)
-{
-  struct symbol *fn = f->s;	/* function name */
-  struct symlist *sl;		/* dummy arguments */
-  struct ast *args = f->l;	/* actual arguments */
-  struct ast **oldval, **newval;	/* saved arg values */
-  struct ast *v=NULL;
-  int nargs;
-  int i;
+struct ast* calluser(struct ufncall *f){
+		struct symbol *fn = f->s;	/* function name */
+		struct symlist *sl;		/* dummy arguments */
+		struct ast *args = f->l;	/* actual arguments */
+		struct ast **oldval, **newval;	/* saved arg values */
+		struct ast *v=NULL;
+		int nargs;
+		int i;
 
-  /* if(!fn->func) {
-    yyerror("call to undefined function", fn->name);
-    return 0;
-  } */
+		/* if(!fn->func) {
+			yyerror("call to undefined function", fn->name);
+			return 0;
+		} */
 
-  /* count the arguments */
-  sl = fn->syms;
-  for(nargs = 0; sl; sl = sl->next)
-    nargs++;
+		/* count the arguments */
+		sl = fn->syms;
+		for(nargs = 0; sl; sl = sl->next)
+			nargs++;
 
-  /* prepare to save them */
-  oldval = (struct ast **)malloc(nargs * sizeof(struct ast*));
-  newval = (struct ast **)malloc(nargs * sizeof(struct ast*));
-  if(!oldval || !newval) {
-    yyerror("Out of space in %s", fn->name); exit(1);
-  }
-  
-  /* evaluate the arguments */
-  for(i = 0; i < nargs; i++) {
-    if(!args) {
-      yyerror("too few args in call to %s", fn->name);
-      free(oldval); free(newval);
-      exit(1);
-    }
+		/* prepare to save them */
+		oldval = (struct ast **)malloc(nargs * sizeof(struct ast*));
+		newval = (struct ast **)malloc(nargs * sizeof(struct ast*));
+		if(!oldval || !newval) {
+				yyerror("Out of space in %s", fn->name); exit(1);
+		}
+		
+		/* evaluate the arguments */
+		for(i = 0; i < nargs; i++) {
+				if(!args) {
+						yyerror("too few args in call to %s", fn->name);
+						free(oldval); free(newval);
+						exit(1);
+				}
 
-    if(args->nodetype == 'Z') {	/* if this is a list node */
-      newval[i] = evaluate(args->l);
-      args = args->r;
-    } else {			/* if it's the end of the list */
-      newval[i] = evaluate(args);
-      args = NULL;
-    }
-  }
-		     
-  /* save old values of dummies, assign new ones */
-  sl = fn->syms;
-  for(i = 0; i < nargs; i++) {
-    struct symbol *s = sl->sym;
-    s->v = (struct value*)newval[i];
-    s->nodetype = s->v->nodetype;
-    sl = sl->next;
-  }
+				if(args->nodetype == 'Z') {	/* if this is a list node */
+					newval[i] = evaluate(args->l);
+					args = args->r;
+				} else {			/* if it's the end of the list */
+					newval[i] = evaluate(args);
+					args = NULL;
+				}
+		}
+					
+		/* save old values of dummies, assign new ones */
+		sl = fn->syms;
+		for(i = 0; i < nargs; i++) {
+				struct symbol *s = sl->sym;
+				s->v = (struct value*)newval[i];
+				s->nodetype = s->v->nodetype;
+				sl = sl->next;
+		}
 
-  free(newval);
+		free(newval);
 
-  /* evaluate the function */
-    evaluate(fn->func);
-  if(fn->returnValue){
-    v=evaluate(fn->returnValue);
-  }
-    /* put the dummies back */
-  sl = fn->syms;
-  for(i = 0; i < nargs; i++) {
-    struct symbol *s = sl->sym;
-    s->v = (struct value*)oldval[i];
-    sl = sl->next;
-  }
+		/* evaluate the function */
+		evaluate(fn->func);
+		if(fn->returnValue){
+				v=evaluate(fn->returnValue);
+		}
+			/* put the dummies back */
+		sl = fn->syms;
+		for(i = 0; i < nargs; i++) {
+				struct symbol *s = sl->sym;
+				s->v = (struct value*)oldval[i];
+				sl = sl->next;
+		}
 
-  free(oldval);
-  
-  return v;
+		free(oldval);
+		
+		return v;
 }
 
-void
-treefree(struct ast *a)
-{
-  switch(a->nodetype) {
-    case 'K': case 'N':
-    break;
-  }
-
-    free(a); /* always free the node itself */
+void treefree(struct ast *a){
+		switch(a->nodetype) {
+			case 'K': case 'N':
+			break;
+		}
+		free(a); /* always free the node itself */
 }
 /********************************END-USER-FUNC******************************/
 
@@ -670,6 +657,9 @@ struct ast *evaluate(struct ast *tree) {
               break;
         case 'L' :
               result=callbuiltin((struct fncall *)tree); 
+              break;
+				case 'C' :
+              result=calluser((struct ufncall *)tree);
               break;
         case 'Z': temp=evaluate(tree->l); result=evaluate(tree->r);  break;
         case 1: result = compare(1,evaluate(tree->l), evaluate(tree->r)); break; // >

@@ -1,5 +1,6 @@
 - [x] Controllo tipi 
-- [ ] Ottimizzazione della memoria
-- [ ] Funzioni definite da Utente
-- [ ] Liste
+- [ ] Ottimizzazione della memoria|------->|Work in progress sulla funzione treefree
+- [x] Funzioni definite da Utente PS GESTIRE MEGLIO VARIABILI
+- [x] Liste
 - [ ] Tipo periferica
+- [ ] Aggiungere metodi list (Ricerca, cancellazione, push...);

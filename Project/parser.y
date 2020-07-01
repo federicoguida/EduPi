@@ -1,3 +1,5 @@
+/* calculator with AST */
+
 %{
 #  include <stdio.h>
 #  include <stdlib.h>
@@ -27,7 +29,7 @@ int yylex();
 /*function*/
 %token <fn>PRINT
 %token <fn>PRINTLN
-%token TIME POP
+%token TIME
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
@@ -57,6 +59,7 @@ int yylex();
 
 program: /* nothing */
 | program statement { evaluate($2); }
+| program DEF NAME LPAREN symlist RPAREN LBRACE tail RETURN value SEMI RBRACE { dodef($3, $5, $8,$10); }
 ;
 
 statement: if_statement { }
@@ -104,6 +107,7 @@ exp: exp CMP exp { $$ = newast($2 ,$1,$3); }
 | SUBOP exp %prec UMINUS { $$ = newast('M',$2,NULL); }
 | value 
 | functionR
+| NAME LPAREN explist RPAREN { $$ = newcall($1, $3); }
 ;
 
 declaration: type NAME { $$ = newsymdecl($1, $2);}
@@ -131,21 +135,25 @@ value: NAME { $$ = newref($1); }
 | STRING { $$ = newString('S', $1); }
 ;
 
+functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
+| PRINTLN LPAREN exp RPAREN { $$ = newfunc($1, $3); }
+;
+
+functionR: TIME LPAREN RPAREN { $$ = date(); } 
+| POP LPAREN NAME RPAREN { $$ = pop($3); }
+;
+
+explist: /*nothing*/ { $$=NULL; }
+| explist COMMA exp { $$ = newast('Z', $1, $3); }
+| exp 
+;
 
 value_list: exp COMMA value_list { $$ = newlist('Y', $1, $3); }
 | exp { $$ = newlist('Y', $1, NULL); }
 ;
 
-functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
-| PRINTLN LPAREN exp RPAREN { $$ = newfunc($1, $3); }
-;
-
-functionR: TIME LPAREN RPAREN { $$ = date(); }
-| POP LPAREN NAME RPAREN { $$ = pop($3); }
-;
-
-explist: explist COMMA exp { }
-| exp { }
-;
+symlist: /*nothing*/ { $$=NULL; } 
+| NAME { $$ = newsymlist($1, NULL); }
+| NAME COMMA symlist { $$ = newsymlist($1, $3); }
 
 %%

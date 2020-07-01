@@ -957,12 +957,12 @@ YY_RULE_SETUP
 case 15:
 YY_RULE_SETUP
 #line 34 "lexer.l"
-{ return TIME; }
+{ yylval.fn = B_time; return TIME; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 35 "lexer.l"
-{ return POP; }
+{ yylval.fn = B_pop; return POP; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP

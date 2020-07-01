@@ -61,12 +61,15 @@ struct flow {
 enum bifs {			/* built-in functions */
   B_print=1,
   B_println=2,
+  B_time=3,
+  B_pop=4,
 };
 
 // built-in function 
 struct fncall {			
   int nodetype;			/* type L */
   struct ast *l;
+  struct symbol *s;
   enum bifs functype;
 };
 
@@ -128,6 +131,7 @@ void forop(struct flow *f);
 
 /**********************BUILT*/
 struct ast *newfunc(int functype, struct ast *l);
+struct ast *newlfunc(int functype, struct symbol *l);
 struct ast *callbuiltin(struct fncall *f);
 struct ast *date();
 char *printString(char *value);

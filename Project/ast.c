@@ -438,17 +438,37 @@ struct ast *newfunc(int functype, struct ast *l) {
 		return (struct ast *)a;
 }
 
+struct ast *newlfunc(int functype, struct symbol *l){
+		struct fncall *a = malloc(sizeof(struct fncall));
+		
+		if(!a) {
+				yyerror("out of space");
+				exit(0);
+		}
+		a->nodetype = 'L';
+		a->s = l;
+		a->functype = functype;
+		return (struct ast *)a;	
+}
+
 struct ast* callbuiltin(struct fncall *f){
     struct ast* a=malloc(sizeof(struct ast));
     enum bifs functype = f->functype;
-    a = evaluate(f->l);
 
     switch(functype) {
 				case B_print:
+						a = evaluate(f->l);
 						print(a);
 						break;
 				case B_println:
+						a = evaluate(f->l);
 						println(a);
+						break;
+				case B_time:
+						a = date();
+						break;
+				case B_pop:
+						a=pop(f->s);
 						break;
 				default:
 						yyerror("Unknown built-in function %d", functype);

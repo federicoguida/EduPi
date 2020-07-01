@@ -1775,13 +1775,13 @@ yyreduce:
 
   case 53:
 #line 143 "parser.y"
-                              { (yyval.a) = date(); }
+                              { (yyval.a) = newfunc((yyvsp[-2].fn), NULL); }
 #line 1780 "parser.tab.c"
     break;
 
   case 54:
 #line 144 "parser.y"
-                         { (yyval.a) = pop((yyvsp[-1].s)); }
+                         { (yyval.a)= newlfunc((yyvsp[-3].fn), (yyvsp[-1].s)); }
 #line 1786 "parser.tab.c"
     break;
 

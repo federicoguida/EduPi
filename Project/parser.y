@@ -30,6 +30,7 @@ int yylex();
 %token <fn>PRINT
 %token <fn>PRINTLN
 %token TIME
+%token POP
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC

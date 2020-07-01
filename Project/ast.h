@@ -7,6 +7,7 @@ struct symbol {
     struct listexp *l;
     struct ast *func;
     struct symlist *syms;
+    struct ast *returnValue;
 };
 
 // Struct for store and search variable

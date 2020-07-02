@@ -132,9 +132,9 @@ void treefree(struct ast *a){
 			free(((struct value *)a)->structType);
 			break;
 
-			case '+':
-			free(a->l);
-			free(a->r);
+			case '+': case 1: case 2: case 3: case 4: case 5: case 6:
+			treefree(a->l);
+			treefree(a->r);
 			break;
 
 			case 'F': case 'W' : case 'D': case 'Q':

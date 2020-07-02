@@ -360,15 +360,17 @@ struct ast *pop(struct symbol *s) {
 				if(s->l->exp != NULL) {
 						struct ast* a=malloc(sizeof(struct ast));
 						a=s->l->exp;
-						//free(s->l);
+						free(s->l);
 						if(!s->l->next){
 							struct listexp *node=malloc(sizeof(struct listexp));
 							node->nodetype='Y';
 							node->exp=NULL;
 							node->next=NULL;
 							s->l=node;
+							return a;
 						}else{
 						s->l=s->l->next;
+						return a;
 						}
 				}else{
 					struct ast* a=malloc(sizeof(struct ast));
@@ -402,8 +404,7 @@ void append(struct symbol *s, struct ast *exp) {
 				node->exp=exp;
 				node->next=NULL;
 				s->l=node;
-			}
-			
+			}	
 		}
 	}
 	else{
@@ -425,7 +426,6 @@ struct ast *delete(struct symbol *s, struct ast *exp) {
 	if(s->nodetype == 'Y' && exp->nodetype == 'I') {
 		if(exp != NULL) {
 			struct listexp *l=s->l;
-			struct listexp *r=s->l;
 			int size = sizeList(l);
 			struct value *v=(struct value *)exp;
 			struct integerType *i=(struct integerType *)v->structType;
@@ -448,6 +448,63 @@ struct ast *delete(struct symbol *s, struct ast *exp) {
 	}
 	else{
 		yyerror("Cannot delete %c TYPE", s->nodetype);
+		exit(1);
+	}
+}
+
+void push(struct symbol *s, struct ast *exp) {
+	if(s->nodetype == 'Y') {
+		if(exp != NULL) {
+			if(s->l->exp == NULL) {
+				struct listexp *r=malloc(sizeof(struct listexp));
+				r->nodetype='Y';
+				r->exp=exp;
+				r->next=NULL;
+				s->l=r;
+			}
+			else {
+				struct listexp *r=malloc(sizeof(struct listexp));
+				r->nodetype='Y';
+				r->exp=exp;
+				r->next=s->l;
+				s->l=r;
+			}
+		}
+	}
+	else{
+		yyerror("Cannot push %c TYPE", s->nodetype);
+		exit(1);
+	}
+}
+
+void insert(struct symbol *s, struct ast *exp, struct ast *val) {
+	if(s->nodetype == 'Y' && exp->nodetype == 'I') {
+		if(exp != NULL && val != NULL) {
+			struct listexp *l=s->l;
+			int size = sizeList(l);
+			struct value *v=(struct value *)exp;
+			struct integerType *i=(struct integerType *)v->structType;
+			if(i->value > size) {
+				yyerror("out of bounds!");
+				exit(1);
+			}
+			for(int n = 0; n <= i->value; n++) {
+				if(i->value == 0) {
+					push(s,val);
+					break;
+				}
+				if(n == (i->value)-1) {
+					struct listexp *r=malloc(sizeof(struct listexp));
+					r->exp=val;
+					r->next=l->next;
+					l->next=r;
+				}
+				l=l->next;
+			}
+		}
+	}
+	else{
+		yyerror("Cannot insert %c TYPE", s->nodetype);
 		exit(1);
 	}
 }
@@ -544,7 +601,7 @@ struct ast *newfunc(int functype, struct ast *l) {
 		return (struct ast *)a;
 }
 
-struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp){
+struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp, struct ast *val) {
 		struct fncall *a = malloc(sizeof(struct fncall));
 		
 		if(!a) {
@@ -554,6 +611,7 @@ struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp){
 		a->nodetype = 'L';
 		a->s = l;
 		a->l = exp;
+		a->r = val;
 		a->functype = functype;
 		return (struct ast *)a;	
 }
@@ -592,6 +650,14 @@ struct ast* callbuiltin(struct fncall *f){
 						}
 						a=pop(f->s);
 						break;
+				case B_push:
+						if(!f->l) {
+							yyerror("no arguments for push...");
+							free(a);
+							break;
+						}
+						push(f->s, evaluate(f->l));
+						break;
 				case B_app:
 						if(!f->l){
 								yyerror("no arguments for push...");
@@ -607,6 +673,14 @@ struct ast* callbuiltin(struct fncall *f){
 							break;
 						}
 						a=delete(f->s, evaluate(f->l));
+						break;
+				case B_ins:
+						if(!f->l || !f->r) {
+							yyerror("no arguments for insert...");
+							free(a);
+							break;
+						}
+						insert(f->s, evaluate(f->l), evaluate(f->r));
 						break;
 				default:
 						yyerror("Unknown built-in function %d", functype);

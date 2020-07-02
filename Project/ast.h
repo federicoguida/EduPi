@@ -65,12 +65,15 @@ enum bifs {			/* built-in functions */
   B_pop=4,
   B_app=5,
   B_del=6,
+  B_ins=7,
+  B_push=8,
 };
 
 // built-in function 
 struct fncall {			
   int nodetype;			/* type L */
   struct ast *l;
+  struct ast *r;
   struct symbol *s;
   enum bifs functype;
 };
@@ -121,8 +124,10 @@ void printList(struct listexp *l);
 struct ast *newlasgn(int type, struct symbol *s, struct listexp *l);
 struct ast *newlsasgn(struct symbol *s, struct listexp *l);
 struct ast *pop(struct symbol *s);
+void push(struct symbol *s, struct ast *exp);
 void append(struct symbol *s, struct ast *exp);
 struct ast *delete(struct symbol *s, struct ast *exp);
+void insert(struct symbol *s, struct ast *exp, struct ast *val);
 int sizeList(struct listexp *l);
 /********************************END-LIST**************************************/
 
@@ -136,7 +141,7 @@ void forop(struct flow *f);
 
 /**********************BUILT*/
 struct ast *newfunc(int functype, struct ast *l);
-struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp);
+struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp, struct ast *val);
 struct ast *callbuiltin(struct fncall *f);
 struct ast *date();
 char *printString(char *value);

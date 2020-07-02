@@ -283,9 +283,17 @@ void assign(struct symasgn *tree) {
 					tree->s->v=v;
 				}
 		}else {
-				struct listexp *l = malloc(sizeof(struct listexp));
-				l = (struct listexp *)(evaluate(tree->v));
-				tree->s->l=l;
+				if(!tree->v){
+					struct listexp *node=malloc(sizeof(struct listexp));
+					node->nodetype='Y';
+					node->exp=NULL;
+					node->next=NULL;
+					tree->s->l=node;
+				}else{
+					struct listexp *l = malloc(sizeof(struct listexp));
+					l = (struct listexp *)(evaluate(tree->v));
+					tree->s->l=l;
+				}
 		}
 }
 /********************************END-VARIABLE********************************/
@@ -308,14 +316,16 @@ struct listexp *newlist(int nodetype, struct ast *exp, struct listexp *next) {
 void printList(struct listexp *l) {
     struct ast *a;
     struct value *v;
-
-    while(l) {
-				a = evaluate(l->exp);
-				v = (struct value *)a;
-				print((struct ast *)v);
-				printf(" ");
-				l = l->next;
-    }
+	if(!l->exp){
+	}else{
+		while(l) {
+					a = evaluate(l->exp);
+					v = (struct value *)a;
+					print((struct ast *)v);
+					printf(" ");
+					l = l->next;
+		}
+	}
 }
 
 struct ast *newlasgn(int type, struct symbol *s, struct listexp *l) {
@@ -350,9 +360,20 @@ struct ast *pop(struct symbol *s) {
 				if(s->l->exp != NULL) {
 						struct ast* a=malloc(sizeof(struct ast));
 						a=s->l->exp;
-						free(s->l);
+						//free(s->l);
+						if(!s->l->next){
+							struct listexp *node=malloc(sizeof(struct listexp));
+							node->nodetype='Y';
+							node->exp=NULL;
+							node->next=NULL;
+							s->l=node;
+						}else{
 						s->l=s->l->next;
-						return a;
+						}
+				}else{
+					struct ast* a=malloc(sizeof(struct ast));
+					yyerror("Cannot pop empty list");
+					return a;
 				}
 		}else{
 				yyerror("Cannot pop %c TYPE", s->nodetype);
@@ -374,6 +395,13 @@ void append(struct symbol *s, struct ast *exp) {
 					break;
 				}
 				l=l->next;
+			}
+			if(!l->exp){
+				struct listexp *node=malloc(sizeof(struct listexp));
+				node->nodetype='Y';
+				node->exp=exp;
+				node->next=NULL;
+				s->l=node;
 			}
 			
 		}
@@ -592,6 +620,7 @@ void print(struct ast *val) {
     struct realType *r;
     struct stringType *s;
     struct listexp *l;
+
     switch(val->nodetype){
         case 'I' :  
                     i=malloc(sizeof(struct integerType));

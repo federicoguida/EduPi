@@ -30,7 +30,7 @@ int yylex();
 %token <fn>PRINT
 %token <fn>PRINTLN
 %token <fn>TIME
-%token <fn>POP
+%token <fn>POP PUSH
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
@@ -139,10 +139,11 @@ value: NAME { $$ = newref($1); }
 
 functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
 | PRINTLN LPAREN exp RPAREN { $$ = newfunc($1, $3); }
+| PUSH LPAREN NAME COMMA exp RPAREN { $$ = newlfunc($1, $3, $5); }
 ;
 
 functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL); } 
-| POP LPAREN NAME RPAREN { $$= newlfunc($1, $3); }
+| POP LPAREN NAME RPAREN { $$ = newlfunc($1, $3, NULL); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }

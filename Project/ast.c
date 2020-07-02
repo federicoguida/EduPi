@@ -358,6 +358,18 @@ struct ast *pop(struct symbol *s) {
 		}
 }
 
+void push(struct symbol *s, struct ast *exp) {
+	if(s->nodetype == 'Y') {
+		if(exp != NULL) {
+			while(s->l->next) {
+				s->l = s->l->next;
+			}
+			struct listexp *l=malloc(sizeof(struct listexp));
+			
+		}
+	}
+}
+
 /**********************************END-LIST**********************************/
 
 /*********************************FLOW***************************************/
@@ -450,7 +462,7 @@ struct ast *newfunc(int functype, struct ast *l) {
 		return (struct ast *)a;
 }
 
-struct ast *newlfunc(int functype, struct symbol *l){
+struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp){
 		struct fncall *a = malloc(sizeof(struct fncall));
 		
 		if(!a) {
@@ -459,6 +471,7 @@ struct ast *newlfunc(int functype, struct symbol *l){
 		}
 		a->nodetype = 'L';
 		a->s = l;
+		a->l = exp;
 		a->functype = functype;
 		return (struct ast *)a;	
 }
@@ -491,11 +504,19 @@ struct ast* callbuiltin(struct fncall *f){
 						break;
 				case B_pop:
 						if(!f->s){
-								yyerror("no arguments for print...");
+								yyerror("no arguments for pop...");
 								free(a);
 								break;
 						}
 						a=pop(f->s);
+						break;
+				case B_push:
+						if(!f->l){
+								yyerror("no arguments for push...");
+								free(a);
+								break;
+						}
+						push(f->s, evaluate(f->l));
 						break;
 				default:
 						yyerror("Unknown built-in function %d", functype);

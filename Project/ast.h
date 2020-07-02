@@ -63,6 +63,7 @@ enum bifs {			/* built-in functions */
   B_println=2,
   B_time=3,
   B_pop=4,
+  B_push=5,
 };
 
 // built-in function 
@@ -119,6 +120,7 @@ void printList(struct listexp *l);
 struct ast *newlasgn(int type, struct symbol *s, struct listexp *l);
 struct ast *newlsasgn(struct symbol *s, struct listexp *l);
 struct ast *pop(struct symbol *s);
+void push(struct symbol *s, struct ast *exp);
 /********************************END-LIST**************************************/
 
 /******************************FLOW*/
@@ -131,7 +133,7 @@ void forop(struct flow *f);
 
 /**********************BUILT*/
 struct ast *newfunc(int functype, struct ast *l);
-struct ast *newlfunc(int functype, struct symbol *l);
+struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp);
 struct ast *callbuiltin(struct fncall *f);
 struct ast *date();
 char *printString(char *value);

@@ -360,7 +360,7 @@ struct ast *pop(struct symbol *s) {
 		}
 }
 
-void push(struct symbol *s, struct ast *exp) {
+void append(struct symbol *s, struct ast *exp) {
 	if(s->nodetype == 'Y') {
 		if(exp != NULL) {
 			struct listexp *l=s->l;
@@ -377,6 +377,50 @@ void push(struct symbol *s, struct ast *exp) {
 			}
 			
 		}
+	}
+	else{
+		yyerror("Cannot push %c TYPE", s->nodetype);
+		exit(1);
+	}
+}
+
+int sizeList(struct listexp *l) {
+	int size = 0;
+	while(l) {
+		size++;
+		l=l->next;
+	}
+	return size;
+}
+
+struct ast *delete(struct symbol *s, struct ast *exp) {
+	if(s->nodetype == 'Y' && exp->nodetype == 'I') {
+		if(exp != NULL) {
+			struct listexp *l=s->l;
+			struct listexp *r=s->l;
+			int size = sizeList(l);
+			struct value *v=(struct value *)exp;
+			struct integerType *i=(struct integerType *)v->structType;
+			if(i->value > size-1) {
+				yyerror("out of bounds!");
+				exit(1);
+			}
+			for(int n = 0; n <= i->value; n++) {
+				if(i->value == 0)
+					return pop(s);
+				if(n == (i->value)-1) {
+					struct ast *a=malloc(sizeof(struct ast));
+					a=l->next->exp;
+					l->next=l->next->next;
+					return a;
+				}
+				l=l->next;
+			}
+		}
+	}
+	else{
+		yyerror("Cannot delete %c TYPE", s->nodetype);
+		exit(1);
 	}
 }
 
@@ -520,13 +564,21 @@ struct ast* callbuiltin(struct fncall *f){
 						}
 						a=pop(f->s);
 						break;
-				case B_push:
+				case B_app:
 						if(!f->l){
 								yyerror("no arguments for push...");
 								free(a);
 								break;
 						}
-						push(f->s, evaluate(f->l));
+						append(f->s, evaluate(f->l));
+						break;
+				case B_del:
+						if(!f->s || !f->l) {
+							yyerror("no arguments for delete...");
+							free(a);
+							break;
+						}
+						a=delete(f->s, evaluate(f->l));
 						break;
 				default:
 						yyerror("Unknown built-in function %d", functype);

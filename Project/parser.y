@@ -60,7 +60,7 @@ int yylex();
 
 program: /* nothing */
 | program statement { evaluate($2); treefree($2); }
-| program DEF NAME LPAREN symlist RPAREN LBRACE tail RETURN value SEMI RBRACE { dodef($3, $5, $8,$10); }
+| program DEF NAME LPAREN symlist RPAREN LBRACE tail RETURN exp SEMI RBRACE { dodef($3, $5, $8,$10); }
 ;
 
 statement: if_statement { }

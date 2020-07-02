@@ -97,7 +97,7 @@ struct ast* calluser(struct ufncall *f){
 				}
 		}
 					
-		/* save old values of dummies, assign new ones */
+		//save old values of dummies, assign new ones 
 		sl = fn->syms;
 		for(i = 0; i < nargs; i++) {
 				struct symbol *s = sl->sym;
@@ -106,14 +106,14 @@ struct ast* calluser(struct ufncall *f){
 				sl = sl->next;
 		}
 
-		free(newval);
+		/*free(newval); */
 
 		/* evaluate the function */
 		evaluate(fn->func);
 		if(fn->returnValue){
 				v=evaluate(fn->returnValue);
 		}
-			/* put the dummies back */
+		/*	/* put the dummies back 
 		sl = fn->syms;
 		for(i = 0; i < nargs; i++) {
 				struct symbol *s = sl->sym;
@@ -121,7 +121,7 @@ struct ast* calluser(struct ufncall *f){
 				sl = sl->next;
 		}
 
-		free(oldval);
+		free(oldval); */
 		
 		return v;
 }

@@ -63,10 +63,10 @@ struct ast* calluser(struct ufncall *f){
 		int nargs;
 		int i;
 
-		/* if(!fn->func) {
-			yyerror("call to undefined function", fn->name);
-			return 0;
-		} */
+		 if(!fn->func) {
+			yyerror("function do not have body", fn->name);
+			exit(1);
+		} 
 
 		/* count the arguments */
 		sl = fn->syms;
@@ -269,22 +269,24 @@ struct ast *decr(struct symbol *s) {
 }
 
 void assign(struct symasgn *tree) {
-		struct value* v=(struct value*)(evaluate(evaluate((tree)->v)));
-		if(tree->s->nodetype!=v->nodetype){
-				if(tree->s->nodetype=='R' && v->nodetype=='I'){
-						tree->s->v=v;
+		
+		if(tree->s->nodetype!='Y'){
+			struct value* v=(struct value*)(evaluate(tree->v));
+				if(tree->s->nodetype!=v->nodetype){
+					if(tree->s->nodetype=='R' && v->nodetype=='I'){
+							tree->s->v=v;
+					}else{
+							yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, v->nodetype );
+							exit(1);
+					}
 				}else{
-						yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, v->nodetype );
-						exit(1);
+					tree->s->v=v;
 				}
-		}
-		if(tree->s->nodetype == 'Y') {
+		}else {
 				struct listexp *l = malloc(sizeof(struct listexp));
 				l = (struct listexp *)(evaluate(tree->v));
 				tree->s->l=l;
 		}
-		else
-				tree->s->v=v;
 }
 /********************************END-VARIABLE********************************/
 
@@ -361,10 +363,18 @@ struct ast *pop(struct symbol *s) {
 void push(struct symbol *s, struct ast *exp) {
 	if(s->nodetype == 'Y') {
 		if(exp != NULL) {
-			while(s->l->next) {
-				s->l = s->l->next;
+			struct listexp *l=s->l;
+			while(l) {
+				if(l->next==NULL){
+					struct listexp *node=malloc(sizeof(struct listexp));
+					node->nodetype='Y';
+					node->exp=exp;
+					node->next=NULL;
+					l->next=node;
+					break;
+				}
+				l=l->next;
 			}
-			struct listexp *l=malloc(sizeof(struct listexp));
 			
 		}
 	}

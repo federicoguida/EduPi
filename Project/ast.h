@@ -78,6 +78,7 @@ enum bifs {			/* built-in functions */
   B_size=10,
   B_search=11,
   B_slp=12,
+  B_type=13,
 };
 
 // built-in function 
@@ -163,7 +164,7 @@ char *printString(char *value);
 void println(struct ast *val);
 void print(struct ast *val);
 void bsleep(struct ast *val);
-
+struct ast *type(struct ast *val);
 
 /*****************END-BUILT*/
 

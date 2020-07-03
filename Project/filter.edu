@@ -1,0 +1,23 @@
+list x = [5, "ciao", 5.8, 6, 243, "casa", "pizza", 89.24, "suca", 2, 67.45, "torta"];
+list i = [];
+list r = [];
+list s = [];
+
+
+for(integer n = 0; n < x.size(); n++) {
+	if(type(x.get(n)) == "integer") {
+		i.append(x.get(n));
+	}
+	if(type(x.get(n)) == "real") {
+		r.append(x.get(n));
+	}
+	if(type(x.get(n)) == "string") {
+		s.append(x.get(n));
+	}
+}
+
+print("Lista Originale --> "); println(x);
+print("Lista Interi    --> "); println(i);
+print("Lista Reali     --> "); println(r);
+print("Lista Stringhe  --> "); println(s);
+

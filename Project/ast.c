@@ -789,82 +789,80 @@ struct ast* callbuiltin(struct fncall *f){
 
     switch(functype) {
 				case B_print:
-						a = evaluate(f->l);
-						if(!a){
-							yyerror("no arguments for print...");
-							free(a);
-							break;
-						}
-						print(a);
+					if(!f->l){
+						yyerror("no arguments for print...");
+						free(a);
 						break;
+					}
+					print(evaluate(f->l));
+					break;
 				case B_println:
-						a = evaluate(f->l);
-						if(!a){
-							yyerror("no arguments for print...");
-							free(a);
-							break;
-						}
-						println(a);
+					if(!f->l){
+						yyerror("no arguments for print...");
+						free(a);
 						break;
+					}
+					println(evaluate(f->l));
+					break;
 				case B_time:
-						a = date();
-						break;
+					a = date();
+					break;
 				case B_pop:
-						if(!f->s){
-							yyerror("no arguments for pop...");
-							free(a);
-							break;
-						}
-						a=pop(f->s);
+					if(!f->s){
+						yyerror("no arguments for pop...");
+						free(a);
 						break;
+					}
+					a=pop(f->s);
+					break;
 				case B_push:
-						if(!f->l) {
-							yyerror("no arguments for push...");
-							free(a);
-							break;
-						}
-						push(f->s, evaluate(f->l));
+					if(!f->l) {
+						yyerror("no arguments for push...");
+						free(a);
 						break;
+					}
+					push(f->s, evaluate(f->l));
+					break;
 				case B_app:
-						if(!f->l){
-							yyerror("no arguments for push...");
-							free(a);
-							break;
-						}
-						append(f->s, evaluate(f->l));
+					if(!f->l){
+						yyerror("no arguments for push...");
+						free(a);
 						break;
+					}
+					append(f->s, evaluate(f->l));
+					break;
 				case B_del:
-						if(!f->s || !f->l) {
-							yyerror("no arguments for delete...");
-							free(a);
-							break;
-						}
-						a=delete(f->s, evaluate(f->l));
+					if(!f->s || !f->l) {
+						yyerror("no arguments for delete...");
+						free(a);
 						break;
+					}
+					a=delete(f->s, evaluate(f->l));
+					break;
 				case B_get:
-						if(!f->s || !f->l) {
-							yyerror("no arguments for get...");
-							free(a);
-							break;
-						}
-						a=get(f->s, evaluate(f->l));
+					if(!f->s || !f->l) {
+						yyerror("no arguments for get...");
+						free(a);
 						break;
+					}
+					a=get(f->s, evaluate(f->l));
+					break;
 				case B_ins:
-						if(!f->l || !f->r) {
-							yyerror("no arguments for insert...");
-							free(a);
-							break;
-						}
-						insert(f->s, evaluate(f->l), evaluate(f->r));
+					if(!f->l || !f->r) {
+						yyerror("no arguments for insert...");
+						free(a);
 						break;
+					}
+					insert(f->s, evaluate(f->l), evaluate(f->r));
+					break;
 				case B_search:
-						if(!f->s || !f->l) {
-							yyerror("no arguments for search...");
-							free(a);
-							break;
-						}
-						a=search(f->s, evaluate(f->l));
+					if(!f->s || !f->l) {
+						yyerror("no arguments for search...");
+						free(a);
 						break;
+					}
+					a=search(f->s, evaluate(f->l));
+					break;
 				case B_size:
 					if(!f->s) {
 						yyerror("no arguments for size...");
@@ -874,16 +872,23 @@ struct ast* callbuiltin(struct fncall *f){
 					a=size(f->s);
 					break;
 				case B_slp:
-					a = evaluate(f->l);
-					if(!a){
+					if(!f->l){
 						yyerror("no arguments for sleep...");
 						free(a);
 						break;
 					}
-					bsleep(a);
+					bsleep(evaluate(f->l));
+					break;
+				case B_type:
+					if(!f->l) {
+						yyerror("no arguments for sleep...");
+						free(a);
+						break;
+					}
+					a=type(evaluate(f->l));
 					break;
 				default:
-						yyerror("Unknown built-in function %d", functype);
+					yyerror("Unknown built-in function %d", functype);
  		}
   	return a;
 }
@@ -958,6 +963,39 @@ void bsleep(struct ast *val) {
 		yyerror("Integer type expected on sleep function");
   	}
 }
+
+struct ast *type(struct ast *val) {
+	if(val != NULL) {
+		struct value *v=(struct value *)val;
+		struct value *res=malloc(sizeof(struct value));
+		struct stringType *str=malloc(sizeof(struct stringType));
+		switch(v->nodetype) {
+			case 'I':
+				str->value = "integer";
+				res->nodetype = 'S';
+				res->structType = str;
+				return (struct ast *)res;
+			case 'R':
+				str->value = "real";
+				res->nodetype = 'S';
+				res->structType = str;
+				return (struct ast *)res;
+			case 'S':
+				str->value = "string";
+				res->nodetype = 'S';
+				res->structType = str;
+				return (struct ast *)res;
+			default:
+				yyerror("error type!");
+				exit(1);
+		}
+	}
+	else {
+		yyerror("argument not defined");
+		return NULL;
+	}
+}
+
 /*******************************************************************END-BUILT*/
 
 /*****************************INIT*******************************************/

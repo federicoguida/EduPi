@@ -358,31 +358,30 @@ struct ast *newlsasgn(struct symbol *s, struct listexp *l) {
 }
 
 struct ast *pop(struct symbol *s) {
-		if(s->nodetype=='Y'){
-				if(s->l->exp != NULL) {
-						struct ast* a=malloc(sizeof(struct ast));
-						a=s->l->exp;
-						free(s->l);
-						if(!s->l->next){
-							struct listexp *node=malloc(sizeof(struct listexp));
-							node->nodetype='Y';
-							node->exp=NULL;
-							node->next=NULL;
-							s->l=node;
-							return a;
-						}else{
-						s->l=s->l->next;
-						return a;
-						}
-				}else{
-					struct ast* a=malloc(sizeof(struct ast));
-					yyerror("Cannot pop empty list");
-					return a;
-				}
+	if(s->nodetype=='Y'){
+		if(s->l->exp != NULL) {
+			struct ast* a=malloc(sizeof(struct ast));
+			a=s->l->exp;
+			free(s->l);
+			if(!s->l->next){
+				struct listexp *node=malloc(sizeof(struct listexp));
+				node->nodetype='Y';
+				node->exp=NULL;
+				node->next=NULL;
+				s->l=node;
+				return a;
+			}else{
+				s->l=s->l->next;
+				return a;
+			}
 		}else{
-			yyerror("Cannot pop %c TYPE", s->nodetype);
-			exit(1);
+			yyerror("Cannot pop empty list");
+			return NULL;
 		}
+	}else{
+		yyerror("Cannot pop %c TYPE", s->nodetype);
+		return NULL;
+	}
 }
 
 void append(struct symbol *s, struct ast *exp) {
@@ -408,10 +407,12 @@ void append(struct symbol *s, struct ast *exp) {
 				s->l=node;
 			}	
 		}
+		else {
+			yyerror("argument not defined");
+		}
 	}
 	else{
 		yyerror("Cannot push %c TYPE", s->nodetype);
-		exit(1);
 	}
 }
 
@@ -440,8 +441,8 @@ struct ast *size(struct symbol *s) {
 			return (struct ast *)v;
 		}
 	}
-	yyerror("List null!");
-	exit(1);
+	yyerror("List NULL!");
+	return NULL;
 }
 
 struct ast *delete(struct symbol *s, struct ast *exp) {
@@ -453,7 +454,6 @@ struct ast *delete(struct symbol *s, struct ast *exp) {
 			struct integerType *i=(struct integerType *)v->structType;
 			if(i->value > size-1) {
 				yyerror("out of bounds!");
-				exit(1);
 			}
 			for(int n = 0; n <= i->value; n++) {
 				if(i->value == 0)
@@ -467,10 +467,14 @@ struct ast *delete(struct symbol *s, struct ast *exp) {
 				l=l->next;
 			}
 		}
+		else {
+			yyerror("arguments not defined");
+			return NULL;
+		}
 	}
 	else{
 		yyerror("Cannot delete %c TYPE", s->nodetype);
-		exit(1);
+		return NULL;
 	}
 }
 
@@ -483,7 +487,6 @@ struct ast *get(struct symbol *s, struct ast *exp) {
 			struct integerType *i=(struct integerType *)v->structType;
 			if(i->value > size-1) {
 				yyerror("out of bounds!");
-				exit(1);
 			}
 			for(int n = 0; n <= i->value; n++) {
 				if(n == i->value) {
@@ -494,10 +497,14 @@ struct ast *get(struct symbol *s, struct ast *exp) {
 				l=l->next;
 			}
 		}
+		else {
+			yyerror("argument not defined");
+			return NULL;
+		}
 	}
 	else{
 		yyerror("Cannot get %c TYPE", s->nodetype);
-		exit(1);
+		return NULL;
 	}
 }
 
@@ -519,10 +526,12 @@ void push(struct symbol *s, struct ast *exp) {
 				s->l=r;
 			}
 		}
+		else {
+			yyerror("argument not defined");
+		}
 	}
 	else{
 		yyerror("Cannot push %c TYPE", s->nodetype);
-		exit(1);
 	}
 }
 
@@ -535,7 +544,6 @@ void insert(struct symbol *s, struct ast *exp, struct ast *val) {
 			struct integerType *i=(struct integerType *)v->structType;
 			if(i->value > size) {
 				yyerror("out of bounds!");
-				exit(1);
 			}
 			for(int n = 0; n <= i->value; n++) {
 				if(i->value == 0) {
@@ -551,10 +559,12 @@ void insert(struct symbol *s, struct ast *exp, struct ast *val) {
 				l=l->next;
 			}
 		}
+		else {
+			yyerror("arguments not defined");
+		}
 	}
 	else{
 		yyerror("Cannot insert %c TYPE", s->nodetype);
-		exit(1);
 	}
 }
 
@@ -612,12 +622,11 @@ struct ast *search(struct symbol *s, struct ast *exp) {
 						}
 						break;
 					case 'Y':
-						// codice da aggiungere
+						yyerror("Cannot search list!");
 						break;
 					default:
 						yyerror("search error type!");
 						exit(1);
-						break;
 				}
 				count++;
 				l=l->next;
@@ -627,11 +636,11 @@ struct ast *search(struct symbol *s, struct ast *exp) {
 			return NULL;
 		}
 		yyerror("Value NULL!");
-		exit(1);
+		return NULL;
 	}
 	else{
 		yyerror("Cannot search %c TYPE", s->nodetype);
-		exit(1);
+		return NULL;
 	}
 }
 

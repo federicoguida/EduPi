@@ -3,4 +3,4 @@
 - [x] Funzioni definite da Utente PS GESTIRE MEGLIO VARIABILI
 - [x] Liste
 - [ ] Tipo periferica
-- [ ] Aggiungere metodi list (Ricerca, cancellazione, push...);
+- [x] Aggiungere metodi list (Ricerca, cancellazione, push...);

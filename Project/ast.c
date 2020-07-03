@@ -732,17 +732,21 @@ void foreach(struct for_each *f){
 	if(f->list->nodetype!='Y'){
 		yyerror("Second operator must be list");
 	}else{
-		struct listexp* l=(struct listexp*)f->list->l;
-		while(l){
-			if(l->exp->nodetype=='Y'){
-				f->i->nodetype='Y';
-				f->i->l=(struct listexp*)evaluate(l->exp);
-			}else{
-				f->i->nodetype='V';
-				f->i->v=(struct value*)l->exp;
+		if(f->list->l->exp){
+			struct listexp* l=(struct listexp*)f->list->l;
+			while(l){
+				if(l->exp->nodetype=='Y'){
+					f->i->nodetype='Y';
+					f->i->l=(struct listexp*)evaluate(l->exp);
+				}else{
+					f->i->nodetype='V';
+					f->i->v=(struct value*)l->exp;
+				}
+				evaluate(f->body);
+				l=l->next;
 			}
-			evaluate(f->body);
-			l=l->next;
+		}else{
+			yyerror("List dont have elements");
 		}
 	}
 }

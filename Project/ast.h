@@ -58,6 +58,13 @@ struct flow {
   struct ast *in;  /* for init */
 };
 
+struct for_each{
+  int nodetype;
+  struct symbol *i;
+  struct symbol *list;
+  struct ast *body;
+};
+
 enum bifs {			/* built-in functions */
   B_print=1,
   B_println=2,
@@ -116,8 +123,8 @@ struct ast *newasgn(int type,struct symbol *s, struct ast *v);
 struct ast *newsasgn(struct symbol *s, struct ast *v);
 struct ast *newsymdecl(int node, struct symbol *s);
 struct ast *newinc(int nodetype, struct symbol *s);
-struct ast *incr(struct symbol *s);
-struct ast *decr(struct symbol *s);
+void incr(struct symbol *s);
+void decr(struct symbol *s);
 void assign(struct symasgn *tree);
 /********************************VARIABLE********************************/
 
@@ -153,6 +160,7 @@ struct ast *date();
 char *printString(char *value);
 void println(struct ast *val);
 void print(struct ast *val);
+struct ast *newForEach(int nodetype, struct symbol* i, struct symbol* list, struct ast* body);
 /*****************END-BUILT*/
 
 /*********************************Type INIT*/

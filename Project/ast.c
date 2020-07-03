@@ -240,32 +240,34 @@ struct ast *newinc(int nodetype, struct symbol *s) {
 		return (struct ast *)a;
 }
 
-struct ast *incr(struct symbol *s) { 
-		struct integerType *i = malloc(sizeof(struct integerType));
-
+void incr(struct symbol *s) { 
 		if(s->v->nodetype != 'I') {
 				yyerror("Not increment type");
 				exit(1);
 		}
-		i = (struct integerType *)(s->v->structType);
-		i->value += 1;
-		s->v->nodetype = 'I';
-		s->v->structType = i;
-		return (struct ast*)(s->v);
+		struct value* v=malloc(sizeof(struct value));
+		struct integerType *i=malloc(sizeof(struct integerType));
+		int value=((struct integerType*)s->v->structType)->value;
+		value+=1;
+		i->value=value;
+		v->nodetype='I';
+		v->structType=i;
+		s->v=v;
 }
 
-struct ast *decr(struct symbol *s) { 
-		struct integerType *i = malloc(sizeof(struct integerType));
-
+void decr(struct symbol *s) { 
 		if(s->v->nodetype != 'I') {
 				yyerror("Not increment type");
 				exit(1);
 		}
-		i = (struct integerType *)(s->v->structType);
-		i->value -= 1;
-		s->v->nodetype = 'I';
-		s->v->structType = i;
-		return (struct ast*)(s->v);
+		struct value* v=malloc(sizeof(struct value));
+		struct integerType *i=malloc(sizeof(struct integerType));
+		int value=((struct integerType*)s->v->structType)->value;
+		value-=1;
+		i->value=value;
+		v->nodetype='I';
+		v->structType=i;
+		s->v=v;
 }
 
 void assign(struct symasgn *tree) {
@@ -695,10 +697,8 @@ void dowhileop(struct flow *f) {
 
 void forop(struct flow *f) { 
     evaluate(f->in);
-    struct value *v=malloc(sizeof(struct value));
-    v=(struct value*)evaluate(f->cond);
-    struct integerType *i=malloc(sizeof(struct integerType));
-    i=(struct integerType*)v->structType;
+    struct value *v=(struct value*)evaluate(f->cond);
+    struct integerType *i=(struct integerType*)v->structType;
     if(f->tl && f->in && f->el) {
         while(i->value) {
 						evaluate(f->tl);
@@ -951,6 +951,35 @@ struct ast *newast(int nodetype, struct ast *l, struct ast *r) {
 }
 /*****************************END-INIT*******************************************/
 
+struct ast *newForEach(int nodetype, struct symbol* i, struct symbol* list, struct ast* body){
+	struct for_each *f=malloc(sizeof(struct for_each));
+	f->nodetype='B';
+	f->i=i;
+	f->list=list;
+	f->body=body;
+	return (struct ast*)f;
+}
+
+void foreach(struct for_each *f){
+	if(f->list->nodetype!='Y'){
+		yyerror("Secondo operator must be list");
+	}else{
+		struct listexp* l=(struct listexp*)f->list->l;
+		while(l){
+			if(l->exp->nodetype=='Y'){
+				f->i->nodetype='Y';
+				f->i->l=(struct listexp*)evaluate(l->exp);
+			}else{
+				f->i->nodetype='V';
+				f->i->v=(struct value*)l->exp;
+			}
+			evaluate(f->body);
+			l=l->next;
+		}
+	}
+}
+
+
 /****************************EVALUATE*******************************************/
 struct ast *evaluate(struct ast *tree) {
     struct ast *result=malloc(sizeof(struct ast));
@@ -991,6 +1020,9 @@ struct ast *evaluate(struct ast *tree) {
         case 'Y' :
               result=tree;
               break;
+		case 'B' :
+			  foreach((struct for_each*)tree);
+			  break;
         case 'M' :
               result=negateValue(evaluate(tree->l));
               break;
@@ -1014,12 +1046,10 @@ struct ast *evaluate(struct ast *tree) {
                 result=(struct ast *)(s->v);
               break;
         case 'P' :
-              s=lookup(((struct symref*)tree)->s->name);
-              result=incr(s);
+              incr(((struct symref*)tree)->s);
               break;
         case 'E' :
-              s=lookup(((struct symref*)tree)->s->name);
-              result=decr(s);
+              decr(((struct symref*)tree)->s);
               break;
         case 'X' :
               ((struct symdecl*)tree)->s->nodetype=((struct symdecl*)tree)->type;
@@ -1039,7 +1069,7 @@ struct ast *evaluate(struct ast *tree) {
         case 'L' :
               result=callbuiltin((struct fncall *)tree); 
               break;
-				case 'C' :
+		case 'C' :
               result=calluser((struct ufncall *)tree);
               break;
         case 'Z': temp=evaluate(tree->l); result=evaluate(tree->r);  break;

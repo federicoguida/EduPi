@@ -40,6 +40,7 @@ STRING    \"{print}*\"
 "get"           { yylval.fn = B_get; return GET; }
 "size"          { yylval.fn = B_size; return SIZE; }
 "search"        { yylval.fn = B_search; return SEARCH; }
+"in"            {return IN;}
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

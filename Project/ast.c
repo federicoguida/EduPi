@@ -240,32 +240,34 @@ struct ast *newinc(int nodetype, struct symbol *s) {
 		return (struct ast *)a;
 }
 
-struct ast *incr(struct symbol *s) { 
-		struct integerType *i = malloc(sizeof(struct integerType));
-
+void incr(struct symbol *s) { 
 		if(s->v->nodetype != 'I') {
 				yyerror("Not increment type");
 				exit(1);
 		}
-		i = (struct integerType *)(s->v->structType);
-		i->value += 1;
-		s->v->nodetype = 'I';
-		s->v->structType = i;
-		return (struct ast*)(s->v);
+		struct value* v=malloc(sizeof(struct value));
+		struct integerType *i=malloc(sizeof(struct integerType));
+		int value=((struct integerType*)s->v->structType)->value;
+		value+=1;
+		i->value=value;
+		v->nodetype='I';
+		v->structType=i;
+		s->v=v;
 }
 
-struct ast *decr(struct symbol *s) { 
-		struct integerType *i = malloc(sizeof(struct integerType));
-
+void decr(struct symbol *s) { 
 		if(s->v->nodetype != 'I') {
 				yyerror("Not increment type");
 				exit(1);
 		}
-		i = (struct integerType *)(s->v->structType);
-		i->value -= 1;
-		s->v->nodetype = 'I';
-		s->v->structType = i;
-		return (struct ast*)(s->v);
+		struct value* v=malloc(sizeof(struct value));
+		struct integerType *i=malloc(sizeof(struct integerType));
+		int value=((struct integerType*)s->v->structType)->value;
+		value-=1;
+		i->value=value;
+		v->nodetype='I';
+		v->structType=i;
+		s->v=v;
 }
 
 void assign(struct symasgn *tree) {
@@ -929,12 +931,10 @@ struct ast *evaluate(struct ast *tree) {
                 result=(struct ast *)(s->v);
               break;
         case 'P' :
-              s=lookup(((struct symref*)tree)->s->name);
-              result=incr(s);
+              incr(((struct symref*)tree)->s);
               break;
         case 'E' :
-              s=lookup(((struct symref*)tree)->s->name);
-              result=decr(s);
+              decr(((struct symref*)tree)->s);
               break;
         case 'X' :
               ((struct symdecl*)tree)->s->nodetype=((struct symdecl*)tree)->type;

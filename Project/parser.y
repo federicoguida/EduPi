@@ -145,18 +145,18 @@ value: NAME { $$ = newref($1); }
 
 functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
 | PRINTLN LPAREN exp RPAREN { $$ = newfunc($1, $3); }
-| APP LPAREN NAME COMMA exp RPAREN { $$ = newlfunc($1, $3, $5, NULL); }
-| INS LPAREN NAME COMMA exp COMMA exp RPAREN { $$ = newlfunc($1, $3, $5, $7); }
-| PUSH LPAREN NAME COMMA exp RPAREN { $$ = newlfunc($1, $3, $5, NULL); }
+| NAME DOT APP LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
+| NAME DOT INS LPAREN exp COMMA exp RPAREN { $$ = newlfunc($3, $1, $5, $7); }
+| NAME DOT PUSH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | SLP LPAREN exp RPAREN { $$ = newfunc($1, $3); }
 ;
 
 functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL); } 
-| POP LPAREN NAME RPAREN { $$ = newlfunc($1, $3, NULL, NULL); }
-| DEL LPAREN NAME COMMA exp RPAREN { $$ = newlfunc($1, $3, $5, NULL); }
-| GET LPAREN NAME COMMA exp RPAREN { $$ = newlfunc($1, $3, $5, NULL); }
-| SIZE LPAREN NAME RPAREN { $$ = newlfunc($1, $3, NULL, NULL); }
-| SEARCH LPAREN NAME COMMA exp RPAREN { $$ = newlfunc($1, $3, $5, NULL); }
+| NAME DOT POP LPAREN RPAREN { $$ = newlfunc($3, $1, NULL, NULL); }
+| NAME DOT DEL LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
+| NAME DOT GET LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
+| NAME DOT SIZE LPAREN RPAREN { $$ = newlfunc($3, $1, NULL, NULL); }
+| NAME DOT SEARCH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }

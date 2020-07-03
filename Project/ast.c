@@ -620,10 +620,8 @@ void dowhileop(struct flow *f) {
 
 void forop(struct flow *f) { 
     evaluate(f->in);
-    struct value *v=malloc(sizeof(struct value));
-    v=(struct value*)evaluate(f->cond);
-    struct integerType *i=malloc(sizeof(struct integerType));
-    i=(struct integerType*)v->structType;
+    struct value *v=(struct value*)evaluate(f->cond);
+    struct integerType *i=(struct integerType*)v->structType;
     if(f->tl && f->in && f->el) {
         while(i->value) {
 						evaluate(f->tl);
@@ -954,7 +952,7 @@ struct ast *evaluate(struct ast *tree) {
         case 'L' :
               result=callbuiltin((struct fncall *)tree); 
               break;
-				case 'C' :
+		case 'C' :
               result=calluser((struct ufncall *)tree);
               break;
         case 'Z': temp=evaluate(tree->l); result=evaluate(tree->r);  break;

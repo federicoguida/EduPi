@@ -37,6 +37,8 @@ STRING    \"{print}*\"
 "append"        { yylval.fn = B_app; return APP; }
 "delete"        { yylval.fn = B_del; return DEL; }
 "insert"        { yylval.fn = B_ins; return INS; }
+"get"           { yylval.fn = B_get; return GET; }
+"size"          { yylval.fn = B_size; return SIZE; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

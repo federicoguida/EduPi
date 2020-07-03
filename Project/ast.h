@@ -67,6 +67,8 @@ enum bifs {			/* built-in functions */
   B_del=6,
   B_ins=7,
   B_push=8,
+  B_get=9,
+  B_size=10,
 };
 
 // built-in function 
@@ -128,6 +130,8 @@ void push(struct symbol *s, struct ast *exp);
 void append(struct symbol *s, struct ast *exp);
 struct ast *delete(struct symbol *s, struct ast *exp);
 void insert(struct symbol *s, struct ast *exp, struct ast *val);
+struct ast *get(struct symbol *s, struct ast *exp);
+struct ast *size(struct symbol *s);
 int sizeList(struct listexp *l);
 /********************************END-LIST**************************************/
 

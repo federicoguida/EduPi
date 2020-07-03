@@ -304,8 +304,8 @@ struct listexp *newlist(int nodetype, struct ast *exp, struct listexp *next) {
     struct listexp *l = malloc(sizeof(struct value));
 
     if(!l) {
-				yyerror("out of space");
-				exit(0);
+		yyerror("out of space");
+		exit(0);
     }
     l->nodetype = nodetype;
     l->exp = exp;
@@ -319,11 +319,11 @@ void printList(struct listexp *l) {
 	if(!l->exp){
 	}else{
 		while(l) {
-					a = evaluate(l->exp);
-					v = (struct value *)a;
-					print((struct ast *)v);
-					printf(" ");
-					l = l->next;
+			a = evaluate(l->exp);
+			v = (struct value *)a;
+			print((struct ast *)v);
+			printf(" ");
+			l = l->next;
 		}
 	}
 }
@@ -332,8 +332,8 @@ struct ast *newlasgn(int type, struct symbol *s, struct listexp *l) {
     struct symasgn *a = malloc(sizeof(struct symasgn));
 
     if(!a) {
-				yyerror("out of space");
-				exit(0);
+		yyerror("out of space");
+		exit(0);
     }
     a->nodetype = '=';
     s->nodetype = type;
@@ -346,8 +346,8 @@ struct ast *newlsasgn(struct symbol *s, struct listexp *l) {
     struct symasgn *a = malloc(sizeof(struct symasgn));
 
     if(!a) {
-				yyerror("out of space");
-				exit(0);
+		yyerror("out of space");
+		exit(0);
     }
     a->nodetype = '=';
     a->s = s;
@@ -378,8 +378,8 @@ struct ast *pop(struct symbol *s) {
 					return a;
 				}
 		}else{
-				yyerror("Cannot pop %c TYPE", s->nodetype);
-				exit(1);
+			yyerror("Cannot pop %c TYPE", s->nodetype);
+			exit(1);
 		}
 }
 
@@ -422,6 +422,26 @@ int sizeList(struct listexp *l) {
 	return size;
 }
 
+struct ast *size(struct symbol *s) {
+	if(sizeList(s->l)){
+		struct value *v=malloc(sizeof(struct value));
+		struct integerType *i=malloc(sizeof(struct integerType));
+		if(s->l->exp == NULL) {
+			i->value=0;
+			v->nodetype='I';
+			v->structType=i;
+			return (struct ast *)v;
+		}else {
+			i->value=sizeList(s->l);
+			v->nodetype='I';
+			v->structType=i;
+			return (struct ast *)v;
+		}
+	}
+	yyerror("List null!");
+	exit(1);
+}
+
 struct ast *delete(struct symbol *s, struct ast *exp) {
 	if(s->nodetype == 'Y' && exp->nodetype == 'I') {
 		if(exp != NULL) {
@@ -448,6 +468,33 @@ struct ast *delete(struct symbol *s, struct ast *exp) {
 	}
 	else{
 		yyerror("Cannot delete %c TYPE", s->nodetype);
+		exit(1);
+	}
+}
+
+struct ast *get(struct symbol *s, struct ast *exp) {
+	if(s->nodetype == 'Y' && exp->nodetype == 'I') {
+		if(exp != NULL) {
+			struct listexp *l=s->l;
+			int size = sizeList(l);
+			struct value *v=(struct value *)exp;
+			struct integerType *i=(struct integerType *)v->structType;
+			if(i->value > size-1) {
+				yyerror("out of bounds!");
+				exit(1);
+			}
+			for(int n = 0; n <= i->value; n++) {
+				if(n == i->value) {
+					struct ast *a=malloc(sizeof(struct ast));
+					a=l->exp;
+					return a;
+				}
+				l=l->next;
+			}
+		}
+	}
+	else{
+		yyerror("Cannot get %c TYPE", s->nodetype);
 		exit(1);
 	}
 }
@@ -624,18 +671,18 @@ struct ast* callbuiltin(struct fncall *f){
 				case B_print:
 						a = evaluate(f->l);
 						if(!a){
-								yyerror("no arguments for print...");
-								free(a);
-								break;
+							yyerror("no arguments for print...");
+							free(a);
+							break;
 						}
 						print(a);
 						break;
 				case B_println:
 						a = evaluate(f->l);
 						if(!a){
-								yyerror("no arguments for print...");
-								free(a);
-								break;
+							yyerror("no arguments for print...");
+							free(a);
+							break;
 						}
 						println(a);
 						break;
@@ -644,9 +691,9 @@ struct ast* callbuiltin(struct fncall *f){
 						break;
 				case B_pop:
 						if(!f->s){
-								yyerror("no arguments for pop...");
-								free(a);
-								break;
+							yyerror("no arguments for pop...");
+							free(a);
+							break;
 						}
 						a=pop(f->s);
 						break;
@@ -660,9 +707,9 @@ struct ast* callbuiltin(struct fncall *f){
 						break;
 				case B_app:
 						if(!f->l){
-								yyerror("no arguments for push...");
-								free(a);
-								break;
+							yyerror("no arguments for push...");
+							free(a);
+							break;
 						}
 						append(f->s, evaluate(f->l));
 						break;
@@ -674,6 +721,14 @@ struct ast* callbuiltin(struct fncall *f){
 						}
 						a=delete(f->s, evaluate(f->l));
 						break;
+				case B_get:
+						if(!f->s || !f->l) {
+							yyerror("no arguments for get...");
+							free(a);
+							break;
+						}
+						a=get(f->s, evaluate(f->l));
+						break;
 				case B_ins:
 						if(!f->l || !f->r) {
 							yyerror("no arguments for insert...");
@@ -682,6 +737,14 @@ struct ast* callbuiltin(struct fncall *f){
 						}
 						insert(f->s, evaluate(f->l), evaluate(f->r));
 						break;
+				case B_size:
+					if(!f->s) {
+						yyerror("no arguments for size...");
+						free(a);
+						break;
+					}
+					a=size(f->s);
+					break;
 				default:
 						yyerror("Unknown built-in function %d", functype);
  		}

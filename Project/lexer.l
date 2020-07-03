@@ -39,6 +39,7 @@ STRING    \"{print}*\"
 "insert"        { yylval.fn = B_ins; return INS; }
 "get"           { yylval.fn = B_get; return GET; }
 "size"          { yylval.fn = B_size; return SIZE; }
+"search"        { yylval.fn = B_search; return SEARCH; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

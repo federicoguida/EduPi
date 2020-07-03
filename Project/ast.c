@@ -556,6 +556,83 @@ void insert(struct symbol *s, struct ast *exp, struct ast *val) {
 	}
 }
 
+struct ast *search(struct symbol *s, struct ast *exp) {
+	if(s->nodetype == 'Y') {
+		if(exp != NULL) {
+			struct listexp *l=s->l;
+			int count = 0;
+			struct value *val1=(struct value *)l->exp;
+			struct value *val2=(struct value *)exp;
+			struct value *res=malloc(sizeof(struct value));
+			struct integerType *inres=malloc(sizeof(struct integerType));
+			struct integerType *int1;
+			struct integerType *int2;
+			struct realType *real1;
+			struct realType *real2;
+			struct stringType *str1;
+			struct stringType *str2;
+			while(l) {
+				switch(val1->nodetype) {
+					case 'I':
+						if(val1->nodetype == val2->nodetype) {
+							int1=(struct integerType *)val1->structType;
+							int2=(struct integerType *)val2->structType;
+							if(int1->value == int2->value) {
+								inres->value=count;
+								res->nodetype='I';
+								res->structType=inres;
+								return (struct ast *)res;
+							}
+						}
+						break;
+					case 'R':
+						if(val1->nodetype == val2->nodetype) {
+							real1=(struct realType *)val1->structType;
+							real2=(struct realType *)val2->structType;
+							if(real1->value == real2->value) {
+								inres->value=count;
+								res->nodetype='I';
+								res->structType=inres;
+								return (struct ast *)res;
+							}
+						}
+						break;
+					case 'S':
+						if(val1->nodetype == val2->nodetype) {
+							str1=(struct stringType *)val1->structType;
+							str2=(struct stringType *)val2->structType;
+							if(strcmp(str1->value, str2->value) == 0) {
+								inres->value=count;
+								res->nodetype='I';
+								res->structType=inres;
+								return (struct ast *)res;
+							}
+						}
+						break;
+					case 'Y':
+						// codice da aggiungere
+						break;
+					default:
+						yyerror("search error type!");
+						exit(1);
+						break;
+				}
+				count++;
+				l=l->next;
+				if(l)
+					val1=(struct value *)l->exp;
+			}
+			return NULL;
+		}
+		yyerror("Value NULL!");
+		exit(1);
+	}
+	else{
+		yyerror("Cannot search %c TYPE", s->nodetype);
+		exit(1);
+	}
+}
+
 /**********************************END-LIST**********************************/
 
 /*********************************FLOW***************************************/
@@ -736,6 +813,14 @@ struct ast* callbuiltin(struct fncall *f){
 							break;
 						}
 						insert(f->s, evaluate(f->l), evaluate(f->r));
+						break;
+				case B_search:
+						if(!f->s || !f->l) {
+							yyerror("no arguments for search...");
+							free(a);
+							break;
+						}
+						a=search(f->s, evaluate(f->l));
 						break;
 				case B_size:
 					if(!f->s) {

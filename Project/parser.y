@@ -34,9 +34,9 @@ int yylex();
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
-%token <i> LST PERI IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF 
+%token <i> LST PERI IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF IN
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR
-%token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN
+%token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN 
 
  /* precedencies and associativities */
 %nonassoc <fn> CMP
@@ -50,7 +50,7 @@ int yylex();
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
 
-%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist
+%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist for_each
 %type <sl> symlist
 %type <type> type
 %type <l> value_list
@@ -65,6 +65,7 @@ program: /* nothing */
 
 statement: if_statement { }
 | for_statement { }
+| for_each {}
 | while_statement { }
 | do_while_statement { }
 | declaration SEMI { }
@@ -78,6 +79,9 @@ if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('F', $3, $6, 
 ;
 
 for_statement: FOR LPAREN init SEMI exp SEMI init RPAREN LBRACE tail RBRACE { $$=newflow('Q', $5, $10, $7, $3); }
+;
+
+for_each: FOR NAME IN NAME LBRACE tail RBRACE { $$=newForEach('B', $2, $4, $6);}
 ;
 
 while_statement: WHILE LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('W', $3, $6, NULL, NULL); }

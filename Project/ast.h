@@ -58,6 +58,13 @@ struct flow {
   struct ast *in;  /* for init */
 };
 
+struct for_each{
+  int nodetype;
+  struct symbol *i;
+  struct symbol *list;
+  struct ast *body;
+};
+
 enum bifs {			/* built-in functions */
   B_print=1,
   B_println=2,
@@ -151,6 +158,7 @@ struct ast *date();
 char *printString(char *value);
 void println(struct ast *val);
 void print(struct ast *val);
+struct ast *newForEach(int nodetype, struct symbol* i, struct symbol* list, struct ast* body);
 /*****************END-BUILT*/
 
 /*********************************Type INIT*/

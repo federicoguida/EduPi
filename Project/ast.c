@@ -939,24 +939,22 @@ struct ast *date(){
     a->structType=s;
     return (struct ast*)a;
 }
-void bsleep(struct ast *val){
-  struct value *a= malloc(sizeof(struct value));
-  struct integerType *i;
-  if(val->nodetype=='I'){
-  i=malloc(sizeof(struct integerType));
-                    a=(struct value *)val;
-                    i=(struct integerType *)a->structType;
-                    int intero= i->value;
-                    //printf("attesa di %d millisecondi",intero);
-                    fflush(stdout);
-                    usleep(intero*1000);
-  }else{
-    yyerror("Integer type expected on sleep function");
-  }
+void bsleep(struct ast *val) {
+	struct value *a= malloc(sizeof(struct value));
+	struct integerType *i;
+	if(val->nodetype=='I'){
+		i=malloc(sizeof(struct integerType));
+        a=(struct value *)val;
+        i=(struct integerType *)a->structType;
+        int intero= i->value;
+        //printf("attesa di %d millisecondi",intero);
+        fflush(stdout);
+        usleep(intero*1000);
+  	}else{
+		yyerror("Integer type expected on sleep function");
+  	}
 }
 /*******************************************************************END-BUILT*/
-
-
 
 /*****************************INIT*******************************************/
 struct ast *newInteger(int nodetype, int value) {

@@ -48,7 +48,7 @@ int yylex();
 %left MULOP DIVOP MODOP
 %right NOTOP INCR DECR
 %left LPAREN RPAREN LBRACK RBRACK
-%nonassoc ABSOP UMINUS /* non so cosa sia UMINUS */
+%nonassoc ABSOP UMINUS 
 
 %type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist for_each
 %type <sl> symlist

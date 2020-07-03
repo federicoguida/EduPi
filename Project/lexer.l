@@ -41,6 +41,7 @@ STRING    \"{print}*\"
 "size"          { yylval.fn = B_size; return SIZE; }
 "search"        { yylval.fn = B_search; return SEARCH; }
 "in"            {return IN;}
+"sleep"         { yylval.fn = B_slp; return SLP; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

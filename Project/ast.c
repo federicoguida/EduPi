@@ -1,6 +1,7 @@
 #  define _GNU_SOURCE
 #  include <stdio.h>
 #  include <stdlib.h>
+#  include <unistd.h>
 #  include <stdarg.h>
 #  include <string.h>
 #  include <math.h>
@@ -859,6 +860,15 @@ struct ast* callbuiltin(struct fncall *f){
 					}
 					a=size(f->s);
 					break;
+				case B_slp:
+					a = evaluate(f->l);
+					if(!a){
+						yyerror("no arguments for sleep...");
+						free(a);
+						break;
+					}
+					bsleep(a);
+					break;
 				default:
 						yyerror("Unknown built-in function %d", functype);
  		}
@@ -919,6 +929,21 @@ struct ast *date(){
     a->nodetype='S';
     a->structType=s;
     return (struct ast*)a;
+}
+void bsleep(struct ast *val){
+  struct value *a= malloc(sizeof(struct value));
+  struct integerType *i;
+  if(val->nodetype=='I'){
+  i=malloc(sizeof(struct integerType));
+                    a=(struct value *)val;
+                    i=(struct integerType *)a->structType;
+                    int intero= i->value;
+                    //printf("attesa di %d millisecondi",intero);
+                    fflush(stdout);
+                    usleep(intero*1000);
+  }else{
+    yyerror("Integer type expected on sleep function");
+  }
 }
 /*******************************************************************END-BUILT*/
 

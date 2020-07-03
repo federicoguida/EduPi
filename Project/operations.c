@@ -1,3 +1,4 @@
+#  define _GNU_SOURCE
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include <string.h>
@@ -880,8 +881,14 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'S' :
-                      yyerror("invalid operation.. Incompatible type IntType + StringType");
-                      exit(1);
+                      stringResult=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      asprintf(&stres, "%d", intValue1->value);
+                      strcat(stres, stringValue1->value);
+                      stringResult->value=stres;
+                      result->nodetype='S';
+                      result->structType=stringResult;
                       break;
                   }
                   break ;
@@ -897,21 +904,30 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       val2=(struct value *)value2;
                       intValue1=(struct integerType *)val2->structType;
                       dbres= realValue1->value + (double)intValue1->value ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                     case 'R' :
                       realValue2=malloc(sizeof(struct realType));
                       val2=(struct value *)value2;
                       realValue2=(struct realType *)val2->structType;
-                      dbres= realValue1->value + realValue2->value ;
+                      dbres= realValue1->value + realValue2->value;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                     case 'S' :
-                      yyerror("invalid operation.. Incompatible type RealType + StringType");
-                      exit(1);
+                      stringResult=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      asprintf(&stres, "%g", realValue1->value);
+                      strcat(stres, stringValue1->value);
+                      stringResult->value=stres;
+                      result->nodetype='S';
+                      result->structType=stringResult;
                       break;
                   }
-                  result->nodetype='R';
-                  realResult->value=dbres;
-                  result->structType=realResult;
                   break ;
           
           case 'S' :
@@ -921,12 +937,26 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                   stringResult=malloc(sizeof(struct stringType));
                   switch(value2->nodetype){
                     case 'I' :
-                      yyerror("invalid operation.. Incompatible type StringType + IntType");
-                      exit(1);
+                      stringResult=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      intValue1=(struct integerType *)val2->structType;
+                      stres=strdup(stringValue1->value);
+                      asprintf(&str1, "%d", intValue1->value);
+                      strcat(stres, str1);
+                      stringResult->value=stres;
+                      result->nodetype='S';
+                      result->structType=stringResult;
                       break;
                     case 'R' :
-                      yyerror("invalid operation.. Incompatible type StringType + RealType");
-                      exit(1);
+                      stringResult=malloc(sizeof(struct stringType));
+                      val2=(struct value *)value2;
+                      realValue1=(struct realType *)val2->structType;
+                      stres=strdup(stringValue1->value);
+                      asprintf(&str1, "%g", realValue1->value);
+                      strcat(stres, str1);
+                      stringResult->value=stres;
+                      result->nodetype='S';
+                      result->structType=stringResult;
                       break;
                     case 'S' :
                       stringValue2=malloc(sizeof(struct stringType));

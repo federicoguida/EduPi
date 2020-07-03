@@ -929,48 +929,56 @@ struct ast* callbuiltin(struct fncall *f){
 }
 
 void print(struct ast *val) {
-    struct value *a= malloc(sizeof(struct value));
-    struct integerType *i;
-    struct realType *r;
-    struct stringType *s;
-    struct listexp *l;
+	if(!val)
+	yyerror("Cannot print null element");
+	else{
+		struct value *a= malloc(sizeof(struct value));
+		struct integerType *i;
+		struct realType *r;
+		struct stringType *s;
+		struct listexp *l;
 
-    switch(val->nodetype){
-        case 'I' :  
-                    i=malloc(sizeof(struct integerType));
-                    a=(struct value *)val;
-                    i=(struct integerType *)a->structType;
-                    int intero= i->value;
-                    printf("%d", intero);
-                    break;
-        case 'R' :
-                    r=malloc(sizeof(struct realType));
-                    a=(struct value *)val;
-                    r=(struct realType *)a->structType;
-                    double reale= r->value;
-                    printf("%g", reale);
-                    break;
-        case 'S' :
-                    s=malloc(sizeof(struct stringType));
-                    a=(struct value *)val;
-                    s=(struct stringType *)a->structType;
-                    char * stringa=s->value;
-                    printf("%s", stringa);
-                    break;   
-        case 'Y' :
-                    l=malloc(sizeof(struct listexp));
-                    l=(struct listexp *)val;
-                    printf("[ ");
-                    printList(l);
-                    printf("]");
-                    break;
-        default: printf("Error print"); exit(1);
-    }
+		switch(val->nodetype){
+			case 'I' :  
+						i=malloc(sizeof(struct integerType));
+						a=(struct value *)val;
+						i=(struct integerType *)a->structType;
+						int intero= i->value;
+						printf("%d", intero);
+						break;
+			case 'R' :
+						r=malloc(sizeof(struct realType));
+						a=(struct value *)val;
+						r=(struct realType *)a->structType;
+						double reale= r->value;
+						printf("%g", reale);
+						break;
+			case 'S' :
+						s=malloc(sizeof(struct stringType));
+						a=(struct value *)val;
+						s=(struct stringType *)a->structType;
+						char * stringa=s->value;
+						printf("%s", stringa);
+						break;   
+			case 'Y' :
+						l=malloc(sizeof(struct listexp));
+						l=(struct listexp *)val;
+						printf("[ ");
+						printList(l);
+						printf("]");
+						break;
+			default: printf("Error print"); exit(1);
+		}
+	}
 }
 
 void println(struct ast *val) {
+		if(!val)
+			yyerror("Cannot print null element");
+		else{
 		print(val); 
 		printf("\n");
+		}
 }
 
 struct ast *date(){
@@ -1017,6 +1025,11 @@ struct ast *type(struct ast *val) {
 				return (struct ast *)res;
 			case 'S':
 				str->value = "string";
+				res->nodetype = 'S';
+				res->structType = str;
+				return (struct ast *)res;
+			case 'Y':
+				str->value = "list";
 				res->nodetype = 'S';
 				res->structType = str;
 				return (struct ast *)res;

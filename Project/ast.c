@@ -359,61 +359,70 @@ struct ast *newlsasgn(struct symbol *s, struct listexp *l) {
 }
 
 struct ast *pop(struct symbol *s) {
-	if(s->nodetype=='Y'){
-		if(s->l->exp != NULL) {
-			struct ast* a=malloc(sizeof(struct ast));
-			a=s->l->exp;
-			free(s->l);
-			if(!s->l->next){
-				struct listexp *node=malloc(sizeof(struct listexp));
-				node->nodetype='Y';
-				node->exp=NULL;
-				node->next=NULL;
-				s->l=node;
-				return a;
+	if(!s){
+		yyerror("Function pop: null pointer");
+		return NULL;
+	}else{
+		if(s->nodetype=='Y'){
+			if(s->l->exp != NULL) {
+				struct ast* a=malloc(sizeof(struct ast));
+				a=s->l->exp;
+				free(s->l);
+				if(!s->l->next){
+					struct listexp *node=malloc(sizeof(struct listexp));
+					node->nodetype='Y';
+					node->exp=NULL;
+					node->next=NULL;
+					s->l=node;
+					return a;
+				}else{
+					s->l=s->l->next;
+					return a;
+				}
 			}else{
-				s->l=s->l->next;
-				return a;
+				yyerror("Cannot pop empty list");
+				return NULL;
 			}
 		}else{
-			yyerror("Cannot pop empty list");
+			yyerror("Cannot pop %c TYPE", s->nodetype);
 			return NULL;
 		}
-	}else{
-		yyerror("Cannot pop %c TYPE", s->nodetype);
-		return NULL;
 	}
 }
 
 void append(struct symbol *s, struct ast *exp) {
-	if(s->nodetype == 'Y') {
-		if(exp != NULL) {
-			struct listexp *l=s->l;
-			while(l) {
-				if(l->next==NULL){
+	if(!s){
+		yyerror("Function append: null pointer");
+	}else{
+		if(s->nodetype == 'Y') {
+			if(exp != NULL) {
+				struct listexp *l=s->l;
+				while(l) {
+					if(l->next==NULL){
+						struct listexp *node=malloc(sizeof(struct listexp));
+						node->nodetype='Y';
+						node->exp=exp;
+						node->next=NULL;
+						l->next=node;
+						break;
+					}
+					l=l->next;
+				}
+				if(!l->exp){
 					struct listexp *node=malloc(sizeof(struct listexp));
 					node->nodetype='Y';
 					node->exp=exp;
 					node->next=NULL;
-					l->next=node;
-					break;
-				}
-				l=l->next;
+					s->l=node;
+				}	
 			}
-			if(!l->exp){
-				struct listexp *node=malloc(sizeof(struct listexp));
-				node->nodetype='Y';
-				node->exp=exp;
-				node->next=NULL;
-				s->l=node;
-			}	
+			else {
+				yyerror("argument not defined");
+			}
 		}
-		else {
-			yyerror("argument not defined");
+		else{
+			yyerror("Cannot push %c TYPE", s->nodetype);
 		}
-	}
-	else{
-		yyerror("Cannot push %c TYPE", s->nodetype);
 	}
 }
 
@@ -427,221 +436,247 @@ int sizeList(struct listexp *l) {
 }
 
 struct ast *size(struct symbol *s) {
-	if(sizeList(s->l)){
-		struct value *v=malloc(sizeof(struct value));
-		struct integerType *i=malloc(sizeof(struct integerType));
-		if(s->l->exp == NULL) {
-			i->value=0;
-			v->nodetype='I';
-			v->structType=i;
-			return (struct ast *)v;
-		}else {
-			i->value=sizeList(s->l);
-			v->nodetype='I';
-			v->structType=i;
-			return (struct ast *)v;
+	if(!s){
+		yyerror("Function size: null pointer");
+		return NULL;
+	}else{
+		if(sizeList(s->l)){
+			struct value *v=malloc(sizeof(struct value));
+			struct integerType *i=malloc(sizeof(struct integerType));
+			if(s->l->exp == NULL) {
+				i->value=0;
+				v->nodetype='I';
+				v->structType=i;
+				return (struct ast *)v;
+			}else {
+				i->value=sizeList(s->l);
+				v->nodetype='I';
+				v->structType=i;
+				return (struct ast *)v;
+			}
 		}
 	}
-	yyerror("List NULL!");
-	return NULL;
 }
 
 struct ast *delete(struct symbol *s, struct ast *exp) {
-	if(s->nodetype == 'Y' && exp->nodetype == 'I') {
-		if(exp != NULL) {
-			struct listexp *l=s->l;
-			int size = sizeList(l);
-			struct value *v=(struct value *)exp;
-			struct integerType *i=(struct integerType *)v->structType;
-			if(i->value > size-1) {
-				yyerror("out of bounds!");
-			}
-			for(int n = 0; n <= i->value; n++) {
-				if(i->value == 0)
-					return pop(s);
-				if(n == (i->value)-1) {
-					struct ast *a=malloc(sizeof(struct ast));
-					a=l->next->exp;
-					l->next=l->next->next;
-					return a;
+	if(!s || !exp){
+		yyerror("Function delete: null pointer");
+		return NULL;
+	}else{
+		if(s->nodetype == 'Y' && exp->nodetype == 'I') {
+			if(exp != NULL) {
+				struct listexp *l=s->l;
+				int size = sizeList(l);
+				struct value *v=(struct value *)exp;
+				struct integerType *i=(struct integerType *)v->structType;
+				if(i->value > size-1) {
+					yyerror("out of bounds!");
 				}
-				l=l->next;
+				for(int n = 0; n <= i->value; n++) {
+					if(i->value == 0)
+						return pop(s);
+					if(n == (i->value)-1) {
+						struct ast *a=malloc(sizeof(struct ast));
+						a=l->next->exp;
+						l->next=l->next->next;
+						return a;
+					}
+					l=l->next;
+				}
+			}
+			else {
+				yyerror("arguments not defined");
+				return NULL;
 			}
 		}
-		else {
-			yyerror("arguments not defined");
+		else{
+			yyerror("Cannot delete %c TYPE", s->nodetype);
 			return NULL;
 		}
-	}
-	else{
-		yyerror("Cannot delete %c TYPE", s->nodetype);
-		return NULL;
 	}
 }
 
 struct ast *get(struct symbol *s, struct ast *exp) {
-	if(s->nodetype == 'Y' && exp->nodetype == 'I') {
-		if(exp != NULL) {
-			struct listexp *l=s->l;
-			int size = sizeList(l);
-			struct value *v=(struct value *)exp;
-			struct integerType *i=(struct integerType *)v->structType;
-			if(i->value > size-1) {
-				yyerror("out of bounds!");
-			}
-			for(int n = 0; n <= i->value; n++) {
-				if(n == i->value) {
-					struct ast *a=malloc(sizeof(struct ast));
-					a=l->exp;
-					return a;
+	if(!s || !exp){
+		yyerror("Function get: null pointer");
+		return NULL;
+	}else{
+		if(s->nodetype == 'Y' && exp->nodetype == 'I') {
+			if(exp != NULL) {
+				struct listexp *l=s->l;
+				int size = sizeList(l);
+				struct value *v=(struct value *)exp;
+				struct integerType *i=(struct integerType *)v->structType;
+				if(i->value > size-1) {
+					yyerror("out of bounds!");
 				}
-				l=l->next;
+				for(int n = 0; n <= i->value; n++) {
+					if(n == i->value) {
+						struct ast *a=malloc(sizeof(struct ast));
+						a=l->exp;
+						return a;
+					}
+					l=l->next;
+				}
+			}
+			else {
+				yyerror("argument not defined");
+				return NULL;
 			}
 		}
-		else {
-			yyerror("argument not defined");
+		else{
+			yyerror("Cannot get %c TYPE", s->nodetype);
 			return NULL;
 		}
-	}
-	else{
-		yyerror("Cannot get %c TYPE", s->nodetype);
-		return NULL;
 	}
 }
 
 void push(struct symbol *s, struct ast *exp) {
-	if(s->nodetype == 'Y') {
-		if(exp != NULL) {
-			if(s->l->exp == NULL) {
-				struct listexp *r=malloc(sizeof(struct listexp));
-				r->nodetype='Y';
-				r->exp=exp;
-				r->next=NULL;
-				s->l=r;
+	if(!s || !exp){
+		yyerror("Function push: null pointer");
+	}else{
+		if(s->nodetype == 'Y') {
+			if(exp != NULL) {
+				if(s->l->exp == NULL) {
+					struct listexp *r=malloc(sizeof(struct listexp));
+					r->nodetype='Y';
+					r->exp=exp;
+					r->next=NULL;
+					s->l=r;
+				}
+				else {
+					struct listexp *r=malloc(sizeof(struct listexp));
+					r->nodetype='Y';
+					r->exp=exp;
+					r->next=s->l;
+					s->l=r;
+				}
 			}
 			else {
-				struct listexp *r=malloc(sizeof(struct listexp));
-				r->nodetype='Y';
-				r->exp=exp;
-				r->next=s->l;
-				s->l=r;
+				yyerror("argument not defined");
 			}
 		}
-		else {
-			yyerror("argument not defined");
+		else{
+			yyerror("Cannot push %c TYPE", s->nodetype);
 		}
-	}
-	else{
-		yyerror("Cannot push %c TYPE", s->nodetype);
 	}
 }
 
 void insert(struct symbol *s, struct ast *exp, struct ast *val) {
-	if(s->nodetype == 'Y' && exp->nodetype == 'I') {
-		if(exp != NULL && val != NULL) {
-			struct listexp *l=s->l;
-			int size = sizeList(l);
-			struct value *v=(struct value *)exp;
-			struct integerType *i=(struct integerType *)v->structType;
-			if(i->value > size) {
-				yyerror("out of bounds!");
+	if(!s || !exp){
+		yyerror("Function insert: null pointer");
+	}else{
+		if(s->nodetype == 'Y' && exp->nodetype == 'I') {
+			if(exp != NULL && val != NULL) {
+				struct listexp *l=s->l;
+				int size = sizeList(l);
+				struct value *v=(struct value *)exp;
+				struct integerType *i=(struct integerType *)v->structType;
+				if(i->value > size) {
+					yyerror("out of bounds!");
+				}
+				for(int n = 0; n <= i->value; n++) {
+					if(i->value == 0) {
+						push(s,val);
+						break;
+					}
+					if(n == (i->value)-1) {
+						struct listexp *r=malloc(sizeof(struct listexp));
+						r->exp=val;
+						r->next=l->next;
+						l->next=r;
+					}
+					l=l->next;
+				}
 			}
-			for(int n = 0; n <= i->value; n++) {
-				if(i->value == 0) {
-					push(s,val);
-					break;
-				}
-				if(n == (i->value)-1) {
-					struct listexp *r=malloc(sizeof(struct listexp));
-					r->exp=val;
-					r->next=l->next;
-					l->next=r;
-				}
-				l=l->next;
+			else {
+				yyerror("arguments not defined");
 			}
 		}
-		else {
-			yyerror("arguments not defined");
+		else{
+			yyerror("Cannot insert %c TYPE", s->nodetype);
 		}
-	}
-	else{
-		yyerror("Cannot insert %c TYPE", s->nodetype);
 	}
 }
 
 struct ast *search(struct symbol *s, struct ast *exp) {
-	if(s->nodetype == 'Y') {
-		if(exp != NULL) {
-			struct listexp *l=s->l;
-			int count = 0;
-			struct value *val1=(struct value *)l->exp;
-			struct value *val2=(struct value *)exp;
-			struct value *res=malloc(sizeof(struct value));
-			struct integerType *inres=malloc(sizeof(struct integerType));
-			struct integerType *int1;
-			struct integerType *int2;
-			struct realType *real1;
-			struct realType *real2;
-			struct stringType *str1;
-			struct stringType *str2;
-			while(l) {
-				switch(val1->nodetype) {
-					case 'I':
-						if(val1->nodetype == val2->nodetype) {
-							int1=(struct integerType *)val1->structType;
-							int2=(struct integerType *)val2->structType;
-							if(int1->value == int2->value) {
-								inres->value=count;
-								res->nodetype='I';
-								res->structType=inres;
-								return (struct ast *)res;
+	if(!s || !exp){
+		yyerror("Function search: null pointer");
+		return NULL;
+	}else{
+		if(s->nodetype == 'Y') {
+			if(exp != NULL) {
+				struct listexp *l=s->l;
+				int count = 0;
+				struct value *val1=(struct value *)l->exp;
+				struct value *val2=(struct value *)exp;
+				struct value *res=malloc(sizeof(struct value));
+				struct integerType *inres=malloc(sizeof(struct integerType));
+				struct integerType *int1;
+				struct integerType *int2;
+				struct realType *real1;
+				struct realType *real2;
+				struct stringType *str1;
+				struct stringType *str2;
+				while(l) {
+					switch(val1->nodetype) {
+						case 'I':
+							if(val1->nodetype == val2->nodetype) {
+								int1=(struct integerType *)val1->structType;
+								int2=(struct integerType *)val2->structType;
+								if(int1->value == int2->value) {
+									inres->value=count;
+									res->nodetype='I';
+									res->structType=inres;
+									return (struct ast *)res;
+								}
 							}
-						}
-						break;
-					case 'R':
-						if(val1->nodetype == val2->nodetype) {
-							real1=(struct realType *)val1->structType;
-							real2=(struct realType *)val2->structType;
-							if(real1->value == real2->value) {
-								inres->value=count;
-								res->nodetype='I';
-								res->structType=inres;
-								return (struct ast *)res;
+							break;
+						case 'R':
+							if(val1->nodetype == val2->nodetype) {
+								real1=(struct realType *)val1->structType;
+								real2=(struct realType *)val2->structType;
+								if(real1->value == real2->value) {
+									inres->value=count;
+									res->nodetype='I';
+									res->structType=inres;
+									return (struct ast *)res;
+								}
 							}
-						}
-						break;
-					case 'S':
-						if(val1->nodetype == val2->nodetype) {
-							str1=(struct stringType *)val1->structType;
-							str2=(struct stringType *)val2->structType;
-							if(strcmp(str1->value, str2->value) == 0) {
-								inres->value=count;
-								res->nodetype='I';
-								res->structType=inres;
-								return (struct ast *)res;
+							break;
+						case 'S':
+							if(val1->nodetype == val2->nodetype) {
+								str1=(struct stringType *)val1->structType;
+								str2=(struct stringType *)val2->structType;
+								if(strcmp(str1->value, str2->value) == 0) {
+									inres->value=count;
+									res->nodetype='I';
+									res->structType=inres;
+									return (struct ast *)res;
+								}
 							}
-						}
-						break;
-					case 'Y':
-						yyerror("Cannot search list!");
-						break;
-					default:
-						yyerror("search error type!");
-						exit(1);
+							break;
+						case 'Y':
+							yyerror("Cannot search list!");
+							break;
+						default:
+							yyerror("search error type!");
+							exit(1);
+					}
+					count++;
+					l=l->next;
+					if(l)
+						val1=(struct value *)l->exp;
 				}
-				count++;
-				l=l->next;
-				if(l)
-					val1=(struct value *)l->exp;
+				return NULL;
 			}
+			yyerror("Value NULL!");
 			return NULL;
 		}
-		yyerror("Value NULL!");
-		return NULL;
-	}
-	else{
-		yyerror("Cannot search %c TYPE", s->nodetype);
-		return NULL;
+		else{
+			yyerror("Cannot search %c TYPE", s->nodetype);
+			return NULL;
+		}
 	}
 }
 

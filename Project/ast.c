@@ -1102,6 +1102,42 @@ struct ast *newast(int nodetype, struct ast *l, struct ast *r) {
 }
 /*****************************END-INIT*******************************************/
 
+/*****************NODETYPE TABLE********************
++	SUM
+-	SUB
+*	MUL
+/	DIV
+%	MOD
+|	ABS
+I	INTEGER
+S	STRING
+R	REAL
+Y	LIST
+B	FOREACH
+M	NEGATE VALUE
+O	OR
+A	AND
+N	NOT
+=	ASSIGN OPERATION
+V	REF OF VARIABLE USED FOR CONTENT OF VARIABLE
+P	INCREMENT es. i++
+E	DECREMENT es. i--
+X	DECLARATION OF SYMBOL
+F	IF ELSE..
+W	WHILE
+D	DO WHILE
+Q	FOR 
+L 	CALL BUILTIN
+C	CALL USER
+Z 	TREE OF STATEMENTS
+1	>
+2	<
+3	!=
+4	==
+5	>=
+6	<=
+/*****************NODETYPE TABLE********************
+
 /****************************EVALUATE*******************************************/
 struct ast *evaluate(struct ast *tree) {
     struct ast *result=malloc(sizeof(struct ast));

@@ -652,7 +652,7 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     stringValue2=malloc(sizeof(struct stringType));
                     val2=(struct value*)r;
                     stringValue2=(struct stringType *)val2->structType;
-                    res = (strlen(stringValue1->value) == strlen(stringValue2->value))? 1 : 0;
+                    res = (strcmp(stringValue1->value, stringValue2->value) == 0 ? 1 : 0);
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;

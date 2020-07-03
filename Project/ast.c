@@ -360,7 +360,7 @@ struct ast *newlsasgn(struct symbol *s, struct listexp *l) {
 
 struct ast *pop(struct symbol *s) {
 	if(!s){
-		yyerror("Function pop: null pointer");
+		//yyerror("Function pop: null pointer");
 		return NULL;
 	}else{
 		if(s->nodetype=='Y'){
@@ -392,7 +392,7 @@ struct ast *pop(struct symbol *s) {
 
 void append(struct symbol *s, struct ast *exp) {
 	if(!s){
-		yyerror("Function append: null pointer");
+		//yyerror("Function append: null pointer");
 	}else{
 		if(s->nodetype == 'Y') {
 			if(exp != NULL) {
@@ -437,7 +437,7 @@ int sizeList(struct listexp *l) {
 
 struct ast *size(struct symbol *s) {
 	if(!s){
-		yyerror("Function size: null pointer");
+		//yyerror("Function size: null pointer");
 		return NULL;
 	}else{
 		if(sizeList(s->l)){
@@ -460,7 +460,7 @@ struct ast *size(struct symbol *s) {
 
 struct ast *delete(struct symbol *s, struct ast *exp) {
 	if(!s || !exp){
-		yyerror("Function delete: null pointer");
+		//yyerror("Function delete: null pointer");
 		return NULL;
 	}else{
 		if(s->nodetype == 'Y' && exp->nodetype == 'I') {
@@ -498,7 +498,7 @@ struct ast *delete(struct symbol *s, struct ast *exp) {
 
 struct ast *get(struct symbol *s, struct ast *exp) {
 	if(!s || !exp){
-		yyerror("Function get: null pointer");
+		//yyerror("Function get: null pointer");
 		return NULL;
 	}else{
 		if(s->nodetype == 'Y' && exp->nodetype == 'I') {
@@ -533,7 +533,7 @@ struct ast *get(struct symbol *s, struct ast *exp) {
 
 void push(struct symbol *s, struct ast *exp) {
 	if(!s || !exp){
-		yyerror("Function push: null pointer");
+		//yyerror("Function push: null pointer");
 	}else{
 		if(s->nodetype == 'Y') {
 			if(exp != NULL) {
@@ -564,7 +564,7 @@ void push(struct symbol *s, struct ast *exp) {
 
 void insert(struct symbol *s, struct ast *exp, struct ast *val) {
 	if(!s || !exp){
-		yyerror("Function insert: null pointer");
+		//yyerror("Function insert: null pointer");
 	}else{
 		if(s->nodetype == 'Y' && exp->nodetype == 'I') {
 			if(exp != NULL && val != NULL) {
@@ -601,7 +601,7 @@ void insert(struct symbol *s, struct ast *exp, struct ast *val) {
 
 struct ast *search(struct symbol *s, struct ast *exp) {
 	if(!s || !exp){
-		yyerror("Function search: null pointer");
+		//yyerror("Function search: null pointer");
 		return NULL;
 	}else{
 		if(s->nodetype == 'Y') {
@@ -999,7 +999,6 @@ void bsleep(struct ast *val) {
         a=(struct value *)val;
         i=(struct integerType *)a->structType;
         int intero= i->value;
-        //printf("attesa di %d millisecondi",intero);
         fflush(stdout);
         usleep(intero*1000);
   	}else{

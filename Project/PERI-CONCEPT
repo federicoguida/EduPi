@@ -22,13 +22,19 @@ def as(){
 	
 }	
 
+def send(x){
+    i2c..sdads
+    sadsa
+}
+
 peripheral test=["LCD", func(x,y), i2c(x,y,z)];
 
 print(x);
 test->print(2);
 x->value=2;
 
-
+test->id 2para
+test->name(2,3,4);
 
 
 test->func(2,3);

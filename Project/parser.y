@@ -16,6 +16,7 @@ int yylex();
     struct peripheral *p; /*Indicherà la periferica*/
     struct symbol *s; /* Indicherà il simbolo */
     struct symlist *sl;  /* Lista di simboli */
+    struct funclist *fl; /* Lista di funzioni */
     int fn; /* Indicherà quale funzione */
     int type;
     struct listexp *l;
@@ -34,7 +35,7 @@ int yylex();
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <fn> FUNC
-%token <i> LST PERI IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF IN ARR
+%token <i> LST PERI IF ELSE DO WHILE FOR CONTINUE BREAK RETURN DEF IN ARR ID
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN 
 
@@ -51,9 +52,11 @@ int yylex();
 %nonassoc ABSOP UMINUS 
 
 %type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist for_each
+%type <a> pericall
 %type <sl> symlist
 %type <type> type
 %type <l> value_list
+%type <fl> functionlist
 %start program
 
 %%
@@ -72,6 +75,7 @@ statement: if_statement { }
 | init SEMI { }
 | exp SEMI { }
 | functionV SEMI { }
+| pericall SEMI { }
 ;
 
 if_statement: IF LPAREN exp RPAREN LBRACE tail RBRACE { $$=newflow('F', $3, $6, NULL, NULL); }
@@ -134,7 +138,16 @@ init: type NAME ASSIGN exp { $$ = newasgn($1, $2, $4); }
 | LST NAME ASSIGN LBRACK  RBRACK { $$ = newlasgn($1, $2, NULL); }
 | NAME ASSIGN LBRACK value_list RBRACK { $$ = newlsasgn($1, $4); }
 | NAME ASSIGN LBRACK RBRACK { $$ = newlsasgn($1, NULL); }
+| PERI NAME ASSIGN STRING COMMA functionlist {$$ = newperipherical($1, $2, $4, $6);}
  /* da aggiungere la periferica */
+;
+
+pericall: NAME ARR ID { $$ = newperipheralcall($1, newString('S', "ID"),NULL, NULL); }
+| NAME ARR NAME LPAREN explist RPAREN { $$ = newperipheralcall($1, NULL, $3, $5); }
+;
+
+functionlist: functionlist COMMA NAME LPAREN explist RPAREN{ $$=newfunclist(newcall($3, $5),$1);}
+| NAME LPAREN explist RPAREN { $$=newfunclist(newcall($1, $3),NULL); }
 ;
 
 value: NAME { $$ = newref($1); }

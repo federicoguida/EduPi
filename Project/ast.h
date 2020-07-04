@@ -12,6 +12,7 @@ struct symbol {
 };
 
 struct peripherical{
+    int nodetype;
     char *name;
     struct funclist* f;
 };
@@ -23,9 +24,26 @@ struct funclist{
     struct funclist* next;
 };
 
-struct ast* newperipherical();
+struct periassign{
+    int nodetype;
+    int type;
+    struct symbol *var;
+    char *name;
+    struct funclist *fl;
+};
 
+struct perimethod{
+    int nodetype;
+    struct symbol *s;
+    struct ast* a;
+    struct symbol *f;
+    struct ast *expl;
+};
 
+struct ast* newperipherical(int nodetype, struct symbol *var, char *name, struct funclist *fl);
+struct funclist* newfunclist(struct ast* func, struct funclist *next);
+void peripheralcall(struct perimethod *p);
+struct ast* newperipheralcall(struct symbol *s, struct ast* a, struct symbol *f, struct ast *expl);
 
 // Struct for store and search variable
 #define NHASH 9997

@@ -937,6 +937,8 @@ void print(struct ast *val) {
 		struct realType *r;
 		struct stringType *s;
 		struct listexp *l;
+		struct peripherical *p;
+		struct funclist *f;
 
 		switch(val->nodetype){
 			case 'I' :  
@@ -967,6 +969,17 @@ void print(struct ast *val) {
 						printList(l);
 						printf("]");
 						break;
+			case 'K' :
+						p=(struct peripherical*)val;
+						printf("Peripheral name: %s\n",p->name);
+						f=p->f;
+						while(f){
+							printf("Method --> %s\n", f->bcall->s->name);
+							f=f->next;
+						}
+						
+						break;
+
 			default: printf("Error print"); exit(1);
 		}
 	}
@@ -1140,7 +1153,110 @@ Z 	TREE OF STATEMENTS
 4	==
 5	>=
 6	<=
-/*****************NODETYPE TABLE********************
+/*****************NODETYPE TABLE********************/
+
+
+
+/**************PERI WORK IN PROGRESS**********************/
+struct ast* newperipherical(int nodetype, struct symbol *var, char *name, struct funclist *fl ){
+	struct periassign* p=malloc(sizeof(struct periassign));
+	
+	if(!var || !name || !fl){
+		//yyerror("no arguments for declaration of peripheral");
+		return NULL;
+	}
+
+	p->nodetype='_';
+	p->type=nodetype;
+	p->var=var;
+	p->name=name;
+	p->fl=fl;
+	return (struct ast*)p;
+}
+
+void assignPeri(struct periassign* p){
+
+	if(!p){
+		//yyerror("no arguments for declaration of peripheral");
+		//return NULL;
+	}
+	struct peripherical *peri=malloc(sizeof(struct peripherical));
+	peri->nodetype='K';
+	peri->name=p->name;
+	peri->f=p->fl;
+	p->var->nodetype=p->type;
+	p->var->p=peri;
+}
+
+/* TYPE C USERFUNC - TYPE L BUILTFUNC */
+
+struct funclist* newfunclist(struct ast* func, struct funclist *next){
+	struct funclist *fn=malloc(sizeof(struct funclist));
+	if(func->nodetype=='C'){
+		fn->fcall=NULL;
+		fn->bcall=(struct ufncall*)func;
+		fn->next=next;
+		return fn;
+	}else{
+		fn->fcall=(struct fncall*)func;
+		fn->bcall=NULL;
+		fn->next=next;
+		return fn;
+	}
+
+}
+
+struct ast* newperipheralcall(struct symbol *s, struct ast* a, struct symbol *f, struct ast *expl ){
+	if(!s){
+
+	}else{
+		struct perimethod *m=malloc(sizeof(struct perimethod));
+		m->nodetype='J';
+		m->s=s;
+		m->a=a;
+		m->f=f;
+		m->expl=expl;
+	}
+}
+
+void peripheralcall(struct perimethod *m) {
+	if(m->a){
+		printf("%s",m->s->p->name);
+	}else {
+		int done=0;
+		struct funclist *fl=m->s->p->f;
+		while(fl){
+			if((char*)fl->bcall->s->name==(char*)m->f->name){
+				fl->bcall->l=m->expl;
+				calluser(fl->bcall);
+				done=1;
+				break;
+			}
+			fl=fl->next;
+		}
+			if(done==0){
+			printf("%s: ", m->f->name );
+			printf("Method not found");
+			}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /****************************EVALUATE*******************************************/
 struct ast *evaluate(struct ast *tree) {
@@ -1204,6 +1320,8 @@ struct ast *evaluate(struct ast *tree) {
               s=lookup(((struct symref*)tree)->s->name);
               if(s->nodetype == 'Y') 
                 result=(struct ast *)(s->l);
+			  else if(s->nodetype =='K')
+			  	result=(struct ast *)(s->p);
               else
                 result=(struct ast *)(s->v);
               break;
@@ -1236,6 +1354,12 @@ struct ast *evaluate(struct ast *tree) {
               break;
 		case 'K' :
 			  printf("call");
+			  break;
+		case '_' :
+			  assignPeri((struct periassign*)tree);
+			  break;
+		case 'J' :
+			  peripheralcall((struct perimethod*)tree);
 			  break;
         case 'Z': temp=evaluate(tree->l); result=evaluate(tree->r);  break;
         case 1: result = compare(1,evaluate(tree->l), evaluate(tree->r)); break; // >

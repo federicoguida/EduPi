@@ -43,6 +43,7 @@ STRING    \"{print}*\"
 "sleep"         { yylval.fn = B_slp; return SLP; }
 "type"          { yylval.fn = B_type; return TYPE; }
 "in"            { return IN; }
+"id"            { return ID; }
 
 
 "+"     { return ADDOP; }

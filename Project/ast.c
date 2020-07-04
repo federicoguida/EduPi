@@ -304,7 +304,7 @@ void assign(struct symasgn *tree) {
 /********************************LIST****************************************/
 
 struct listexp *newlist(int nodetype, struct ast *exp, struct listexp *next) {
-    struct listexp *l = malloc(sizeof(struct value));
+    struct listexp *l = malloc(sizeof(struct listexp));
 
     if(!l) {
 		yyerror("out of space");

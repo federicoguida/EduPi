@@ -82,7 +82,7 @@ STRING    \"{print}*\"
 {NAME}      { yylval.s = lookup(yytext); return NAME; } 
 {INTEGER}   { yylval.i = atoi(yytext); return INTEGER;}
 {REAL}      { yylval.r = atof(yytext); return REAL; }
-{STRING}    { yylval.string = malloc(yyleng * sizeof(char));
+{STRING}    { yylval.string = malloc(yyleng * sizeof(yytext));
                 strcpy(yylval.string, yytext); return STRING; }
 
 "//".*

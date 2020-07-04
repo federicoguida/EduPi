@@ -45,6 +45,7 @@ STRING    \"{print}*\"
 "sqrt"          { yylval.fn = B_sqrt; return SQRT; }
 "pow"           { yylval.fn = B_pow; return POW; }
 "in"            { return IN; }
+"id"            { return ID; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

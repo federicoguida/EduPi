@@ -316,10 +316,10 @@ struct ast *negateValue(struct ast *tree) {
 }
 
 struct ast *compare(int type, struct ast *l, struct ast *r){
-      struct value *val1= malloc(sizeof(struct value));
-      struct value *val2= malloc(sizeof(struct value));
-      struct value *result= malloc(sizeof(struct value));
-      struct integerType *intResult=malloc(sizeof(struct integerType));
+      struct value *val1;
+      struct value *val2;
+      struct value *result;
+      struct integerType *intResult;
       int res;
       struct integerType *intValue1;
       struct integerType *intValue2;
@@ -332,12 +332,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
         case 1:  
             switch(l->nodetype){
               case 'I':
-                intValue1=malloc(sizeof(struct integerType));
                 val1=(struct value*)l;
                 intValue1=(struct integerType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    intResult=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (intValue1->value > intValue2->value)? 1 : 0;
@@ -346,7 +346,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    intResult=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (intValue1->value > realValue2->value)? 1 : 0;
@@ -360,12 +361,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'R':
-                realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
                 realValue1=(struct realType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (realValue1->value > intValue2->value)? 1 : 0;
@@ -374,7 +375,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (realValue1->value > realValue2->value)? 1 : 0;
@@ -388,7 +390,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'S':
-                stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
                 stringValue1=(struct stringType *)val1->structType;
                 switch(r->nodetype){
@@ -399,7 +400,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
                   case 'S':
-                    stringValue2=malloc(sizeof(struct stringType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     stringValue2=(struct stringType *)val2->structType;
                     res = (strlen(stringValue1->value) > strlen(stringValue2->value))? 1 : 0;
@@ -415,12 +417,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
         case 2:
             switch(l->nodetype){
               case 'I':
-                intValue1=malloc(sizeof(struct integerType));
                 val1=(struct value*)l;
                 intValue1=(struct integerType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (intValue1->value < intValue2->value)? 1 : 0;
@@ -429,7 +431,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (intValue1->value < realValue2->value)? 1 : 0;
@@ -443,12 +446,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'R':
-                realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
                 realValue1=(struct realType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (realValue1->value < intValue2->value)? 1 : 0;
@@ -457,7 +460,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (realValue1->value < realValue2->value)? 1 : 0;
@@ -471,7 +475,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'S':
-                stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
                 stringValue1=(struct stringType *)val1->structType;
                 switch(r->nodetype){
@@ -482,7 +485,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
                   case 'S':
-                    stringValue2=malloc(sizeof(struct stringType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     stringValue2=(struct stringType *)val2->structType;
                     res = (strlen(stringValue1->value) < strlen(stringValue2->value))? 1 : 0;
@@ -499,12 +503,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
         case 3:
             switch(l->nodetype){
               case 'I':
-                intValue1=malloc(sizeof(struct integerType));
                 val1=(struct value*)l;
                 intValue1=(struct integerType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (intValue1->value != intValue2->value)? 1 : 0;
@@ -513,7 +517,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (intValue1->value != realValue2->value)? 1 : 0;
@@ -527,12 +532,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'R':
-                realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
                 realValue1=(struct realType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (realValue1->value != intValue2->value)? 1 : 0;
@@ -541,7 +546,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (realValue1->value != realValue2->value)? 1 : 0;
@@ -555,7 +561,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'S':
-                stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
                 stringValue1=(struct stringType *)val1->structType;
                 switch(r->nodetype){
@@ -566,7 +571,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
                   case 'S':
-                    stringValue2=malloc(sizeof(struct stringType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     stringValue2=(struct stringType *)val2->structType;
                     res = (strlen(stringValue1->value) != strlen(stringValue2->value))? 1 : 0;
@@ -583,12 +589,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
         case 4:
             switch(l->nodetype){
               case 'I':
-                intValue1=malloc(sizeof(struct integerType));
                 val1=(struct value*)l;
                 intValue1=(struct integerType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (intValue1->value == intValue2->value)? 1 : 0;
@@ -597,7 +603,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (intValue1->value == realValue2->value)? 1 : 0;
@@ -611,12 +618,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'R':
-                realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
                 realValue1=(struct realType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (realValue1->value == intValue2->value)? 1 : 0;
@@ -625,7 +632,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (realValue1->value == realValue2->value)? 1 : 0;
@@ -639,7 +647,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'S':
-                stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
                 stringValue1=(struct stringType *)val1->structType;
                 switch(r->nodetype){
@@ -650,7 +657,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
                   case 'S':
-                    stringValue2=malloc(sizeof(struct stringType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     stringValue2=(struct stringType *)val2->structType;
                     res = (strcmp(stringValue1->value, stringValue2->value) == 0 ? 1 : 0);
@@ -667,12 +675,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
         case 5:
             switch(l->nodetype){
               case 'I':
-                intValue1=malloc(sizeof(struct integerType));
                 val1=(struct value*)l;
                 intValue1=(struct integerType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (intValue1->value >= intValue2->value)? 1 : 0;
@@ -681,7 +689,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (intValue1->value >= realValue2->value)? 1 : 0;
@@ -695,12 +704,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'R':
-                realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
                 realValue1=(struct realType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (realValue1->value >= intValue2->value)? 1 : 0;
@@ -709,7 +718,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (realValue1->value >= realValue2->value)? 1 : 0;
@@ -723,7 +733,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'S':
-                stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
                 stringValue1=(struct stringType *)val1->structType;
                 switch(r->nodetype){
@@ -734,7 +743,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
                   case 'S':
-                    stringValue2=malloc(sizeof(struct stringType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     stringValue2=(struct stringType *)val2->structType;
                     res = (strlen(stringValue1->value) >= strlen(stringValue2->value))? 1 : 0;
@@ -751,12 +761,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
         case 6:
             switch(l->nodetype){
               case 'I':
-                intValue1=malloc(sizeof(struct integerType));
                 val1=(struct value*)l;
                 intValue1=(struct integerType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (intValue1->value <= intValue2->value)? 1 : 0;
@@ -765,7 +775,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (intValue1->value <= realValue2->value)? 1 : 0;
@@ -779,12 +790,12 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'R':
-                realValue1=malloc(sizeof(struct realType));
                 val1=(struct value*)l;
                 realValue1=(struct realType *)val1->structType;
                 switch(r->nodetype){
                   case 'I':
-                    intValue2=malloc(sizeof(struct integerType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     intValue2=(struct integerType *)val2->structType;
                     res = (realValue1->value <= intValue2->value)? 1 : 0;
@@ -793,7 +804,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     result->structType=intResult;
                     break;
                   case 'R':
-                    realValue2=malloc(sizeof(struct realType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     realValue2=(struct realType *)val2->structType;
                     res = (realValue1->value <= realValue2->value)? 1 : 0;
@@ -807,7 +819,6 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 }
                 break;
               case 'S':
-                stringValue1=malloc(sizeof(struct stringType));
                 val1=(struct value*)l;
                 stringValue1=(struct stringType *)val1->structType;
                 switch(r->nodetype){
@@ -818,7 +829,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     yyerror("Cannot compare  StringType to IntegerType");
                     exit(1);
                   case 'S':
-                    stringValue2=malloc(sizeof(struct stringType));
+                    result=malloc(sizeof(struct value));
+                    intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     stringValue2=(struct stringType *)val2->structType;
                     res = (strlen(stringValue1->value) <= strlen(stringValue2->value))? 1 : 0;
@@ -836,9 +848,9 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
 }
 
 struct ast *sum(struct ast *value1, struct ast *value2) {
-      struct value *val1= malloc(sizeof(struct value));
-      struct value *val2= malloc(sizeof(struct value));
-      struct value *result= malloc(sizeof(struct value));
+      struct value *val1;
+      struct value *val2;
+      struct value *result;
       struct integerType *intValue1;
       struct integerType *intValue2;
       struct integerType *intResult;
@@ -856,13 +868,12 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
 
       switch(value1->nodetype){
           case 'I' :
-                  intValue1=malloc(sizeof(struct integerType));
                   val1=(struct value *)value1;
                   intValue1=(struct integerType *)val1->structType;
                   switch(value2->nodetype){
                     case 'I' :
+                      result=malloc(sizeof(struct value));
                       intResult=malloc(sizeof(struct integerType));
-                      intValue2=malloc(sizeof(struct integerType));
                       val2=(struct value *)value2;
                       intValue2=(struct integerType *)val2->structType;
                       res=intValue1->value + intValue2->value ;
@@ -871,8 +882,8 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       result->structType=intResult;
                       break;
                     case 'R' :
+                      result=malloc(sizeof(struct value));
                       realResult=malloc(sizeof(struct realType));
-                      realValue1=malloc(sizeof(struct realType));
                       val2=(struct value *)value2;
                       realValue1=(struct realType *)val2->structType;
                       dbres= intValue1->value + realValue1->value ;
@@ -881,6 +892,7 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'S' :
+                      result=malloc(sizeof(struct value));
                       stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
@@ -894,13 +906,12 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                   break ;
 
           case 'R' :
-                  realValue1=malloc(sizeof(struct realType));
                   val1=(struct value *)value1;
                   realValue1=(struct realType *)val1->structType;
                   realResult=malloc(sizeof(struct realType));
                   switch(value2->nodetype){
                     case 'I' :
-                      intValue1=malloc(sizeof(struct integerType));
+                      result=malloc(sizeof(struct value));
                       val2=(struct value *)value2;
                       intValue1=(struct integerType *)val2->structType;
                       dbres= realValue1->value + (double)intValue1->value ;
@@ -909,7 +920,7 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'R' :
-                      realValue2=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
                       val2=(struct value *)value2;
                       realValue2=(struct realType *)val2->structType;
                       dbres= realValue1->value + realValue2->value;
@@ -918,6 +929,7 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'S' :
+                      result=malloc(sizeof(struct value));
                       stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
@@ -931,12 +943,11 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                   break ;
           
           case 'S' :
-                  stringValue1=malloc(sizeof(struct stringType));
                   val1=(struct value *)value1;
                   stringValue1=(struct stringType *)val1->structType;
-                  stringResult=malloc(sizeof(struct stringType));
                   switch(value2->nodetype){
                     case 'I' :
+                      result=malloc(sizeof(struct value));
                       stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       intValue1=(struct integerType *)val2->structType;
@@ -948,6 +959,7 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       result->structType=stringResult;
                       break;
                     case 'R' :
+                      result=malloc(sizeof(struct value));
                       stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       realValue1=(struct realType *)val2->structType;
@@ -959,7 +971,8 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       result->structType=stringResult;
                       break;
                     case 'S' :
-                      stringValue2=malloc(sizeof(struct stringType));
+                      result=malloc(sizeof(struct value));
+                      stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue2=(struct stringType *)val2->structType;
                       str1=strdup(stringValue1->value);

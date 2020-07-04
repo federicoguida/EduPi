@@ -138,6 +138,9 @@ void treefree(struct ast *a){
 			treefree(a->r);
 			break;
 
+			case '=':
+			break;
+
 			case 'F': case 'W' : case 'D': case 'Q':
 			free( ((struct flow *)a)->cond);
     	if( ((struct flow *)a)->tl) free( ((struct flow *)a)->tl);
@@ -247,8 +250,8 @@ void incr(struct symbol *s) {
 				exit(1);
 		}
 		struct value* v=malloc(sizeof(struct value));
-		struct integerType *i=malloc(sizeof(struct integerType));
-		int value=((struct integerType*)s->v->structType)->value;
+		struct integerType *i=(struct integerType*)s->v->structType;
+		int value=i->value;
 		value+=1;
 		i->value=value;
 		v->nodetype='I';
@@ -262,8 +265,8 @@ void decr(struct symbol *s) {
 				exit(1);
 		}
 		struct value* v=malloc(sizeof(struct value));
-		struct integerType *i=malloc(sizeof(struct integerType));
-		int value=((struct integerType*)s->v->structType)->value;
+		struct integerType *i=(struct integerType*)s->v->structType;
+		int value=i->value;
 		value-=1;
 		i->value=value;
 		v->nodetype='I';
@@ -293,8 +296,7 @@ void assign(struct symasgn *tree) {
 					node->next=NULL;
 					tree->s->l=node;
 				}else{
-					struct listexp *l = malloc(sizeof(struct listexp));
-					l = (struct listexp *)(evaluate(tree->v));
+					struct listexp *l = (struct listexp *)(evaluate(tree->v));
 					tree->s->l=l;
 				}
 		}
@@ -820,7 +822,7 @@ struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp, struct ast
 }
 
 struct ast* callbuiltin(struct fncall *f){
-    struct ast* a=malloc(sizeof(struct ast));
+    struct ast* a;
     enum bifs functype = f->functype;
 
     switch(functype) {
@@ -949,7 +951,7 @@ void print(struct ast *val) {
 	if(!val)
 	yyerror("Cannot print null element");
 	else{
-		struct value *a= malloc(sizeof(struct value));
+		struct value *a;
 		struct integerType *i;
 		struct realType *r;
 		struct stringType *s;
@@ -959,28 +961,24 @@ void print(struct ast *val) {
 
 		switch(val->nodetype){
 			case 'I' :  
-						i=malloc(sizeof(struct integerType));
 						a=(struct value *)val;
 						i=(struct integerType *)a->structType;
 						int intero= i->value;
 						printf("%d", intero);
 						break;
 			case 'R' :
-						r=malloc(sizeof(struct realType));
 						a=(struct value *)val;
 						r=(struct realType *)a->structType;
 						double reale= r->value;
 						printf("%g", reale);
 						break;
 			case 'S' :
-						s=malloc(sizeof(struct stringType));
 						a=(struct value *)val;
 						s=(struct stringType *)a->structType;
 						char * stringa=s->value;
 						printf("%s", stringa);
 						break;   
 			case 'Y' :
-						l=malloc(sizeof(struct listexp));
 						l=(struct listexp *)val;
 						printf("[ ");
 						printList(l);
@@ -1225,7 +1223,7 @@ struct ast *newast(int nodetype, struct ast *l, struct ast *r) {
       struct ast *a = malloc(sizeof(struct ast));
       if(!a) {
       yyerror("out of space");
-      exit(0);
+      exit(1);
       }
     a->nodetype = nodetype;
     a->l = l;
@@ -1376,8 +1374,8 @@ void peripheralcall(struct perimethod *m) {
 
 /****************************EVALUATE*******************************************/
 struct ast *evaluate(struct ast *tree) {
-    struct ast *result=malloc(sizeof(struct ast));
-    struct ast *temp=malloc(sizeof(struct ast));
+    struct ast *result;
+    struct ast *temp;
     struct symasgn *sym;
     struct symbol *s;
     struct value *v;

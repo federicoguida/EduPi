@@ -18,7 +18,7 @@ STRING    \"{print}*\"
 %%
 
 "list"          { yylval.type = 'Y'; return LST; }
-"periferica"    { return PERI; }
+"peripheral"    { yylval.type = 'K'; return PERI; }
 "integer"       { yylval.type = 'I'; return INT; }
 "real"          { yylval.type = 'R'; return RL; }
 "string"        { yylval.type = 'S'; return STR; }
@@ -44,6 +44,7 @@ STRING    \"{print}*\"
 "type"          { yylval.fn = B_type; return TYPE; }
 "in"            { return IN; }
 
+
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }
 "*"     { return MULOP; }
@@ -62,6 +63,7 @@ STRING    \"{print}*\"
 "."     { return DOT; }
 ","     { return COMMA; }
 "="     { return ASSIGN; }
+"->"    { return ARR;}
 
 "OR"|"or"     { return OROP; }
 "AND"|"and"   { return ANDOP; }

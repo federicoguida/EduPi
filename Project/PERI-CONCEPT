@@ -1,0 +1,44 @@
+Tipo periferica:
+def func(x,y){
+	abc...
+}
+
+def i2c(x,y,z){
+	abc...
+}
+
+
+def blickledon(){
+	sdads
+	dsdas
+}
+
+def as(){
+	if(test->name=='LED'){
+	keyboard->getInput();
+	test->blinkledon();
+	test->getInput();
+    
+	
+}	
+
+peripheral test=["LCD", func(x,y), i2c(x,y,z)];
+
+print(x);
+test->print(2);
+x->value=2;
+
+
+
+
+test->func(2,3);
+Output: abc...
+
+test->i2c(2,3,4);
+Output: abc...
+
+test->id; 
+Output: "LCD"
+
+test->spi(2,3); 
+Output: "Function 'SPI' is not in 'LCD' "

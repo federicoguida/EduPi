@@ -1112,6 +1112,7 @@ I	INTEGER
 S	STRING
 R	REAL
 Y	LIST
+K	PERIPHERICAL
 B	FOREACH
 M	NEGATE VALUE
 O	OR
@@ -1229,6 +1230,9 @@ struct ast *evaluate(struct ast *tree) {
 		case 'C' :
               result=calluser((struct ufncall *)tree);
               break;
+		case 'K' :
+			  printf("call");
+			  break;
         case 'Z': temp=evaluate(tree->l); result=evaluate(tree->r);  break;
         case 1: result = compare(1,evaluate(tree->l), evaluate(tree->r)); break; // >
         case 2: result = compare(2,evaluate(tree->l), evaluate(tree->r)); break; // <

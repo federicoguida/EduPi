@@ -1,14 +1,31 @@
 /***************** STRUCT DEF****************************/
 // Struct for variable
 struct symbol {
-    char * name;
+    char *name;
     int nodetype;
     struct value *v;
     struct listexp *l;
+    struct peripherical *p;
     struct ast *func;
     struct symlist *syms;
     struct ast *returnValue;
 };
+
+struct peripherical{
+    char *name;
+    struct funclist* f;
+};
+
+
+struct funclist{
+    struct fncall* fcall;
+    struct ufncall* bcall;
+    struct funclist* next;
+};
+
+struct ast* newperipherical();
+
+
 
 // Struct for store and search variable
 #define NHASH 9997

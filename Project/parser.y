@@ -29,7 +29,7 @@ int yylex();
 /*function*/
 %token <fn>PRINT
 %token <fn>PRINTLN
-%token <fn>TIME SLP TYPE
+%token <fn>TIME SLP TYPE SQRT POW
 %token <fn>POP PUSH APP DEL INS GET SIZE SEARCH
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
@@ -143,21 +143,23 @@ value: NAME { $$ = newref($1); }
 | STRING { $$ = newString('S', $1); }
 ;
 
-functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3); }
-| PRINTLN LPAREN exp RPAREN { $$ = newfunc($1, $3); }
+functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| PRINTLN LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | NAME DOT APP LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT INS LPAREN exp COMMA exp RPAREN { $$ = newlfunc($3, $1, $5, $7); }
 | NAME DOT PUSH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
-| SLP LPAREN exp RPAREN { $$ = newfunc($1, $3); }
+| SLP LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 ;
 
-functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL); } 
+functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); } 
 | NAME DOT POP LPAREN RPAREN { $$ = newlfunc($3, $1, NULL, NULL); }
 | NAME DOT DEL LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT GET LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT SIZE LPAREN RPAREN { $$ = newlfunc($3, $1, NULL, NULL); }
 | NAME DOT SEARCH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
-| TYPE LPAREN exp RPAREN { $$ = newfunc($1, $3); }
+| TYPE LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| SQRT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }

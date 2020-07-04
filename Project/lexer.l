@@ -42,8 +42,9 @@ STRING    \"{print}*\"
 "search"        { yylval.fn = B_search; return SEARCH; }
 "sleep"         { yylval.fn = B_slp; return SLP; }
 "type"          { yylval.fn = B_type; return TYPE; }
+"sqrt"          { yylval.fn = B_sqrt; return SQRT; }
+"pow"           { yylval.fn = B_pow; return POW; }
 "in"            { return IN; }
-
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

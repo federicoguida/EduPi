@@ -790,7 +790,7 @@ void foreach(struct for_each *f){
 
 
 /************************************************************************BUILT*/
-struct ast *newfunc(int functype, struct ast *l) {
+struct ast *newfunc(int functype, struct ast *l, struct ast *r) {
 		struct fncall *a = malloc(sizeof(struct fncall));
 		
 		if(!a) {
@@ -799,6 +799,7 @@ struct ast *newfunc(int functype, struct ast *l) {
 		}
 		a->nodetype = 'L';
 		a->l = l;
+		a->r = r;
 		a->functype = functype;
 		return (struct ast *)a;
 }
@@ -916,11 +917,27 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_type:
 					if(!f->l) {
-						yyerror("no arguments for sleep...");
+						yyerror("no arguments for type...");
 						free(a);
 						break;
 					}
 					a=type(evaluate(f->l));
+					break;
+				case B_sqrt:
+					if(!f->l) {
+						yyerror("no arguments for sqrt...");
+						free(a);
+						break;
+					}
+					a=ssqrt(evaluate(f->l));
+					break;
+				case B_pow:
+					if(!f->l || !f->r) {
+						yyerror("no arguments for pow...");
+						free(a);
+						break;
+					}
+					a=ppow(evaluate(f->l), evaluate(f->r));
 					break;
 				default:
 					yyerror("Unknown built-in function %d", functype);
@@ -1039,6 +1056,105 @@ struct ast *type(struct ast *val) {
 			default:
 				yyerror("error type!");
 				exit(1);
+		}
+	}
+	else {
+		yyerror("argument not defined");
+		return NULL;
+	}
+}
+
+struct ast *ssqrt(struct ast *val) {
+	if(val != NULL) {
+		struct value *v=(struct value *)val;
+		if(v->nodetype == 'I') {
+			struct value *res=malloc(sizeof(struct value));
+			struct realType *r=malloc(sizeof(struct realType));
+			struct integerType *intValue=(struct integerType *)v->structType;
+			r->value=sqrt(intValue->value);
+			res->nodetype='R';
+			res->structType=r;
+			return (struct ast *)res;
+		}
+		else if(v->nodetype == 'R') {
+			struct value *res=malloc(sizeof(struct value));
+			struct realType *r=malloc(sizeof(struct realType));
+			struct realType *realValue=(struct realType *)v->structType;
+			r->value=sqrt(realValue->value);
+			res->nodetype='R';
+			res->structType=r;
+			return (struct ast *)res;
+		}
+		else {
+			yyerror("Incompatible type!");
+			return NULL;
+		}
+	}
+	else {
+		yyerror("argument not defined");
+		return NULL;
+	}
+}
+
+struct ast *ppow(struct ast *val1, struct ast *val2) {
+	if((val1 != NULL) && (val2 != NULL)) {
+		struct value *v1=(struct value *)val1;
+		struct value *v2=(struct value *)val2;
+		if(v1->nodetype == 'I') {
+			if(v2->nodetype == 'I') {
+				struct value *res=malloc(sizeof(struct value));
+				struct realType *r=malloc(sizeof(struct realType));
+				struct integerType *intValue1=(struct integerType *)v1->structType;
+				struct integerType *intValue2=(struct integerType *)v2->structType;
+				r->value=pow(intValue1->value, intValue2->value);
+				res->nodetype='R';
+				res->structType=r;
+				return (struct ast *)res;
+			}
+			else if(v2->nodetype == 'R') {
+				struct value *res=malloc(sizeof(struct value));
+				struct realType *r=malloc(sizeof(struct realType));
+				struct integerType *intValue1=(struct integerType *)v1->structType;
+				struct realType *realValue2=(struct realType *)v2->structType;
+				r->value=pow(intValue1->value, realValue2->value);
+				res->nodetype='R';
+				res->structType=r;
+				return (struct ast *)res;
+			}
+			else {
+				yyerror("Incompatible type!");
+				return NULL;
+			}
+		}
+		else if(v1->nodetype == 'R') {
+			if(v2->nodetype == 'I') {
+				struct value *res=malloc(sizeof(struct value));
+				struct realType *r=malloc(sizeof(struct realType));
+				struct realType *realValue1=(struct realType *)v1->structType;
+				struct integerType *intValue2=(struct integerType *)v2->structType;
+				r->value=pow(realValue1->value, intValue2->value);
+				res->nodetype='R';
+				res->structType=r;
+				return (struct ast *)res;
+			}
+			else if(v2->nodetype == 'R') {
+				struct value *res=malloc(sizeof(struct value));
+				struct realType *r=malloc(sizeof(struct realType));
+				struct realType *realValue1=(struct realType *)v1->structType;
+				struct realType *realValue2=(struct realType *)v2->structType;
+				r->value=pow(realValue1->value, realValue2->value);
+				res->nodetype='R';
+				res->structType=r;
+				return (struct ast *)res;
+			}
+			else {
+				yyerror("Incompatible type!");
+				return NULL;
+			}
+		}
+		else {
+			yyerror("Incompatible type!");
+			return NULL;
 		}
 	}
 	else {

@@ -96,6 +96,8 @@ enum bifs {			/* built-in functions */
   B_search=11,
   B_slp=12,
   B_type=13,
+  B_sqrt=14,
+  B_pow=15,
 };
 
 // built-in function 
@@ -173,7 +175,7 @@ struct ast *newForEach(int nodetype, struct symbol* i, struct symbol* list, stru
 /******************************END-FLOW*/
 
 /**********************BUILT*/
-struct ast *newfunc(int functype, struct ast *l);
+struct ast *newfunc(int functype, struct ast *l, struct ast *r);
 struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp, struct ast *val);
 struct ast *callbuiltin(struct fncall *f);
 struct ast *date();
@@ -182,7 +184,8 @@ void println(struct ast *val);
 void print(struct ast *val);
 void bsleep(struct ast *val);
 struct ast *type(struct ast *val);
-
+struct ast *ssqrt(struct ast *val);
+struct ast *ppow(struct ast *val1, struct ast *val2);
 /*****************END-BUILT*/
 
 /*********************************Type INIT*/

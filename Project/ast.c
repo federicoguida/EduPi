@@ -1008,10 +1008,9 @@ void bsleep(struct ast *val) {
 
 struct ast *type(struct ast *val) {
 	if(val != NULL) {
-		struct value *v=(struct value *)val;
 		struct value *res=malloc(sizeof(struct value));
 		struct stringType *str=malloc(sizeof(struct stringType));
-		switch(v->nodetype) {
+		switch(val->nodetype) {
 			case 'I':
 				str->value = "integer";
 				res->nodetype = 'S';
@@ -1029,6 +1028,11 @@ struct ast *type(struct ast *val) {
 				return (struct ast *)res;
 			case 'Y':
 				str->value = "list";
+				res->nodetype = 'S';
+				res->structType = str;
+				return (struct ast *)res;
+			case 'K':
+				str->value = "peripheral";
 				res->nodetype = 'S';
 				res->structType = str;
 				return (struct ast *)res;

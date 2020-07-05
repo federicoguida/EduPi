@@ -64,6 +64,7 @@ int yylex();
 program: /* nothing */
 | program statement { evaluate($2); treefree($2); }
 | program DEF NAME LPAREN symlist RPAREN LBRACE tail RETURN exp SEMI RBRACE { dodef($3, $5, $8,$10); }
+| program DEF NAME LPAREN symlist RPAREN LBRACE tail RBRACE { dodef($3, $5, $8,NULL); }
 ;
 
 statement: if_statement { }
@@ -176,7 +177,7 @@ functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }
-| explist COMMA exp { $$ = newast('Z', $1, $3); }
+| exp COMMA explist { $$ = newast('Z', $1, $3); }
 | exp 
 ;
 

@@ -59,7 +59,7 @@ struct ast* calluser(struct ufncall *f){
 		struct symbol *fn = f->s;	/* function name */
 		struct symlist *sl;		/* dummy arguments */
 		struct ast *args = f->l;	/* actual arguments */
-		struct ast **oldval, **newval;	/* saved arg values */
+		struct ast  **val;	/* saved arg values */
 		struct ast *v=NULL;
 		int nargs;
 		int i;
@@ -73,56 +73,56 @@ struct ast* calluser(struct ufncall *f){
 		sl = fn->syms;
 		for(nargs = 0; sl; sl = sl->next)
 			nargs++;
-
 		/* prepare to save them */
-		oldval = (struct ast **)malloc(nargs * sizeof(struct ast*));
-		newval = (struct ast **)malloc(nargs * sizeof(struct ast*));
-		if(!oldval || !newval) {
-				yyerror("Out of space in %s", fn->name); exit(1);
+		val = malloc(nargs * sizeof(struct ast*));
+		if(!val) {
+			yyerror("Out of space in %s", fn->name); exit(1);
 		}
 		
 		/* evaluate the arguments */
 		for(i = 0; i < nargs; i++) {
-				if(!args) {
-						yyerror("too few args in call to %s", fn->name);
-						free(oldval); free(newval);
-						exit(1);
-				}
+			if(!args) {
+				yyerror("too few args in call to %s", fn->name);
+				free(val);
+				exit(1);
+			}
 
-				if(args->nodetype == 'Z') {	/* if this is a list node */
-					newval[i] = evaluate(args->l);
-					args = args->r;
-				} else {			/* if it's the end of the list */
-					newval[i] = evaluate(args);
-					args = NULL;
-				}
+			if(args->nodetype == 'Z') {	/* if this is a list node */
+				val[i] = evaluate(args->l);
+				args = args->r;
+			} else {			/* if it's the end of the list */
+				val[i] = evaluate(args);
+				args = NULL;
+			}
 		}
 					
-		//save old values of dummies, assign new ones 
 		sl = fn->syms;
 		for(i = 0; i < nargs; i++) {
-				struct symbol *s = sl->sym;
-				s->v = (struct value*)newval[i];
+			struct symbol *s = sl->sym;
+			if(val[i]->nodetype=='Y'){
+				s->l = (struct listexp*)val[i];
+				s->nodetype = s->l->nodetype;
+			}else{
+				s->v = (struct value*)val[i];
 				s->nodetype = s->v->nodetype;
-				sl = sl->next;
+			}
+			sl = sl->next;
 		}
 
-		/*free(newval); */
-
-		/* evaluate the function */
 		evaluate(fn->func);
 		if(fn->returnValue){
 				v=evaluate(fn->returnValue);
 		}
-		/*	/* put the dummies back 
+		
 		sl = fn->syms;
 		for(i = 0; i < nargs; i++) {
-				struct symbol *s = sl->sym;
-				s->v = (struct value*)oldval[i];
-				sl = sl->next;
+			struct symbol *s = sl->sym;
+			s->nodetype=-1;
+			s->v = NULL;
+			s->func = NULL;
+			s->syms = NULL;
+			sl=sl->next;
 		}
-
-		free(oldval); */
 		
 		return v;
 }
@@ -367,9 +367,7 @@ struct ast *pop(struct symbol *s) {
 	}else{
 		if(s->nodetype=='Y'){
 			if(s->l->exp != NULL) {
-				struct ast* a=malloc(sizeof(struct ast));
-				a=s->l->exp;
-				free(s->l);
+				struct ast* a=s->l->exp;
 				if(!s->l->next){
 					struct listexp *node=malloc(sizeof(struct listexp));
 					node->nodetype='Y';

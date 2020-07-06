@@ -239,6 +239,14 @@ void assign(struct symasgn *tree) {
 				if(tree->s->nodetype!=v->nodetype){
 					if(tree->s->nodetype=='R' && v->nodetype=='I'){
 							tree->s->v=v;
+							struct realType *r=malloc(sizeof(struct realType));
+							struct value *val=malloc(sizeof(struct value));
+							double value=(double)(((struct integerType*)(v->structType))->value);
+							r->value=value;
+							val->nodetype='R';
+							val->structType=r;
+							tree->s->v=val;
+
 					}else{
 							yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, v->nodetype );
 							exit(1);
@@ -566,8 +574,8 @@ struct ast *search(struct symbol *s, struct ast *exp) {
 				int count = 0;
 				struct value *val1=(struct value *)l->exp;
 				struct value *val2=(struct value *)exp;
-				struct value *res=malloc(sizeof(struct value));
-				struct integerType *inres=malloc(sizeof(struct integerType));
+				struct value *res;
+				struct integerType *inres;
 				struct integerType *int1;
 				struct integerType *int2;
 				struct realType *real1;
@@ -581,6 +589,8 @@ struct ast *search(struct symbol *s, struct ast *exp) {
 								int1=(struct integerType *)val1->structType;
 								int2=(struct integerType *)val2->structType;
 								if(int1->value == int2->value) {
+									inres=malloc(sizeof(struct integerType));
+									res=malloc(sizeof(struct value));
 									inres->value=count;
 									res->nodetype='I';
 									res->structType=inres;
@@ -593,6 +603,8 @@ struct ast *search(struct symbol *s, struct ast *exp) {
 								real1=(struct realType *)val1->structType;
 								real2=(struct realType *)val2->structType;
 								if(real1->value == real2->value) {
+									inres=malloc(sizeof(struct integerType));
+									res=malloc(sizeof(struct value));
 									inres->value=count;
 									res->nodetype='I';
 									res->structType=inres;
@@ -605,6 +617,8 @@ struct ast *search(struct symbol *s, struct ast *exp) {
 								str1=(struct stringType *)val1->structType;
 								str2=(struct stringType *)val2->structType;
 								if(strcmp(str1->value, str2->value) == 0) {
+									inres=malloc(sizeof(struct integerType));
+									res=malloc(sizeof(struct value));
 									inres->value=count;
 									res->nodetype='I';
 									res->structType=inres;
@@ -936,7 +950,7 @@ void print(struct ast *val) {
 						break;
 			case 'K' :
 						p=(struct peripherical*)val;
-						printf("Peripheral name: %s\n",p->name);
+						printf("Peripheral ID: %s\n",p->name);
 						f=p->f;
 						while(f){
 							printf("Method --> %s\n", f->bcall->s->name);
@@ -985,30 +999,40 @@ void bsleep(struct ast *val) {
 
 struct ast *type(struct ast *val) {
 	if(val != NULL) {
-		struct value *res=malloc(sizeof(struct value));
-		struct stringType *str=malloc(sizeof(struct stringType));
+		struct value *res;
+		struct stringType *str;
 		switch(val->nodetype) {
 			case 'I':
+				res=malloc(sizeof(struct value));
+				str=malloc(sizeof(struct stringType));
 				str->value = "integer";
 				res->nodetype = 'S';
 				res->structType = str;
 				return (struct ast *)res;
 			case 'R':
+				res=malloc(sizeof(struct value));
+				str=malloc(sizeof(struct stringType));
 				str->value = "real";
 				res->nodetype = 'S';
 				res->structType = str;
 				return (struct ast *)res;
 			case 'S':
+				res=malloc(sizeof(struct value));
+				str=malloc(sizeof(struct stringType));
 				str->value = "string";
 				res->nodetype = 'S';
 				res->structType = str;
 				return (struct ast *)res;
 			case 'Y':
+				res=malloc(sizeof(struct value));
+				str=malloc(sizeof(struct stringType));
 				str->value = "list";
 				res->nodetype = 'S';
 				res->structType = str;
 				return (struct ast *)res;
 			case 'K':
+				res=malloc(sizeof(struct value));
+				str=malloc(sizeof(struct stringType));
 				str->value = "peripheral";
 				res->nodetype = 'S';
 				res->structType = str;
@@ -1253,18 +1277,9 @@ void assignPeri(struct periassign* p){
 
 struct funclist* newfunclist(struct ast* func, struct funclist *next){
 	struct funclist *fn=malloc(sizeof(struct funclist));
-	if(func->nodetype=='C'){
-		fn->fcall=NULL;
 		fn->bcall=(struct ufncall*)func;
 		fn->next=next;
 		return fn;
-	}else{
-		fn->fcall=(struct fncall*)func;
-		fn->bcall=NULL;
-		fn->next=next;
-		return fn;
-	}
-
 }
 
 struct ast* newperipheralcall(struct symbol *s, struct ast* a, struct symbol *f, struct ast *expl ){
@@ -1282,7 +1297,7 @@ struct ast* newperipheralcall(struct symbol *s, struct ast* a, struct symbol *f,
 
 void peripheralcall(struct perimethod *m) {
 	if(m->a){
-		printf("%s",m->s->p->name);
+		printf("Peripheral ID -> %s\n",m->s->p->name);
 	}else {
 		int done=0;
 		struct funclist *fl=m->s->p->f;
@@ -1301,21 +1316,6 @@ void peripheralcall(struct perimethod *m) {
 			}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1407,9 +1407,6 @@ struct ast *evaluate(struct ast *tree) {
 		case 'C' :
               result=calluser((struct ufncall *)tree);
               break;
-		case 'K' :
-			  printf("call");
-			  break;
 		case '_' :
 			  assignPeri((struct periassign*)tree);
 			  break;

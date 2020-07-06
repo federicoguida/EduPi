@@ -19,7 +19,6 @@ struct peripherical{
 
 
 struct funclist{
-    struct fncall* fcall;
     struct ufncall* bcall;
     struct funclist* next;
 };
@@ -39,11 +38,6 @@ struct perimethod{
     struct symbol *f;
     struct ast *expl;
 };
-
-struct ast* newperipherical(int nodetype, struct symbol *var, char *name, struct funclist *fl);
-struct funclist* newfunclist(struct ast* func, struct funclist *next);
-void peripheralcall(struct perimethod *p);
-struct ast* newperipheralcall(struct symbol *s, struct ast* a, struct symbol *f, struct ast *expl);
 
 // Struct for store and search variable
 #define NHASH 9997
@@ -127,6 +121,12 @@ struct fncall {
   enum bifs functype;
 };
 
+struct ufncall {		/* user function */
+  int nodetype;			/* type C */
+  struct ast *l;		/* list of arguments */
+  struct symbol *s;
+};
+
 // General Tree
 struct ast {
     int nodetype; 
@@ -155,6 +155,19 @@ struct realType{
     double value;
 };
 /*****************END-STRUCT DEF****************************/
+
+/********************************FUNCTION USER***************************/
+void dodef(struct symbol *name, struct symlist *syms, struct ast *func, struct ast *returnValue);
+struct ast* calluser(struct ufncall *f);
+struct ast *newcall(struct symbol *s, struct ast *l);
+/********************************FUNCTION USER***************************/
+
+/********************************PERI************************************/
+struct ast* newperipherical(int nodetype, struct symbol *var, char *name, struct funclist *fl);
+struct funclist* newfunclist(struct ast* func, struct funclist *next);
+void peripheralcall(struct perimethod *p);
+struct ast* newperipheralcall(struct symbol *s, struct ast* a, struct symbol *f, struct ast *expl);
+/********************************PERI************************************/
 
 /********************************VARIABLE********************************/
 struct ast *newref(struct symbol *s);
@@ -219,17 +232,3 @@ void symlistfree(struct symlist *sl);
 extern int yylineno; /* from lexer */
 void yyerror(char *s, ...);
 /***********************END-OTHER UTILITY*/
-
-
-
-
-void dodef(struct symbol *name, struct symlist *syms, struct ast *func, struct ast *returnValue);
-
-struct ufncall {		/* user function */
-  int nodetype;			/* type C */
-  struct ast *l;		/* list of arguments */
-  struct symbol *s;
-};
-struct ast* calluser(struct ufncall *f);
-
-struct ast *newcall(struct symbol *s, struct ast *l);

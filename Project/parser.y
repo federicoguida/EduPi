@@ -50,7 +50,7 @@ int yylex();
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS 
 
-%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist for_each
+%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist for_each printlist
 %type <a> pericall
 %type <sl> symlist
 %type <type> type
@@ -156,8 +156,8 @@ value: NAME { $$ = newref($1); }
 | STRING { $$ = newString('S', $1); }
 ;
 
-functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
-| PRINTLN LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+functionV: PRINT LPAREN explist RPAREN { $$ = newfunc($1, $3, NULL); }
+| PRINTLN LPAREN explist RPAREN { $$ = newfunc($1, $3, NULL); }
 | NAME DOT APP LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT INS LPAREN exp COMMA exp RPAREN { $$ = newlfunc($3, $1, $5, $7); }
 | NAME DOT PUSH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
@@ -179,6 +179,11 @@ functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); }
 
 explist: /*nothing*/ { $$=NULL; }
 | exp COMMA explist { $$ = newast('Z', $1, $3); }
+| exp 
+;
+
+printlist: /*nothing*/ { $$=NULL;}
+| exp ADDOP explist { $$ = newast('Z', $1, $3); }
 | exp 
 ;
 

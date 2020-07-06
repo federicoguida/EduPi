@@ -973,7 +973,13 @@ void print(struct ast *val) {
 							printf("Method --> %s\n", f->bcall->s->name);
 							f=f->next;
 						}
-						
+						break;
+			case 'Z' :
+						print(evaluate(val->l));
+						if(val->next){
+							val=val->next;
+							print(val);
+						}
 						break;
 
 			default: printf("Error print"); exit(1);

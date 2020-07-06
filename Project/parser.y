@@ -1,10 +1,9 @@
-/* calculator with AST */
-
 %{
 #  include <stdio.h>
 #  include <stdlib.h>
 #  include "ast.h"
 #  include "operations.h"
+#  include "rasp.h"
 int yylex();
 %}
 
@@ -32,6 +31,7 @@ int yylex();
 %token <fn>PRINTLN
 %token <fn>TIME SLP TYPE SQRT POW
 %token <fn>POP PUSH APP DEL INS GET SIZE SEARCH
+%token <fn>LED BUTT
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <i> LST PERI IF ELSE DO WHILE FOR RETURN DEF IN ARR ID
@@ -162,6 +162,7 @@ functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | NAME DOT INS LPAREN exp COMMA exp RPAREN { $$ = newlfunc($3, $1, $5, $7); }
 | NAME DOT PUSH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | SLP LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| LED LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 ;
 
 functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); } 
@@ -173,6 +174,7 @@ functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); }
 | TYPE LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | SQRT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
+| BUTT LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }

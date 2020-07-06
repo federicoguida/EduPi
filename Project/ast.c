@@ -249,14 +249,8 @@ void incr(struct symbol *s) {
 				yyerror("Not increment type");
 				exit(1);
 		}
-		struct value* v=malloc(sizeof(struct value));
 		struct integerType *i=(struct integerType*)s->v->structType;
-		int value=i->value;
-		value+=1;
-		i->value=value;
-		v->nodetype='I';
-		v->structType=i;
-		s->v=v;
+		i->value=i->value+1;
 }
 
 void decr(struct symbol *s) { 
@@ -264,14 +258,8 @@ void decr(struct symbol *s) {
 				yyerror("Not increment type");
 				exit(1);
 		}
-		struct value* v=malloc(sizeof(struct value));
 		struct integerType *i=(struct integerType*)s->v->structType;
-		int value=i->value;
-		value-=1;
-		i->value=value;
-		v->nodetype='I';
-		v->structType=i;
-		s->v=v;
+		i->value=i->value-1;
 }
 
 void assign(struct symasgn *tree) {

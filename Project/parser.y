@@ -35,7 +35,7 @@ int yylex();
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <i> LST PERI IF ELSE DO WHILE FOR RETURN DEF IN ARR ID
-%token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR
+%token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR CNC
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN 
 
  /* precedencies and associativities */
@@ -44,7 +44,7 @@ int yylex();
 %right ASSIGN
 %left ANDOP
 %left OROP
-%left ADDOP SUBOP
+%left ADDOP SUBOP CNC
 %left MULOP DIVOP MODOP
 %right NOTOP INCR DECR
 %left LPAREN RPAREN LBRACK RBRACK
@@ -156,8 +156,8 @@ value: NAME { $$ = newref($1); }
 | STRING { $$ = newString('S', $1); }
 ;
 
-functionV: PRINT LPAREN explist RPAREN { $$ = newfunc($1, $3, NULL); }
-| PRINTLN LPAREN explist RPAREN { $$ = newfunc($1, $3, NULL); }
+functionV: PRINT LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL); }
+| PRINTLN LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL); }
 | NAME DOT APP LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT INS LPAREN exp COMMA exp RPAREN { $$ = newlfunc($3, $1, $5, $7); }
 | NAME DOT PUSH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
@@ -183,7 +183,7 @@ explist: /*nothing*/ { $$=NULL; }
 ;
 
 printlist: /*nothing*/ { $$=NULL;}
-| exp ARR explist { $$ = newast('Z', $1, $3); }
+| exp CNC printlist { $$ = newast('Z', $1, $3); }
 | exp 
 ;
 

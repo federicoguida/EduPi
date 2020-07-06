@@ -51,11 +51,11 @@ int yylex();
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS 
 
-%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist for_each printlist
+%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist for_each  
 %type <a> pericall
 %type <sl> symlist
 %type <type> type
-%type <l> value_list
+%type <l> value_list printlist
 %type <fl> functionlist
 %start program
 
@@ -157,8 +157,8 @@ value: NAME { $$ = newref($1); }
 | STRING { $$ = newString('S', $1); }
 ;
 
-functionV: PRINT LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL); }
-| PRINTLN LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL); }
+functionV: PRINT LPAREN printlist RPAREN { $$ = newfunc($1, (struct ast*)$3, NULL); }
+| PRINTLN LPAREN printlist RPAREN { $$ = newfunc($1, (struct ast*)$3, NULL); }
 | NAME DOT APP LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT INS LPAREN exp COMMA exp RPAREN { $$ = newlfunc($3, $1, $5, $7); }
 | NAME DOT PUSH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
@@ -186,8 +186,8 @@ explist: /*nothing*/ { $$=NULL; }
 ;
 
 printlist: /*nothing*/ { $$=NULL;}
-| exp CNC printlist { $$ = newast('Z', $1, $3); }
-| exp 
+| exp CNC printlist { $$ = newprintlist($1,$3); }
+| exp {$$ = newprintlist($1,NULL);}
 ;
 
 value_list: exp COMMA value_list { $$ = newlist('Y', $1, $3); }

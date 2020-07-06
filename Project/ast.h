@@ -219,6 +219,7 @@ void bsleep(struct ast *val);
 struct ast *type(struct ast *val);
 struct ast *ssqrt(struct ast *val);
 struct ast *ppow(struct ast *val1, struct ast *val2);
+struct listexp* newprintlist(struct ast *p, struct listexp *list);
 /*****************END-BUILT*/
 
 /*********************************Type INIT*/

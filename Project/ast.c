@@ -1398,7 +1398,14 @@ void peripheralcall(struct perimethod *m) {
 	}
 }
 
+struct listexp* newprintlist(struct ast *p, struct listexp *list){
+		struct listexp *l=malloc(sizeof(struct listexp));
 
+		l->nodetype = 'P';
+    	l->exp = p;
+    	l->next = list;
+		return l;
+}
 
 /****************************EVALUATE*******************************************/
 struct ast *evaluate(struct ast *tree) {

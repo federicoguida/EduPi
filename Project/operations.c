@@ -589,7 +589,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     stringValue2=(struct stringType *)val2->structType;
-                    res = (strlen(stringValue1->value) != strlen(stringValue2->value))? 1 : 0;
+                    res = strcmp(stringValue1->value, stringValue2->value);
+                    printf("%s %s\n",stringValue1->value, stringValue2->value)? 1:0;
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
@@ -675,7 +676,7 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                     intResult=malloc(sizeof(struct integerType));
                     val2=(struct value*)r;
                     stringValue2=(struct stringType *)val2->structType;
-                    res = (strcmp(stringValue1->value, stringValue2->value) == 0 ? 1 : 0);
+                    res = strcmp(stringValue1->value, stringValue2->value);
                     result->nodetype='I';
                     intResult->value=res;
                     result->structType=intResult;
@@ -770,8 +771,8 @@ struct ast *compare(int type, struct ast *l, struct ast *r){
                 break;
             }
             break;
-        /*FINE CASO ==*/
-        /* CASO >= */
+        /*FINE CASO >=*/
+        /* CASO <= */
         case 6:
             switch(l->nodetype){
               case 'I':
@@ -907,18 +908,14 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'S' :
+                      realResult=malloc(sizeof(struct realType));
                       result=malloc(sizeof(struct value));
-                      stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      asprintf(&str1, "%d", intValue1->value);
-                      len = (strlen(str1) + strlen(stringValue1->value)+1);
-                      stres=malloc(sizeof(char)*len);
-                      strcat(stres, str1);
-                      strcat(stres, stringValue1->value);
-                      stringResult->value=stres;
-                      result->nodetype='S';
-                      result->structType=stringResult;
+                      dbres= intValue1->value + atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                   }
                   break ;
@@ -948,18 +945,14 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'S' :
+                      realResult=malloc(sizeof(struct realType));
                       result=malloc(sizeof(struct value));
-                      stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      asprintf(&str1, "%g", realValue1->value);
-                      len = (strlen(str1) + strlen(stringValue1->value) +1);
-                      stres=malloc(sizeof(char)*len);
-                      strcat(stres, str1);
-                      strcat(stres, stringValue1->value);
-                      stringResult->value=stres;
-                      result->nodetype='S';
-                      result->structType=stringResult;
+                      dbres= intValue1->value + atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                   }
                   break ;
@@ -969,54 +962,42 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                   stringValue1=(struct stringType *)val1->structType;
                   switch(value2->nodetype){
                     case 'I' :
+                      realResult=malloc(sizeof(struct realType));
                       result=malloc(sizeof(struct value));
-                      stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       intValue1=(struct integerType *)val2->structType;
-                      stres=strdup(stringValue1->value);
-                      asprintf(&str1, "%d", intValue1->value);
-                      len = (strlen(str1) + strlen(stringValue1->value) +1);
-                      stres=malloc(sizeof(char)*len);
-                      strcat(stres, stringValue1->value);
-                      strcat(stres, str1);
-                      stringResult->value=stres;
-                      result->nodetype='S';
-                      result->structType=stringResult;
+                      dbres= intValue1->value + atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                     case 'R' :
+                      realResult=malloc(sizeof(struct realType));
                       result=malloc(sizeof(struct value));
-                      stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       realValue1=(struct realType *)val2->structType;
-                      stres=strdup(stringValue1->value);
-                      asprintf(&str1, "%g", realValue1->value);
-                      len = (strlen(str1) + strlen(stringValue1->value) +1);
-                      stres=malloc(sizeof(char)*len);
-                      strcat(stres, stringValue1->value);
-                      strcat(stres, str1);
-                      stringResult->value=stres;
-                      result->nodetype='S';
-                      result->structType=stringResult;
+                      dbres= realValue1->value + atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                     case 'S' :
+                      realResult=malloc(sizeof(struct realType));
                       result=malloc(sizeof(struct value));
-                      stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue2=(struct stringType *)val2->structType;
-                      str1=strdup(stringValue1->value);
-                      str2=strdup(stringValue2->value);
-                      len = (strlen(str1) + strlen(str2) + 1);
-                      stres=malloc(sizeof(char)*len);
-                      strcat(stres,str1);
-                      strcat(stres, str2);
-                      result->nodetype='S';
-                      stringResult->value=stres;
-                      result->structType=stringResult;
+                      dbres= atof(stringValue1->value) + atof(stringValue2->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                   }
-                  break ;
+                  break;
 
-          default: printf("Internal error"); exit(1);
+          default: 
+          printf("Operation is not supported : Type %c + Type %c\n", value1->nodetype, value2->nodetype );
+          return NULL;
+
       }
       return (struct ast *)result;
 }
@@ -1108,13 +1089,47 @@ struct ast *sub(struct ast *value1, struct ast *value2) {
                   break ;
           
           case 'S' :
-                  yyerror("Cannot substract string type");
-                  exit(1);
-                  break ;
+                  val1=(struct value *)value1;
+                  stringValue1=(struct stringType *)val1->structType;
+                  switch(value2->nodetype){
+                    case 'I' :
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
+                      val2=(struct value *)value2;
+                      intValue1=(struct integerType *)val2->structType;
+                      dbres= intValue1->value - atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      break;
+                    case 'R' :
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
+                      val2=(struct value *)value2;
+                      realValue1=(struct realType *)val2->structType;
+                      dbres= realValue1->value - atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      break;
+                    case 'S' :
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
+                      val2=(struct value *)value2;
+                      stringValue2=(struct stringType *)val2->structType;
+                      dbres= atof(stringValue1->value) - atof(stringValue2->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      break;
+                  }
+                break;
 
-          default: printf("Internal error"); exit(1);
+          default: 
+          printf("Operation is not supported : Type %c - Type %c\n", value1->nodetype, value2->nodetype );
+          return NULL;
+
       }
-
       return (struct ast *)result;
 }
 
@@ -1133,10 +1148,6 @@ struct ast *mul(struct ast *value1, struct ast *value2) {
       struct stringType *stringValue1;
       struct stringType *stringValue2;
       struct stringType *stringResult;
-      char * str1;
-      char * str2;
-      char * stres;
-      int mult; char *stringa;
 
       switch(value1->nodetype){
           case 'I' :
@@ -1164,16 +1175,14 @@ struct ast *mul(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'S' :
-                      stringResult=malloc(sizeof(struct stringType));
-                      result=malloc(sizeof(struct realType));
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      int mult=intValue1->value;
-                      char *stringa=strdup(stringValue1->value);
-                      stringa=strmul(stringa,mult);
-                      result->nodetype='S';
-                      stringResult->value=stringa;
-                      result->structType=stringResult;
+                      dbres= intValue1->value * atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                   }
                   break ;
@@ -1202,67 +1211,78 @@ struct ast *mul(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'S' :
-                      stringResult=malloc(sizeof(struct stringType));
-                      result=malloc(sizeof(struct realType));
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      mult=(int)realValue1->value;
-                      stringa=strdup(stringValue1->value);
-                      stringa=strmul(stringa,mult);
-                      result->nodetype='S';
-                      stringResult->value=stringa;
-                      result->structType=stringResult;
+                      dbres= realValue1->value * atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      break ;
                   }
-                  break ;
+                break;
+                 
           case 'S' :
                   val1=(struct value *)value1;
                   stringValue1=(struct stringType *)val1->structType;
                   stringResult=malloc(sizeof(struct stringType));
                   switch(value2->nodetype){
                     case 'I' :
-                      result=malloc(sizeof(struct realType));
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
                       val2=(struct value *)value2;
                       intValue1=(struct integerType *)val2->structType;
-                      mult=intValue1->value;
-                      stringa=strdup(stringValue1->value);
-                      stringa=strmul(stringa,mult);
-                      result->nodetype='S';
-                      stringResult->value=stringa;
-                      result->structType=stringResult;
+                      dbres= intValue1->value * atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                     case 'R' :
-                      result=malloc(sizeof(struct realType));
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
                       val2=(struct value *)value2;
                       realValue1=(struct realType *)val2->structType;
-                      mult=(int)realValue1->value;
-                      stringa=strdup(stringValue1->value);
-                      stringa=strmul(stringa,mult);
-                      result->nodetype='S';
-                      stringResult->value=stringa;
-                      result->structType=stringResult;
+                      dbres= realValue1->value * atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                     case 'S' :
-                      yyerror("invalid operation.. cannot mul string with string type ");
-                      exit(1);
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
+                      val2=(struct value *)value2;
+                      stringValue2=(struct stringType *)val2->structType;
+                      dbres= atof(stringValue1->value) * atof(stringValue2->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                   }
                   break ;
 
-          default: printf("Internal error"); exit(1);
+          default: 
+          printf("Operation is not supported : Type %c * Type %c\n", value1->nodetype, value2->nodetype );
+          return NULL;
       }
       return (struct ast *)result;
 }
 
 struct ast *rdiv(struct ast *value1, struct ast *value2) {
-      struct value *val1;
+       struct value *val1;
       struct value *val2;
       struct value *result;
       struct integerType *intValue1;
       struct integerType *intValue2;
+      struct integerType *intResult;
+      int res;
       struct realType *realValue1;
       struct realType *realValue2;
       struct realType *realResult;
       double dbres;
+      struct stringType *stringValue1;
+      struct stringType *stringValue2;
+      struct stringType *stringResult;
       switch(value1->nodetype){
           case 'I' :
                   val1=(struct value *)value1;
@@ -1289,8 +1309,14 @@ struct ast *rdiv(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'S' :
-                      yyerror("invalid operation.. String cannot div with double type ");
-                      exit(1);
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      dbres= intValue1->value / atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                       break;
                   }
                   break ;
@@ -1320,21 +1346,58 @@ struct ast *rdiv(struct ast *value1, struct ast *value2) {
                       result->structType=realResult;
                       break;
                     case 'S' :
-                      yyerror("invalid operation.. String cannot div with double type ");
-                      exit(1);
-                      break;
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
+                      val2=(struct value *)value2;
+                      stringValue1=(struct stringType *)val2->structType;
+                      dbres= realValue1->value * atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
                   }
-                  result->nodetype='R';
-                  realResult->value=dbres;
-                  result->structType=realResult;
                   break ;
           
           case 'S' :
-                yyerror("invalid operation.. String cannot div ");
-                exit(1);
-                break;
+                  val1=(struct value *)value1;
+                  stringValue1=(struct stringType *)val1->structType;
+                  stringResult=malloc(sizeof(struct stringType));
+                  switch(value2->nodetype){
+                    case 'I' :
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
+                      val2=(struct value *)value2;
+                      intValue1=(struct integerType *)val2->structType;
+                      dbres= intValue1->value / atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      break;
+                    case 'R' :
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
+                      val2=(struct value *)value2;
+                      realValue1=(struct realType *)val2->structType;
+                      dbres= realValue1->value / atof(stringValue1->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      break;
+                    case 'S' :
+                      realResult=malloc(sizeof(struct realType));
+                      result=malloc(sizeof(struct value));
+                      val2=(struct value *)value2;
+                      stringValue2=(struct stringType *)val2->structType;
+                      dbres= atof(stringValue1->value) / atof(stringValue2->value) ;
+                      result->nodetype='R';
+                      realResult->value=dbres;
+                      result->structType=realResult;
+                      break;
+                  }
+                  break ;
 
-          default: printf("Internal error"); exit(1);
+          default: 
+          printf("Operation is not supported : Type %c / Type %c\n", value1->nodetype, value2->nodetype );
+          return NULL;
       }
       return (struct ast *)result;
 }
@@ -1379,7 +1442,9 @@ struct ast *mod(struct ast *value1, struct ast *value2) {
                 yyerror("invalid operation.. String cannot mod ");
                 exit(1);
 
-          default: printf("Internal error"); exit(1);
+          default: 
+          printf("Operation is not supported : Type %c mod Type %c\n", value1->nodetype, value2->nodetype );
+          return NULL;
       }
       return (struct ast *)result;
 }
@@ -1416,9 +1481,9 @@ struct ast *abss(struct ast *tree) {
           yyerror("Cannot negate String");
           exit(1);
           break;
-    default: 
-        printf("Internal error"); 
-        exit(1);
+   default: 
+          printf("Operation is not supported : Type %c \n", tree->nodetype);
+          return NULL;
   }
   return (struct ast* )a;
 }

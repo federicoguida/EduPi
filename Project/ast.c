@@ -1110,7 +1110,7 @@ struct ast *scan(struct ast *val){
 		}else if(strcmp(p->value,"S")==0){
 			res=malloc(sizeof(struct value));
 			s=malloc(sizeof(struct stringType));
-			stringres=malloc(sizeof(char*));
+			stringres=malloc(sizeof(char)*256);
 			scanf("%s",stringres);
 			s->value=strdup(stringres);
 			res->nodetype='S';
@@ -1126,7 +1126,6 @@ struct ast *scan(struct ast *val){
 			return (struct ast*)res;
 		}else
 			return NULL;	
-
 }
 
 struct ast *ssqrt(struct ast *val) {

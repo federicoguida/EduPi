@@ -123,4 +123,3 @@ struct ast *button(struct ast *pin) {
 		yyerror("argument not defined");
 	}
 }
-

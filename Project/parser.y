@@ -156,8 +156,8 @@ value: NAME { $$ = newref($1); }
 | STRING { $$ = newString('S', $1); }
 ;
 
-functionV: PRINT LPAREN explist RPAREN { $$ = newfunc($1, $3, NULL); }
-| PRINTLN LPAREN explist RPAREN { $$ = newfunc($1, $3, NULL); }
+functionV: PRINT LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL); }
+| PRINTLN LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL); }
 | NAME DOT APP LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT INS LPAREN exp COMMA exp RPAREN { $$ = newlfunc($3, $1, $5, $7); }
 | NAME DOT PUSH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }

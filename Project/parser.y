@@ -176,7 +176,7 @@ functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); }
 | TYPE LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | SQRT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
-| BUTT LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
+| BUTT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | SCAN LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 ;
 

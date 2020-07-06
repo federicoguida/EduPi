@@ -981,7 +981,7 @@ void print(struct ast *val) {
 							if(printList->l){
 								print(evaluate(printList->l));
 							}
-							val=printList->r;
+							printList=printList->r;
 						}
 						break;
 

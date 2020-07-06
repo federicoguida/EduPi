@@ -914,13 +914,13 @@ struct ast* callbuiltin(struct fncall *f){
 					}
 					led(evaluate(f->l), evaluate(f->r));
 					break;
-				case B_led:
+				case B_buzz:
 				if(!f->l || !f->r) {
 					yyerror("no arguments for led...");
 					free(a);
 					break;
 				}
-				led(evaluate(f->l), evaluate(f->r));
+				buzz(evaluate(f->l), evaluate(f->r));
 				break;					
 				case B_RGB:
 					if(!f->l || !f->r) {

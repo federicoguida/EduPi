@@ -979,7 +979,7 @@ void print(struct ast *val) {
 							if(val->l){
 								print(evaluate(val->l));
 							}
-							val=val->next;
+							val=val->r;
 						}
 						break;
 

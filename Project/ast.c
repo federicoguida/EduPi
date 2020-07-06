@@ -906,15 +906,15 @@ struct ast* callbuiltin(struct fncall *f){
 					}
 					a=ppow(evaluate(f->l), evaluate(f->r));
 					break;
-				case B_led:
+				case B_sop:
 					if(!f->l || !f->r) {
 						yyerror("no arguments for led...");
 						free(a);
 						break;
 					}
-					led(evaluate(f->l), evaluate(f->r));
+					setOutPin(evaluate(f->l), evaluate(f->r));
 					break;
-				case B_RGB:
+				case B_rgb:
 					if(!f->l || !f->r) {
 						yyerror("no arguments for ledRGB...");
 						free(a);

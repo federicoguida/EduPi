@@ -7,6 +7,7 @@
 #  include "operations.h"
 #  include "rasp.h"
 #  include <wiringPi.h>
+#  include <wiringPiI2C.h>
 #  include <softPwm.h>
 
 int convertPin(int Pin) {
@@ -72,7 +73,7 @@ void ledRGB(struct ast *pin, struct ast *channel) {
 	}
 }
 
-void led(struct ast *pin, struct ast *mode) {
+void setOutPin(struct ast *pin, struct ast *mode) {
     if((pin != NULL) && (mode != NULL)) {
         struct value *v1=(struct value *)pin;
         struct value *v2=(struct value *)mode;
@@ -84,9 +85,9 @@ void led(struct ast *pin, struct ast *mode) {
                 exit(1);
             }
             pinMode(convertPin(i->value), OUTPUT);
-            if(strcmp(s->value, "ON") == 0)
+            if(strcmp(s->value, "HIGH") == 0)
                 digitalWrite(convertPin(i->value), HIGH);  //led on
-            else if(strcmp(s->value, "OFF") == 0)
+            else if(strcmp(s->value, "LOW") == 0)
                 digitalWrite(convertPin(i->value), LOW);  //led off
             else
                 yyerror("incompatible mode!");

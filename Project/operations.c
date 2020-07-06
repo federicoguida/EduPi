@@ -854,6 +854,7 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
       struct integerType *intValue1;
       struct integerType *intValue2;
       struct integerType *intResult;
+      int len;
       int res;
       struct realType *realValue1;
       struct realType *realValue2;
@@ -896,7 +897,10 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      asprintf(&stres, "%d", intValue1->value);
+                      asprintf(&str1, "%d", intValue1->value);
+                      len = (strlen(str1) + strlen(stringValue1->value) +1);
+                      stres=malloc(sizeof(char)*len);
+                      strcat(stres, str1);
                       strcat(stres, stringValue1->value);
                       stringResult->value=stres;
                       result->nodetype='S';
@@ -933,7 +937,10 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       stringResult=malloc(sizeof(struct stringType));
                       val2=(struct value *)value2;
                       stringValue1=(struct stringType *)val2->structType;
-                      asprintf(&stres, "%g", realValue1->value);
+                      asprintf(&str1, "%g", realValue1->value);
+                      len = (strlen(str1) + strlen(stringValue1->value) +1);
+                      stres=malloc(sizeof(char)*len);
+                      strcat(stres, str1);
                       strcat(stres, stringValue1->value);
                       stringResult->value=stres;
                       result->nodetype='S';
@@ -953,6 +960,9 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       intValue1=(struct integerType *)val2->structType;
                       stres=strdup(stringValue1->value);
                       asprintf(&str1, "%d", intValue1->value);
+                      len = (strlen(str1) + strlen(stringValue1->value) +1);
+                      stres=malloc(sizeof(char)*len);
+                      strcat(stres, stringValue1->value);
                       strcat(stres, str1);
                       stringResult->value=stres;
                       result->nodetype='S';
@@ -965,6 +975,9 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       realValue1=(struct realType *)val2->structType;
                       stres=strdup(stringValue1->value);
                       asprintf(&str1, "%g", realValue1->value);
+                      len = (strlen(str1) + strlen(stringValue1->value) +1);
+                      stres=malloc(sizeof(char)*len);
+                      strcat(stres, stringValue1->value);
                       strcat(stres, str1);
                       stringResult->value=stres;
                       result->nodetype='S';
@@ -977,9 +990,12 @@ struct ast *sum(struct ast *value1, struct ast *value2) {
                       stringValue2=(struct stringType *)val2->structType;
                       str1=strdup(stringValue1->value);
                       str2=strdup(stringValue2->value);
-                      strcat(str1,str2);
+                      len = (strlen(str1) + strlen(str2) + 1);
+                      stres=malloc(sizeof(char)*len);
+                      strcat(stres,str1);
+                      strcat(stres, str2);
                       result->nodetype='S';
-                      stringResult->value=str1;
+                      stringResult->value=stres;
                       result->structType=stringResult;
                       break;
                   }

@@ -183,7 +183,7 @@ explist: /*nothing*/ { $$=NULL; }
 ;
 
 printlist: /*nothing*/ { $$=NULL;}
-| exp ADDOP explist { $$ = newast('Z', $1, $3); }
+| exp ARR explist { $$ = newast('Z', $1, $3); }
 | exp 
 ;
 

@@ -31,7 +31,7 @@ int yylex();
 %token <fn>PRINTLN
 %token <fn>TIME SLP TYPE SQRT POW
 %token <fn>POP PUSH APP DEL INS GET SIZE SEARCH
-%token <fn>LED BUTT
+%token <fn>LED RGB BUTT
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <i> LST PERI IF ELSE DO WHILE FOR RETURN DEF IN ARR ID
@@ -156,25 +156,26 @@ value: NAME { $$ = newref($1); }
 | STRING { $$ = newString('S', $1); }
 ;
 
-functionV: PRINT LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
-| PRINTLN LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
+functionV: PRINT LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL); }
+| PRINTLN LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL); }
 | NAME DOT APP LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT INS LPAREN exp COMMA exp RPAREN { $$ = newlfunc($3, $1, $5, $7); }
 | NAME DOT PUSH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
-| SLP LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
-| LED LPAREN exp COMMA exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5, $7); }
+| SLP LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| LED LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
+| RGB LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 ;
 
-functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL, NULL); } 
+functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); } 
 | NAME DOT POP LPAREN RPAREN { $$ = newlfunc($3, $1, NULL, NULL); }
 | NAME DOT DEL LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT GET LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT SIZE LPAREN RPAREN { $$ = newlfunc($3, $1, NULL, NULL); }
 | NAME DOT SEARCH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
-| TYPE LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
-| SQRT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
-| POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5, NULL); }
-| BUTT LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5, NULL); }
+| TYPE LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| SQRT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
+| BUTT LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }

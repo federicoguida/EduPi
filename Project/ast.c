@@ -757,7 +757,7 @@ void foreach(struct for_each *f){
 
 
 /************************************************************************BUILT*/
-struct ast *newfunc(int functype, struct ast *l, struct ast *r, struct ast *c) {
+struct ast *newfunc(int functype, struct ast *l, struct ast *r) {
 		struct fncall *a = malloc(sizeof(struct fncall));
 		
 		if(!a) {
@@ -767,7 +767,6 @@ struct ast *newfunc(int functype, struct ast *l, struct ast *r, struct ast *c) {
 		a->nodetype = 'L';
 		a->l = l;
 		a->r = r;
-		a->c = c;
 		a->functype = functype;
 		return (struct ast *)a;
 }
@@ -913,7 +912,15 @@ struct ast* callbuiltin(struct fncall *f){
 						free(a);
 						break;
 					}
-					led(evaluate(f->l), evaluate(f->r), evaluate(f->c));
+					led(evaluate(f->l), evaluate(f->r));
+					break;
+				case B_RGB:
+					if(!f->l || !f->r) {
+						yyerror("no arguments for ledRGB...");
+						free(a);
+						break;
+					}
+					ledRGB(evaluate(f->l), evaluate(f->r));
 					break;
 				case B_butt:
 					if(!f->l) {

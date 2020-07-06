@@ -7,6 +7,7 @@
 #  include "operations.h"
 #  include "rasp.h"
 #  include <wiringPi.h>
+#  include <softPwm.h>
 
 int convertPin(int Pin) {
     int res;
@@ -46,15 +47,36 @@ int convertPin(int Pin) {
     return res;
 }
 
-void ledRGB(struct ast *pin, struct ast *mode, struct ast *channel) {
-    
+void ledRGB(struct ast *pin, struct ast *channel) {
+    if((pin != NULL) && (channel != NULL)) {
+        struct value *v1=(struct value *)pin;
+        struct value *v2=(struct value *)channel;
+        if((v1->nodetype == 'I') && (v2->nodetype == 'I')) {
+            struct integerType *i=(struct integerType *)v1->structType;
+            struct integerType *c=(struct integerType *)v2->structType;
+            if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
+                yyerror("setup wiringPi failed!");
+                exit(1);
+            }
+            if((c->value >= 0) && (c->value <= 100)) {
+                softPwmCreate(convertPin(i->value), 0, 100);
+                softPwmWrite(convertPin(i->value), c->value); //[0, 100]
+            }else {
+                yyerror("unknown channel!");
+            }
+        }else {
+            yyerror("incompatible type!");
+        }
+    }else {
+		yyerror("argument not defined");
+	}
 }
 
-void led(struct ast *pin, struct ast *mode, struct ast *channel) {
+void led(struct ast *pin, struct ast *mode) {
     if((pin != NULL) && (mode != NULL)) {
         struct value *v1=(struct value *)pin;
         struct value *v2=(struct value *)mode;
-        if(v1->nodetype == 'I' && v2->nodetype == 'S') {
+        if((v1->nodetype == 'I') && (v2->nodetype == 'S')) {
             struct integerType *i=(struct integerType *)v1->structType;
             struct stringType *s=(struct stringType *)v2->structType;
             if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen

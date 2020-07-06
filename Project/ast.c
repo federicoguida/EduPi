@@ -976,7 +976,7 @@ void print(struct ast *val) {
 						break;
 			case 'Z' :
 						print(evaluate(val->l));
-						if(val->r){
+						if(val){
 							val=val->r;
 							print(val);
 						}

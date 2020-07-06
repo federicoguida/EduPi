@@ -117,6 +117,7 @@ enum bifs {			/* built-in functions */
   B_sqrt=14,
   B_pow=15,
   B_led=16,
+  B_butt=17,
 };
 
 // built-in function 

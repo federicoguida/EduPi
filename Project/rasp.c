@@ -64,11 +64,36 @@ void led(struct ast *pin, struct ast *mode) {
                 digitalWrite(convertPin(i->value), LOW);  //led off
             else
                 yyerror("incompatible mode!");
-        }
-        else {
+        }else {
             yyerror("incompatible type!");
         }
     }else {
 		yyerror("argument not defined");
 	}
 }
+
+struct ast *button(struct ast *pin) {
+    if(pin != NULL) {
+        struct value *v1=(struct value *)pin;
+        if(v1->nodetype == 'I') {
+            struct integerType *i=(struct integerType *)v1->structType;
+            if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
+                yyerror("setup wiringPi failed!");
+                exit(1);
+            }
+            pinMode(convertPin(i->value), INPUT);
+            pullUpDnControl(convertPin(i->value), PUD_UP);
+            struct value *res=malloc(sizeof(struct value));
+            struct integerType *inres=malloc(sizeof(struct integerType));
+            inres->value=(digitalRead(convertPin(i->value)) == LOW);
+            res->nodetype='I';
+            res->structType=inres;
+            return (struct ast *)res;
+        }else {
+            yyerror("incompatible type!");
+        }
+    }else {
+		yyerror("argument not defined");
+	}
+}
+

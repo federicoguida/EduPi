@@ -31,7 +31,7 @@ int yylex();
 %token <fn>PRINTLN
 %token <fn>TIME SLP TYPE SQRT POW
 %token <fn>POP PUSH APP DEL INS GET SIZE SEARCH
-%token <fn>LED
+%token <fn>LED BUTT
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <i> LST PERI IF ELSE DO WHILE FOR RETURN DEF IN ARR ID
@@ -174,6 +174,7 @@ functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); }
 | TYPE LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | SQRT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
+| BUTT LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }

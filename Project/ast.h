@@ -161,9 +161,6 @@ struct ast *newref(struct symbol *s);
 struct ast *newasgn(int type,struct symbol *s, struct ast *v);
 struct ast *newsasgn(struct symbol *s, struct ast *v);
 struct ast *newsymdecl(int node, struct symbol *s);
-struct ast *newinc(int nodetype, struct symbol *s);
-void incr(struct symbol *s);
-void decr(struct symbol *s);
 void assign(struct symasgn *tree);
 /********************************VARIABLE********************************/
 

@@ -232,36 +232,6 @@ struct ast *newsymdecl(int node, struct symbol *s){
 		return (struct ast *)a;
 }
 
-struct ast *newinc(int nodetype, struct symbol *s) { 
-		struct symref *a = malloc(sizeof(struct symref));
-
-		if(!a) {
-				yyerror("out of space");
-				exit(0);
-		}
-		a->nodetype = nodetype;
-		a->s = s;
-		return (struct ast *)a;
-}
-
-void incr(struct symbol *s) { 
-		if(s->v->nodetype != 'I') {
-				yyerror("Not increment type");
-				exit(1);
-		}
-		struct integerType *i=(struct integerType*)s->v->structType;
-		i->value+=1;
-}
-
-void decr(struct symbol *s) { 
-		if(s->v->nodetype != 'I') {
-				yyerror("Not increment type");
-				exit(1);
-		}
-		struct integerType *i=(struct integerType*)s->v->structType;
-		i->value-=1;
-}
-
 void assign(struct symasgn *tree) {
 		
 		if(tree->s->nodetype!='Y'){
@@ -1230,8 +1200,6 @@ A	AND
 N	NOT
 =	ASSIGN OPERATION
 V	REF OF VARIABLE USED FOR CONTENT OF VARIABLE
-P	INCREMENT es. i++
-E	DECREMENT es. i--
 X	DECLARATION OF SYMBOL
 F	IF ELSE..
 W	WHILE
@@ -1417,12 +1385,6 @@ struct ast *evaluate(struct ast *tree) {
 			  	result=(struct ast *)(s->p);
               else
                 result=(struct ast *)(s->v);
-              break;
-        case 'P' :
-              incr(((struct symref*)tree)->s);
-              break;
-        case 'E' :
-              decr(((struct symref*)tree)->s);
               break;
         case 'X' :
               ((struct symdecl*)tree)->s->nodetype=((struct symdecl*)tree)->type;

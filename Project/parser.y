@@ -131,8 +131,8 @@ type: INT
 
 init: type NAME ASSIGN exp { $$ = newasgn($1, $2, $4); }
 | NAME ASSIGN exp { $$ = newsasgn($1, $3); }
-| NAME INCR { $$ = newinc('P', $1); }
-| NAME DECR { $$ = newinc('E', $1); }
+| NAME INCR { $$ = newsasgn($1, newast('+', newref($1), newInteger('I', 1))); }
+| NAME DECR { $$ = newsasgn($1, newast('-', newref($1), newInteger('I', 1))); }
 | LST NAME ASSIGN LBRACK value_list RBRACK { $$ = newlasgn($1, $2, $5); }
 | LST NAME ASSIGN exp { $$ = newasgn($1, $2, $4); }
 | LST NAME ASSIGN LBRACK  RBRACK { $$ = newlasgn($1, $2, NULL); }

@@ -975,10 +975,11 @@ void print(struct ast *val) {
 						}
 						break;
 			case 'Z' :
-						print(evaluate(val->l));
-						if(val->next){
+						while(val){
+							if(val->l){
+								print(evaluate(val->l));
+							}
 							val=val->next;
-							print(val);
 						}
 						break;
 

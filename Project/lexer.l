@@ -3,6 +3,7 @@
 #  include "ast.h"
 #  include "parser.tab.h"
 #  include "operations.h"
+#  include "rasp.h"
 %}
 
 alpha     [a-zA-Z]
@@ -44,6 +45,7 @@ STRING    \"{print}*\"
 "type"          { yylval.fn = B_type; return TYPE; }
 "sqrt"          { yylval.fn = B_sqrt; return SQRT; }
 "pow"           { yylval.fn = B_pow; return POW; }
+"led"           { yylval.fn = B_led; return LED; }
 "in"            { return IN; }
 "id"            { return ID; }
 

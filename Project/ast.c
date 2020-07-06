@@ -8,6 +8,7 @@
 #  include <time.h>
 #  include "ast.h"
 #  include "operations.h"
+#  include "rasp.h"
 
 /********************************USER-FUNC******************************/
 struct symlist *newsymlist(struct symbol *sym, struct symlist *next){
@@ -890,6 +891,14 @@ struct ast* callbuiltin(struct fncall *f){
 						break;
 					}
 					a=ppow(evaluate(f->l), evaluate(f->r));
+					break;
+				case B_led:
+					if(!f->l || !f->r) {
+						yyerror("no arguments for led...");
+						free(a);
+						break;
+					}
+					led(evaluate(f->l), evaluate(f->r));
 					break;
 				default:
 					yyerror("Unknown built-in function %d", functype);

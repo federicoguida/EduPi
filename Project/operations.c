@@ -5,6 +5,7 @@
 #  include <math.h>
 #  include "ast.h"
 #  include "operations.h"
+#  include "rasp.h"
 
 char *clearString(char *str) {
     char *result;

@@ -113,7 +113,7 @@ struct ast* calluser(struct ufncall *f){
 		if(fn->returnValue){
 				v=evaluate(fn->returnValue);
 		}
-		
+
 		sl = fn->syms;
 		for(i = 0; i < nargs; i++) {
 			struct symbol *s = sl->sym;
@@ -476,8 +476,7 @@ struct ast *delete(struct symbol *s, struct ast *exp) {
 					if(i->value == 0)
 						return pop(s);
 					if(n == (i->value)-1) {
-						struct ast *a=malloc(sizeof(struct ast));
-						a=l->next->exp;
+						struct ast *a=l->next->exp;
 						l->next=l->next->next;
 						return a;
 					}
@@ -512,8 +511,7 @@ struct ast *get(struct symbol *s, struct ast *exp) {
 				}
 				for(int n = 0; n <= i->value; n++) {
 					if(n == i->value) {
-						struct ast *a=malloc(sizeof(struct ast));
-						a=l->exp;
+						struct ast *a=l->exp;
 						return a;
 					}
 					l=l->next;
@@ -699,10 +697,8 @@ struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *
 }
 
 void ifop(struct flow *f){
-    struct value *v=malloc(sizeof(struct value));
-    v=(struct value*)evaluate(f->cond);
-    struct integerType *i=malloc(sizeof(struct integerType));
-    i=(struct integerType*)v->structType;
+    struct value *v=(struct value*)evaluate(f->cond);
+    struct integerType *i=(struct integerType*)v->structType;
     if(i->value!=0){
 				if(f->tl) {
 					evaluate(f->tl);
@@ -715,10 +711,8 @@ void ifop(struct flow *f){
 }
 
 void whileop(struct flow *f) {
-		struct value *v=malloc(sizeof(struct value));
-		v=(struct value*)evaluate(f->cond);
-		struct integerType *i=malloc(sizeof(struct integerType));
-		i=(struct integerType*)v->structType;
+		struct value *v=(struct value*)evaluate(f->cond);
+		struct integerType *i=(struct integerType*)v->structType;
 		if(f->tl) { 
 				while(i->value != 0){
 						evaluate(f->tl);
@@ -729,8 +723,8 @@ void whileop(struct flow *f) {
 }
 
 void dowhileop(struct flow *f) {
-		struct value *v=malloc(sizeof(struct value));
-		struct integerType *i=malloc(sizeof(struct integerType));
+		struct value *v;
+		struct integerType *i;
 		if(f->tl) { 
 				do{
 						evaluate(f->tl);
@@ -1018,10 +1012,9 @@ struct ast *date(){
     return (struct ast*)a;
 }
 void bsleep(struct ast *val) {
-	struct value *a= malloc(sizeof(struct value));
+	struct value *a;
 	struct integerType *i;
 	if(val->nodetype=='I'){
-		i=malloc(sizeof(struct integerType));
         a=(struct value *)val;
         i=(struct integerType *)a->structType;
         int intero= i->value;

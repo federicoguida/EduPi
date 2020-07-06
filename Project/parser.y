@@ -183,7 +183,7 @@ explist: /*nothing*/ { $$=NULL; }
 ;
 
 printlist: /*nothing*/ { $$=NULL;}
-| exp CNC explist { $$ = newast('Z', $1, $3); }
+| exp CNC printlist { $$ = newast('Z', $1, $3); }
 | exp 
 ;
 

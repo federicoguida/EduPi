@@ -46,7 +46,11 @@ int convertPin(int Pin) {
     return res;
 }
 
-void led(struct ast *pin, struct ast *mode) {
+void ledRGB(struct ast *pin, struct ast *mode, struct ast *channel) {
+    
+}
+
+void led(struct ast *pin, struct ast *mode, struct ast *channel) {
     if((pin != NULL) && (mode != NULL)) {
         struct value *v1=(struct value *)pin;
         struct value *v2=(struct value *)mode;

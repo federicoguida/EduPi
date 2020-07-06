@@ -906,15 +906,15 @@ struct ast* callbuiltin(struct fncall *f){
 					}
 					a=ppow(evaluate(f->l), evaluate(f->r));
 					break;
-				case B_led:
+				case B_sop:
 					if(!f->l || !f->r) {
 						yyerror("no arguments for led...");
 						free(a);
 						break;
 					}
-					led(evaluate(f->l), evaluate(f->r));
+					setOutPin(evaluate(f->l), evaluate(f->r));
 					break;
-				case B_RGB:
+				case B_rgb:
 					if(!f->l || !f->r) {
 						yyerror("no arguments for ledRGB...");
 						free(a);
@@ -1110,7 +1110,7 @@ struct ast *scan(struct ast *val){
 		}else if(strcmp(p->value,"S")==0){
 			res=malloc(sizeof(struct value));
 			s=malloc(sizeof(struct stringType));
-			stringres=malloc(sizeof(char*));
+			stringres=malloc(sizeof(char)*256);
 			scanf("%s",stringres);
 			s->value=strdup(stringres);
 			res->nodetype='S';
@@ -1126,7 +1126,6 @@ struct ast *scan(struct ast *val){
 			return (struct ast*)res;
 		}else
 			return NULL;	
-
 }
 
 struct ast *ssqrt(struct ast *val) {

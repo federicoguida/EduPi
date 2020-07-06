@@ -110,8 +110,8 @@ enum bifs {			/* built-in functions */
   B_type=13,
   B_sqrt=14,
   B_pow=15,
-  B_led=16,
-  B_RGB=17,
+  B_sop=16,
+  B_rgb=17,
   B_butt=18,
   B_scan=19,
 };

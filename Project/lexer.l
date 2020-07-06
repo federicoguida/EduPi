@@ -46,8 +46,8 @@ STRING    \"{print}*\"
 "type"          { yylval.fn = B_type; return TYPE; }
 "sqrt"          { yylval.fn = B_sqrt; return SQRT; }
 "pow"           { yylval.fn = B_pow; return POW; }
-"led"           { yylval.fn = B_led; return LED; }
-"ledRGB"        { yylval.fn = B_RGB; return RGB; }
+"setOutPin"     { yylval.fn = B_sop; return SOP; }
+"ledRGB"        { yylval.fn = B_rgb; return RGB; }
 "button"        { yylval.fn = B_butt; return BUTT; }
 "in"            { return IN; }
 "id"            { return ID; }

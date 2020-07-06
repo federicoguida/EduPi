@@ -930,6 +930,14 @@ struct ast* callbuiltin(struct fncall *f){
 					}
 					a=button(evaluate(f->l));
 					break;
+				case B_scan:
+					if(!f->l) {
+						yyerror("no type specified for scan...");
+						free(a);
+						break;
+					}
+					a=scan(evaluate(f->l));
+					break;
 				default:
 					yyerror("Unknown built-in function %d", functype);
  		}
@@ -1080,6 +1088,45 @@ struct ast *type(struct ast *val) {
 		yyerror("argument not defined");
 		return NULL;
 	}
+}
+struct ast *scan(struct ast *val){
+	struct value *res;
+	struct value *a;
+	struct integerType *i;
+	struct realType *r;
+	struct stringType *s;
+	struct stringType *p;
+	float realres;
+	char *stringres;
+	a=(struct value *)val;
+	p=(struct stringType *)a->structType;
+		if(strcmp(p->value,"I")==0){
+			res=malloc(sizeof(struct value));
+			i=malloc(sizeof(struct integerType));
+			scanf("%d",&(i->value));
+			res->nodetype='I';
+			res->structType=i;
+			return (struct ast*)res;
+		}else if(strcmp(p->value,"S")==0){
+			res=malloc(sizeof(struct value));
+			s=malloc(sizeof(struct stringType));
+			stringres=malloc(sizeof(char*));
+			scanf("%s",stringres);
+			s->value=strdup(stringres);
+			res->nodetype='S';
+			res->structType=s;
+			return (struct ast*)res;
+		}else if(strcmp(p->value,"R")==0){
+			res=malloc(sizeof(struct value));
+			r=malloc(sizeof(struct integerType));
+			scanf("%f",&realres);
+			r->value=(double)realres;
+			res->nodetype='R';
+			res->structType=r;
+			return (struct ast*)res;
+		}else
+			return NULL;	
+
 }
 
 struct ast *ssqrt(struct ast *val) {

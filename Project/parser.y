@@ -29,6 +29,7 @@ int yylex();
 /*function*/
 %token <fn>PRINT
 %token <fn>PRINTLN
+%token <fn> SCAN
 %token <fn>TIME SLP TYPE SQRT POW
 %token <fn>POP PUSH APP DEL INS GET SIZE SEARCH
 %token <fn>LED RGB BUTT
@@ -176,6 +177,7 @@ functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); }
 | SQRT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 | BUTT LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
+| SCAN LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }

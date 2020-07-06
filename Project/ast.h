@@ -113,6 +113,7 @@ enum bifs {			/* built-in functions */
   B_led=16,
   B_RGB=17,
   B_butt=18,
+  B_scan=19,
 };
 
 // built-in function 
@@ -213,6 +214,7 @@ struct ast *date();
 char *printString(char *value);
 void println(struct ast *val);
 void print(struct ast *val);
+struct ast *scan(struct ast *val);
 void bsleep(struct ast *val);
 struct ast *type(struct ast *val);
 struct ast *ssqrt(struct ast *val);

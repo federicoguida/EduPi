@@ -32,6 +32,7 @@ STRING    \"{print}*\"
 "def"           { return DEF; }
 "print"         { yylval.fn = B_print; return PRINT; }
 "println"       { yylval.fn = B_println; return PRINTLN; }
+"scan"          { yylval.fn = B_scan; return SCAN; }
 "time"          { yylval.fn = B_time; return TIME; }
 "pop"           { yylval.fn = B_pop; return POP; }
 "push"          { yylval.fn = B_push; return PUSH; }

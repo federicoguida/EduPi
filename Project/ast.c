@@ -939,7 +939,7 @@ void print(struct ast *val) {
 		struct listexp *l;
 		struct peripherical *p;
 		struct funclist *f;
-		struct ast *printList;
+		struct ast *printlist;
 
 		switch(val->nodetype){
 			case 'I' :  
@@ -976,12 +976,12 @@ void print(struct ast *val) {
 						}
 						break;
 			case 'Z' :
-						printList=val;
-						while(printList){
-							if(printList->l){
-								print(evaluate(printList->l));
+						printlist=val;
+						while(printlist){
+							if(printlist->l){
+								print(evaluate(printlist->l));
 							}
-							printList=printList->r;
+							printlist=printlist->r;
 						}
 						break;
 

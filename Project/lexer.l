@@ -49,6 +49,7 @@ STRING    \"{print}*\"
 "setOutPin"     { yylval.fn = B_sop; return SOP; }
 "ledRGB"        { yylval.fn = B_rgb; return RGB; }
 "button"        { yylval.fn = B_butt; return BUTT; }
+"buzzer"        { yylval.fn = B_buzz; return BUZZ; }
 "in"            { return IN; }
 "id"            { return ID; }
 

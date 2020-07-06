@@ -979,9 +979,9 @@ void print(struct ast *val) {
 						printlist=val;
 						while(printlist){
 							if(printlist->l){
-								print(evaluate(printlist->l));
+								print(printlist->l);
 							}
-							printlist=evaluate(printlist->r);
+							printlist=printlist->r;
 						}
 						break;
 

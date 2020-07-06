@@ -250,7 +250,7 @@ void incr(struct symbol *s) {
 				exit(1);
 		}
 		struct integerType *i=(struct integerType*)s->v->structType;
-		i->value=i->value+1;
+		i->value+=1;
 }
 
 void decr(struct symbol *s) { 
@@ -259,7 +259,7 @@ void decr(struct symbol *s) {
 				exit(1);
 		}
 		struct integerType *i=(struct integerType*)s->v->structType;
-		i->value=i->value-1;
+		i->value-=1;
 }
 
 void assign(struct symasgn *tree) {

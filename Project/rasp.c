@@ -123,3 +123,35 @@ struct ast *button(struct ast *pin) {
 	}
 }
 
+void buzz(struct ast *pin, struct ast *mode) {
+    if((pin != NULL) && (mode != NULL)) {
+        struct value *v1=(struct value *)pin;
+        struct value *v2=(struct value *)mode;
+        if((v1->nodetype == 'I') && (v2->nodetype == 'S')) {
+            struct integerType *i=(struct integerType *)v1->structType;
+            struct stringType *s=(struct stringType *)v2->structType;
+            if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
+                yyerror("setup wiringPi failed!");
+                exit(1);
+            }
+            pinMode(convertPin(i->value), OUTPUT);
+            if(strcmp(s->value, "ON") == 0)
+                digitalWrite(convertPin(i->value), HIGH);  //led on
+            else if(strcmp(s->value, "OFF") == 0)
+                digitalWrite(convertPin(i->value), LOW);  //led off
+            else
+                yyerror("incompatible mode!");
+        }else {
+            yyerror("incompatible type!");
+        }
+    }else {
+		yyerror("argument not defined");
+	}
+}
+
+
+
+
+
+
+

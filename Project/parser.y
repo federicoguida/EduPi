@@ -32,7 +32,7 @@ int yylex();
 %token <fn> SCAN
 %token <fn>TIME SLP TYPE SQRT POW
 %token <fn>POP PUSH APP DEL INS GET SIZE SEARCH
-%token <fn>LED RGB BUTT
+%token <fn>LED RGB BUTT BUZZ
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <i> LST PERI IF ELSE DO WHILE FOR RETURN DEF IN ARR ID
@@ -165,6 +165,7 @@ functionV: PRINT LPAREN printlist RPAREN { $$ = newfunc($1, (struct ast*)$3, NUL
 | SLP LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | LED LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 | RGB LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
+| BUZZ LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 ;
 
 functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); } 

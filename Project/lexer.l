@@ -49,6 +49,7 @@ STRING    \"{print}*\"
 "led"           { yylval.fn = B_led; return LED; }
 "ledRGB"        { yylval.fn = B_RGB; return RGB; }
 "button"        { yylval.fn = B_butt; return BUTT; }
+"buzzer"        { yylval.fn = B_buzz; return BUZZ; }
 "in"            { return IN; }
 "id"            { return ID; }
 

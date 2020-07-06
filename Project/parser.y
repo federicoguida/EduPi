@@ -36,7 +36,7 @@ int yylex();
  /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <i> LST PERI IF ELSE DO WHILE FOR RETURN DEF IN ARR ID
-%token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR
+%token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR CNC
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN 
 
  /* precedencies and associativities */
@@ -45,13 +45,13 @@ int yylex();
 %right ASSIGN
 %left ANDOP
 %left OROP
-%left ADDOP SUBOP
+%left ADDOP SUBOP CNC
 %left MULOP DIVOP MODOP
 %right NOTOP INCR DECR
 %left LPAREN RPAREN LBRACK RBRACK
 %nonassoc ABSOP UMINUS 
 
-%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist for_each
+%type <a> statement if_statement for_statement while_statement do_while_statement declaration init tail exp value functionR functionV explist for_each printlist
 %type <a> pericall
 %type <sl> symlist
 %type <type> type
@@ -157,30 +157,35 @@ value: NAME { $$ = newref($1); }
 | STRING { $$ = newString('S', $1); }
 ;
 
-functionV: PRINT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
-| PRINTLN LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+functionV: PRINT LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
+| PRINTLN LPAREN printlist RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
 | NAME DOT APP LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT INS LPAREN exp COMMA exp RPAREN { $$ = newlfunc($3, $1, $5, $7); }
 | NAME DOT PUSH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
-| SLP LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
-| LED LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
+| SLP LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
+| LED LPAREN exp COMMA exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5, $7); }
 ;
 
-functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); } 
+functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL, NULL); } 
 | NAME DOT POP LPAREN RPAREN { $$ = newlfunc($3, $1, NULL, NULL); }
 | NAME DOT DEL LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT GET LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
 | NAME DOT SIZE LPAREN RPAREN { $$ = newlfunc($3, $1, NULL, NULL); }
 | NAME DOT SEARCH LPAREN exp RPAREN { $$ = newlfunc($3, $1, $5, NULL); }
-| TYPE LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
-| SQRT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
-| POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
-| BUTT LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
-| SCAN LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| TYPE LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
+| SQRT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL, NULL); }
+| POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5, NULL); }
+| BUTT LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5, NULL); }
+| SCAN LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL,NULL); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }
 | exp COMMA explist { $$ = newast('Z', $1, $3); }
+| exp 
+;
+
+printlist: /*nothing*/ { $$=NULL;}
+| exp CNC printlist { $$ = newast('Z', $1, $3); }
 | exp 
 ;
 

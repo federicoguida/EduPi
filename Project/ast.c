@@ -757,7 +757,7 @@ void foreach(struct for_each *f){
 
 
 /************************************************************************BUILT*/
-struct ast *newfunc(int functype, struct ast *l, struct ast *r) {
+struct ast *newfunc(int functype, struct ast *l, struct ast *r, struct ast *c) {
 		struct fncall *a = malloc(sizeof(struct fncall));
 		
 		if(!a) {
@@ -767,6 +767,7 @@ struct ast *newfunc(int functype, struct ast *l, struct ast *r) {
 		a->nodetype = 'L';
 		a->l = l;
 		a->r = r;
+		a->c = c;
 		a->functype = functype;
 		return (struct ast *)a;
 }
@@ -912,7 +913,7 @@ struct ast* callbuiltin(struct fncall *f){
 						free(a);
 						break;
 					}
-					led(evaluate(f->l), evaluate(f->r));
+					led(evaluate(f->l), evaluate(f->r), evaluate(f->c));
 					break;
 				case B_butt:
 					if(!f->l) {
@@ -947,6 +948,7 @@ void print(struct ast *val) {
 		struct listexp *l;
 		struct peripherical *p;
 		struct funclist *f;
+		struct ast* listPrint;
 
 		switch(val->nodetype){
 			case 'I' :  
@@ -981,7 +983,15 @@ void print(struct ast *val) {
 							printf("Method --> %s\n", f->bcall->s->name);
 							f=f->next;
 						}
-						
+						break;
+			case 'P' :
+						listPrint=val;
+						while(listPrint){
+							if(listPrint->l){
+								print(evaluate(listPrint->l));
+							}
+							listPrint=listPrint->r;
+						}
 						break;
 
 			default: printf("Error print"); exit(1);
@@ -1423,6 +1433,9 @@ struct ast *evaluate(struct ast *tree) {
         case 'Y' :
               result=tree;
               break;
+		case 'P' :
+			  result=tree;
+			  break;
 		case 'B' :
 			  foreach((struct for_each*)tree);
 			  break;

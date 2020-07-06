@@ -70,6 +70,7 @@ STRING    \"{print}*\"
 ","     { return COMMA; }
 "="     { return ASSIGN; }
 "->"    { return ARR;}
+">>"    { return CNC; }
 
 "OR"|"or"     { return OROP; }
 "AND"|"and"   { return ANDOP; }

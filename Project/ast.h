@@ -120,6 +120,7 @@ struct fncall {
   int nodetype;			/* type L */
   struct ast *l;
   struct ast *r;
+  struct ast *c;
   struct symbol *s;
   enum bifs functype;
 };
@@ -206,7 +207,7 @@ struct ast *newForEach(int nodetype, struct symbol* i, struct symbol* list, stru
 /******************************END-FLOW*/
 
 /**********************BUILT*/
-struct ast *newfunc(int functype, struct ast *l, struct ast *r);
+struct ast *newfunc(int functype, struct ast *l, struct ast *r, struct ast *c);
 struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp, struct ast *val);
 struct ast *callbuiltin(struct fncall *f);
 struct ast *date();

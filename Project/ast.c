@@ -982,7 +982,7 @@ void print(struct ast *val) {
 							if(listPrint->l){
 								print(evaluate(listPrint->l));
 							}
-							listPrint=listPrint->next;
+							listPrint=listPrint->r;
 						}
 						break;
 

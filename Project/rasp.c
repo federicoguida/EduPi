@@ -59,9 +59,9 @@ void led(struct ast *pin, struct ast *mode) {
             }
             pinMode(convertPin(i->value), OUTPUT);
             if(strcmp(s->value, "ON") == 0)
-                digitalWrite(i->value, HIGH);  //led on
+                digitalWrite(convertPin(i->value), HIGH);  //led on
             else if(strcmp(s->value, "OFF") == 0)
-                digitalWrite(i->value, LOW);  //led off
+                digitalWrite(convertPin(i->value), LOW);  //led off
             else
                 yyerror("incompatible mode!");
         }

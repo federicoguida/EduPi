@@ -915,12 +915,12 @@ struct ast* callbuiltin(struct fncall *f){
 					led(evaluate(f->l), evaluate(f->r));
 					break;
 				case B_butt:
-					if(!f->l || !f->r) {
+					if(!f->l) {
 						yyerror("no arguments for button...");
 						free(a);
 						break;
 					}
-					a=button(evaluate(f->l), evaluate(f->r));
+					a=button(evaluate(f->l));
 					break;
 				default:
 					yyerror("Unknown built-in function %d", functype);

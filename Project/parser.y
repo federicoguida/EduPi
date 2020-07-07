@@ -21,7 +21,7 @@ int yylex();
     struct listexp *l;
 }
 
- /* declare tokens */
+/* declare tokens */
 %token <type> STR INT RL
 %token <i> INTEGER
 %token <r> REAL
@@ -33,13 +33,12 @@ int yylex();
 %token <fn>TIME SLP TYPE SQRT POW
 %token <fn>POP PUSH APP DEL INS GET SIZE SEARCH
 %token <fn>SOP RGB BUTT
- /* %token <p> PERIPHERAL (ancora non esiste il token)*/
 %token <s> NAME
 %token <i> LST PERI IF ELSE DO WHILE FOR RETURN DEF IN ARR ID
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR CNC
 %token <i> LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI DOT COMMA ASSIGN 
 
- /* precedencies and associativities */
+/* precedencies and associativities */
 %nonassoc <fn> CMP
 %left COMMA
 %right ASSIGN

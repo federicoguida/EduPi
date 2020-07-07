@@ -18,39 +18,45 @@ STRING    \"{print}*\"
 
 %%
 
-"list"          { yylval.type = 'Y'; return LST; }
-"peripheral"    { yylval.type = 'K'; return PERI; }
-"integer"       { yylval.type = 'I'; return INT; }
-"real"          { yylval.type = 'R'; return RL; }
-"string"        { yylval.type = 'S'; return STR; }
-"if"            { return IF; }
-"else"          { return ELSE; }
-"do"            { return DO; }
-"while"         { return WHILE; }
-"for"           { return FOR; }
-"return"        { return RETURN; }
-"def"           { return DEF; }
-"print"         { yylval.fn = B_print; return PRINT; }
-"println"       { yylval.fn = B_println; return PRINTLN; }
-"scan"          { yylval.fn = B_scan; return SCAN; }
-"time"          { yylval.fn = B_time; return TIME; }
-"pop"           { yylval.fn = B_pop; return POP; }
-"push"          { yylval.fn = B_push; return PUSH; }
-"append"        { yylval.fn = B_app; return APP; }
-"delete"        { yylval.fn = B_del; return DEL; }
-"insert"        { yylval.fn = B_ins; return INS; }
-"get"           { yylval.fn = B_get; return GET; }
-"size"          { yylval.fn = B_size; return SIZE; }
-"search"        { yylval.fn = B_search; return SEARCH; }
-"sleep"         { yylval.fn = B_slp; return SLP; }
-"type"          { yylval.fn = B_type; return TYPE; }
-"sqrt"          { yylval.fn = B_sqrt; return SQRT; }
-"pow"           { yylval.fn = B_pow; return POW; }
-"setOutPin"     { yylval.fn = B_sop; return SOP; }
-"ledRGB"        { yylval.fn = B_rgb; return RGB; }
-"button"        { yylval.fn = B_butt; return BUTT; }
-"in"            { return IN; }
-"id"            { return ID; }
+"list"            { yylval.type = 'Y'; return LST; }
+"peripheral"      { yylval.type = 'K'; return PERI; }
+"integer"         { yylval.type = 'I'; return INT; }
+"real"            { yylval.type = 'R'; return RL; }
+"string"          { yylval.type = 'S'; return STR; }
+"if"              { return IF; }
+"else"            { return ELSE; }
+"do"              { return DO; }
+"while"           { return WHILE; }
+"for"             { return FOR; }
+"return"          { return RETURN; }
+"def"             { return DEF; }
+"in"              { return IN; }
+"id"              { return ID; }
+"print"           { yylval.fn = B_print; return PRINT; }
+"println"         { yylval.fn = B_println; return PRINTLN; }
+"scan"            { yylval.fn = B_scan; return SCAN; }
+"time"            { yylval.fn = B_time; return TIME; }
+"pop"             { yylval.fn = B_pop; return POP; }
+"push"            { yylval.fn = B_push; return PUSH; }
+"append"          { yylval.fn = B_app; return APP; }
+"delete"          { yylval.fn = B_del; return DEL; }
+"insert"          { yylval.fn = B_ins; return INS; }
+"get"             { yylval.fn = B_get; return GET; }
+"size"            { yylval.fn = B_size; return SIZE; }
+"search"          { yylval.fn = B_search; return SEARCH; }
+"sleep"           { yylval.fn = B_slp; return SLP; }
+"type"            { yylval.fn = B_type; return TYPE; }
+"sqrt"            { yylval.fn = B_sqrt; return SQRT; }
+"pow"             { yylval.fn = B_pow; return POW; }
+"setOutPin"       { yylval.fn = B_sop; return SOP; }
+"ledRGB"          { yylval.fn = B_rgb; return RGB; }
+"button"          { yylval.fn = B_butt; return BUTT; }
+"lcdInit"         { yylval.fn = B_init; return INIT; }
+"sendIntegerLcd"  { yylval.fn = B_sendInt; return SINT; }
+"sendRealLcd"     { yylval.fn = B_sendReal; return SREAL; }
+"sendStringLcd"   { yylval.fn = B_sendString; return SSTR; }
+"lcdLine"         { yylval.fn = B_sLine; return SLINE; }
+"clearLcd"        { yylval.fn = B_clear; return CLEAR; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

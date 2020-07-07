@@ -114,6 +114,12 @@ enum bifs {			/* built-in functions */
   B_rgb=17,
   B_butt=18,
   B_scan=19,
+  B_init=20,
+  B_sendInt=21,
+  B_sendReal=22,
+  B_sendString=23,
+  B_sLine=24,
+  B_clear=25,
 };
 
 // built-in function 
@@ -230,6 +236,8 @@ struct ast *newString(int nodetype, char *value);
 struct ast *newReal(int nodetype, double value);
 struct ast *evaluate(struct ast *value);
 struct symlist *newsymlist(struct symbol *sym, struct symlist *next);
+struct ast *operation(int op, struct ast* value1, struct ast* value2);
+struct ast *sop(int op, struct ast * tree);
 /*********************************END-Type INIT*/
 
 /***********************OTHER UTILITY*/

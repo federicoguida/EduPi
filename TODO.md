@@ -4,3 +4,5 @@
 - [x] Liste
 - [ ] Tipo periferica
 - [x] Aggiungere metodi list (Ricerca, cancellazione, push...);
+- [ ] Aggiungere controllo pin per periferica
+- [ ] Aggiungere controllo modalità

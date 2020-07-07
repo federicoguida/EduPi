@@ -8,7 +8,7 @@
 #  include <time.h>
 #  include "ast.h"
 #  include "operations.h"
-//#  include "rasp.h"
+#  include "rasp.h"
 
 /********************************USER-FUNC******************************/
 struct symlist *newsymlist(struct symbol *sym, struct symlist *next){

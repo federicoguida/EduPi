@@ -938,10 +938,48 @@ struct ast* callbuiltin(struct fncall *f){
 					}
 					a=scan(evaluate(f->l));
 					break;
+				case B_init:
+					lcd_init();
+					break;
+				case B_sendInt:
+					if(!f->l) {
+						yyerror("no type specified for send integer lcd...");
+						free(a);
+						break;
+					}
+					sendIntegerLcd(evaluate(f->l));
+					break;
+				case B_sendReal:
+					if(!f->l) {
+						yyerror("no type specified for send real lcd...");
+						free(a);
+						break;
+					}
+					sendRealLcd(evaluate(f->l));
+					break;
+				case B_sendString:
+					if(!f->l) {
+						yyerror("no type specified for send string lcd...");
+						free(a);
+						break;
+					}
+					sendStringLcd(evaluate(f->l));
+					break;
+				case B_sLine:
+					if(!f->l) {
+						yyerror("no type specified for lcd line...");
+						free(a);
+						break;
+					}
+					lcdLoc(evaluate(f->l));
+					break;
+				case B_clear:
+					clrLcd();
+					break;
 				default:
 					yyerror("Unknown built-in function %d", functype);
  		}
-  	return a;
+  		return a;
 }
 
 void print(struct ast *val) {

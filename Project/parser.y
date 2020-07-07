@@ -27,12 +27,12 @@ int yylex();
 %token <r> REAL
 %token <string> STRING
 /*function*/
-%token <fn>PRINT
-%token <fn>PRINTLN
+%token <fn> PRINT
+%token <fn> PRINTLN
 %token <fn> SCAN
-%token <fn>TIME SLP TYPE SQRT POW
-%token <fn>POP PUSH APP DEL INS GET SIZE SEARCH
-%token <fn>SOP RGB BUTT
+%token <fn> TIME SLP TYPE SQRT POW
+%token <fn> POP PUSH APP DEL INS GET SIZE SEARCH
+%token <fn> SOP RGB BUTT INIT SINT SREAL SSTR SLINE CLEAR
 %token <s> NAME
 %token <i> LST PERI IF ELSE DO WHILE FOR RETURN DEF IN ARR ID
 %token <i> ADDOP SUBOP MULOP DIVOP ABSOP OROP ANDOP NOTOP INCR DECR CNC
@@ -164,6 +164,12 @@ functionV: PRINT LPAREN printlist RPAREN { $$ = newfunc($1, (struct ast*)$3, NUL
 | SLP LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | SOP LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 | RGB LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
+| INIT LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); }
+| SINT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| SREAL LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| SSTR LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| SLINE LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| CLEAR LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); }
 ;
 
 functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); } 
@@ -196,5 +202,5 @@ value_list: exp COMMA value_list { $$ = newlist('Y', $1, $3); }
 symlist: /*nothing*/ { $$=NULL; } 
 | NAME { $$ = newsymlist($1, NULL); }
 | NAME COMMA symlist { $$ = newsymlist($1, $3); }
-
+;
 %%

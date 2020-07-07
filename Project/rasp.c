@@ -123,3 +123,141 @@ struct ast *button(struct ast *pin) {
 		yyerror("argument not defined");
 	}
 }
+
+#define I2C_ADDR 0x27       // I2C device address
+#define LCD_CHR 1           // Mode - Sending data
+#define LCD_CMD 0           // Mode - Sending command
+#define LINE1 0x80          // 1st line
+#define LINE2 0xC0          // 2nd line
+#define LCD_BACKLIGHT 0x08  // On
+#define ENABLE 0b00000100   // Enable bit
+
+int fd;
+
+void lcd_toggle_enable(int bits) {
+    // Toggle enable pin on LCD display
+    delayMicroseconds(500);
+    wiringPiI2CReadReg8(fd, (bits | ENABLE));
+    delayMicroseconds(500);
+    wiringPiI2CReadReg8(fd, (bits & ~ENABLE));
+    delayMicroseconds(500);
+}
+
+void lcd_byte(int bits, int mode) {
+    //Send byte to data pins
+    // bits = the data
+    // mode = 1 for data, 0 for command
+    int bits_high;
+    int bits_low;
+    // uses the two half byte writes to LCD
+    bits_high = mode | (bits & 0xF0) | LCD_BACKLIGHT ;
+    bits_low = mode | ((bits << 4) & 0xF0) | LCD_BACKLIGHT ;
+    // High bits
+    wiringPiI2CReadReg8(fd, bits_high);
+    lcd_toggle_enable(bits_high);
+    // Low bits
+    wiringPiI2CReadReg8(fd, bits_low);
+    lcd_toggle_enable(bits_low);
+}
+
+void lcd_init(void) {
+    if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
+        yyerror("setup wiringPi failed!");
+        exit(1);
+    }
+    fd = wiringPiI2CSetup(I2C_ADDR);
+    if(fd < 0) {
+        yyerror("setup wiringPiI2C failed!");
+        exit(1);
+    }
+    // Initialise display
+    lcd_byte(0x33, LCD_CMD); // Initialise
+    lcd_byte(0x32, LCD_CMD); // Initialise
+    lcd_byte(0x06, LCD_CMD); // Cursor move direction
+    lcd_byte(0x0C, LCD_CMD); // 0x0F On, Blink Off
+    lcd_byte(0x28, LCD_CMD); // Data length, number of lines, font size
+    lcd_byte(0x01, LCD_CMD); // Clear display
+    delayMicroseconds(500);
+}
+
+void sendIntegerLcd(struct ast *integer) {
+    if(integer != NULL) {
+        struct value *v=(struct value *)integer;
+        if(v->nodetype == 'I') {
+            struct integerType *i=(struct integerType *)v;
+            char *str;
+            asprintf(&str, "%d", i->value);
+            struct value *res=malloc(sizeof(struct value));
+            struct stringType *sres=malloc(sizeof(struct stringType));
+            sres->value=str;
+            res->nodetype='S';
+            res->structType=sres;
+            sendStringLcd((struct ast *)res);
+        }else {
+            yyerror("incompatible type!");
+        }
+    }else {
+		yyerror("argument not defined");
+	}
+}
+
+void sendRealLcd(struct ast *real) {
+    if(real != NULL) {
+        struct value *v=(struct value *)real;
+        if(v->nodetype == 'R') {
+            struct realType *r=(struct realType *)v;
+            char *str;
+            asprintf(&str, "%g", r->value);
+            struct value *res=malloc(sizeof(struct value));
+            struct stringType *sres=malloc(sizeof(struct stringType));
+            sres->value=str;
+            res->nodetype='S';
+            res->structType=sres;
+            sendStringLcd((struct ast *)res);
+        }else {
+            yyerror("incompatible type!");
+        }
+    }else {
+		yyerror("argument not defined");
+	}
+}
+
+void sendStringLcd(struct ast *string) {
+    if(string != NULL) {
+        struct value *v=(struct value *)string;
+        if(v->nodetype == 'S') {
+            struct stringType *s=(struct stringType *)v;
+            char *str=strdup(s->value);
+            while(*str) lcd_byte(*(str++), LCD_CHR);
+        }else {
+            yyerror("incompatible type!");
+        }
+    }else {
+		yyerror("argument not defined");
+	}
+}
+
+void lcdLoc(struct ast *line) {
+    if(integer != NULL) {
+        struct value *v=(struct value *)integer;
+        if(v->nodetype == 'S') {
+            struct stringType *i=(struct stringType *)v;
+            if(strcmp(s->value, "LINE1") == 0)
+                lcd_byte(LINE1, LCD_CMD);
+            else if(strcmp(s->value, "LINE2") == 0)
+                lcd_byte(LINE2, LCD_CMD);
+            else
+                yyerror("incompatible LINE!");
+        }else {
+            yyerror("incompatible type!");
+        }
+    }
+    else {
+		yyerror("argument not defined");
+	}	
+}
+
+void clrLcd(void) {
+    lcd_byte(0x01, LCD_CMD);
+    lcd_byte(0x02, LCD_CMD);
+}

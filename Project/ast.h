@@ -114,6 +114,12 @@ enum bifs {			/* built-in functions */
   B_rgb=17,
   B_butt=18,
   B_scan=19,
+  B_init=20,
+  B_sendInt=21,
+  B_sendReal=22,
+  B_sendString=23,
+  B_sLine=24,
+  B_clear=25,
 };
 
 // built-in function 

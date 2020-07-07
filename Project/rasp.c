@@ -17,7 +17,7 @@
 
 extern int edu;
 
-int controlPin(int pin){7
+int controlPin(int pin) {
     int res;
     switch(pin) {
         case 2: res = I2C; break;
@@ -84,6 +84,10 @@ int convertPin(int Pin) {
         case 16: res = 27; break;
         case 20: res = 28; break;
         case 21: res = 29; break;
+        default: {
+            yyerror("undefined Pin, or power supply pin");
+            exit(1);
+        }
     }
     return res;
 }
@@ -104,6 +108,7 @@ void ledRGB(struct ast *pin, struct ast *channel) {
                     yyerror("UART PIN SELECTED");
                 else
                     yyerror("undefined Pin, or power supply pin");
+                exit(1);
             }else {
                 if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
                     yyerror("setup wiringPi failed!");
@@ -140,6 +145,7 @@ void setOutPin(struct ast *pin, struct ast *mode) {
                     yyerror("UART PIN SELECTED");
                 else
                     yyerror("undefined Pin, or power supply pin");
+                exit(1);
             }else {
                 if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
                     yyerror("setup wiringPi failed!");
@@ -175,6 +181,7 @@ struct ast *button(struct ast *pin) {
                     yyerror("UART PIN SELECTED");
                 else
                     yyerror("undefined Pin, or power supply pin");
+                exit(1);
             }else {
                 if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
                     yyerror("setup wiringPi failed!");

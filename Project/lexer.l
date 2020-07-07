@@ -104,8 +104,11 @@ STRING    \"{print}*\"
 .	{ yyerror("Mystery character %c\n", *yytext); exit(1); }
 %%
 
+int edu;
+
 int main(int argc, char **argv) {
-  int edu =1;
+  edu = 1;
+
   if(argc > 1) {
     if(!(yyin = fopen(argv[1], "r"))) {
       fprintf(stderr, "Not open file: %s\n", argv[1]);

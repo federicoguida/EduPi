@@ -9,43 +9,48 @@
 #  include <wiringPi.h>
 #  include <wiringPiI2C.h>
 #  include <softPwm.h>
-external int edu;
-int controlPin(int pin){
-    int gpio=1,spi=2,i2c=3,uart=4;
-    switch(Pin) {
-        case 2: res = i2c; break;
-        case 3: res = i2c; break;
-        case 4: res = gpio; break;
-        case 17: res = gpio; break;
-        case 27: res = gpio; break;
-        case 22: res = gpio; break;
-        case 10: res = spi; break;
-        case 9: res = spi; break;
-        case 11: res = spi; break;
-        case 0: res = i2c; break;
-        case 5: res = gpio; break;
-        case 6: res = gpio; break;
-        case 13: res = gpio; break;
-        case 19: res = spi; break;
-        case 26: res = gpio; break;
-        case 14: res = uart; break;
-        case 15: res = uart; break;
-        case 18: res = gpio; break;
-        case 23: res = gpio; break;
-        case 24: res = gpio; break;
-        case 25: res = gpio; break;
-        case 8: res = spi; break;
-        case 7: res = spi; break;
-        case 1: res = i2c; break;
-        case 12: res = gpio; break;
-        case 16: res = gpio; break;
-        case 20: res = spi; break;
-        case 21: res = spi; break;
-        default:
-            res=0;
+
+#define GPIO 1
+#define SPI 2
+#define I2C 3
+#define UART 4
+
+extern int edu;
+
+int controlPin(int pin) {
+    int res;
+    switch(pin) {
+        case 2: res = I2C; break;
+        case 3: res = I2C; break;
+        case 4: res = GPIO; break;
+        case 17: res = GPIO; break;
+        case 27: res = GPIO; break;
+        case 22: res = GPIO; break;
+        case 10: res = SPI; break;
+        case 9: res = SPI; break;
+        case 11: res = SPI; break;
+        case 0: res = I2C; break;
+        case 5: res = GPIO; break;
+        case 6: res = GPIO; break;
+        case 13: res = GPIO; break;
+        case 19: res = SPI; break;
+        case 26: res = GPIO; break;
+        case 14: res = UART; break;
+        case 15: res = UART; break;
+        case 18: res = GPIO; break;
+        case 23: res = GPIO; break;
+        case 24: res = GPIO; break;
+        case 25: res = GPIO; break;
+        case 8: res = SPI; break;
+        case 7: res = SPI; break;
+        case 1: res = I2C; break;
+        case 12: res = GPIO; break;
+        case 16: res = GPIO; break;
+        case 20: res = SPI; break;
+        case 21: res = SPI; break;
+        default: res = 0; break;
     }
     return res;
-
 }
 
 int convertPin(int Pin) {
@@ -79,9 +84,10 @@ int convertPin(int Pin) {
         case 16: res = 27; break;
         case 20: res = 28; break;
         case 21: res = 29; break;
-        default:
+        default: {
             yyerror("undefined Pin, or power supply pin");
             exit(1);
+        }
     }
     return res;
 }
@@ -93,27 +99,27 @@ void ledRGB(struct ast *pin, struct ast *channel) {
         if((v1->nodetype == 'I') && (v2->nodetype == 'I')) {
             struct integerType *i=(struct integerType *)v1->structType;
             struct integerType *c=(struct integerType *)v2->structType;
-            if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
-                yyerror("setup wiringPi failed!");
+            if((controlPin(i->value) != GPIO) && (edu == 1)) {
+                if(controlPin(i->value) == SPI)
+                    yyerror("SPI PIN SELECTED");
+                else if(controlPin(i->value) == I2C)
+                    yyerror("I2C PIN SELECTED");
+                else if(controlPin(i->value) == UART)
+                    yyerror("UART PIN SELECTED");
+                else
+                    yyerror("undefined Pin, or power supply pin");
                 exit(1);
-            }
-            if(controlPin(i->value)!=1 && edu==1){
-                if(controlPin(i->value)==2){
-                    printf("SPI PIN SELECTED");
-                    return;
-                }else if(controlPin(i->value)==3){
-                    printf("I2C PIN SELECTED");
-                    return;
-                }else{
-                    printf("UART PIN SELECTED");
-                    return;
-                }
-            }
-            if((c->value >= 0) && (c->value <= 100)) {
-                softPwmCreate(convertPin(i->value), 0, 100);
-                softPwmWrite(convertPin(i->value), c->value); //[0, 100]
             }else {
-                yyerror("unknown channel!");
+                if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
+                    yyerror("setup wiringPi failed!");
+                    exit(1);
+                }
+                if((c->value >= 0) && (c->value <= 100)) {
+                    softPwmCreate(convertPin(i->value), 0, 100);
+                    softPwmWrite(convertPin(i->value), c->value); //[0, 100]
+                }else {
+                    yyerror("unknown channel!");
+                }
             }
         }else {
             yyerror("incompatible type!");
@@ -130,29 +136,29 @@ void setOutPin(struct ast *pin, struct ast *mode) {
         if((v1->nodetype == 'I') && (v2->nodetype == 'S')) {
             struct integerType *i=(struct integerType *)v1->structType;
             struct stringType *s=(struct stringType *)v2->structType;
-            if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
-                yyerror("setup wiringPi failed!");
+            if((controlPin(i->value) != GPIO) && (edu == 1)) {
+                if(controlPin(i->value) == SPI)
+                    yyerror("SPI PIN SELECTED");
+                else if(controlPin(i->value) == I2C)
+                    yyerror("I2C PIN SELECTED");
+                else if(controlPin(i->value) == UART)
+                    yyerror("UART PIN SELECTED");
+                else
+                    yyerror("undefined Pin, or power supply pin");
                 exit(1);
-            }
-            if(controlPin(i->value)!=1 && edu==1){
-                if(controlPin(i->value)==2){
-                    printf("SPI PIN SELECTED");
-                    return;
-                }else if(controlPin(i->value)==3){
-                    printf("I2C PIN SELECTED");
-                    return;
-                }else{
-                    printf("UART PIN SELECTED");
-                    return;
+            }else {
+                if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
+                    yyerror("setup wiringPi failed!");
+                    exit(1);
                 }
+                pinMode(convertPin(i->value), OUTPUT);
+                if(strcmp(s->value, "HIGH") == 0)
+                    digitalWrite(convertPin(i->value), HIGH);  //led on
+                else if(strcmp(s->value, "LOW") == 0)
+                    digitalWrite(convertPin(i->value), LOW);  //led off
+                else
+                    yyerror("incompatible mode!");
             }
-            pinMode(convertPin(i->value), OUTPUT);
-            if(strcmp(s->value, "HIGH") == 0)
-                digitalWrite(convertPin(i->value), HIGH);  //led on
-            else if(strcmp(s->value, "LOW") == 0)
-                digitalWrite(convertPin(i->value), LOW);  //led off
-            else
-                yyerror("incompatible mode!");
         }else {
             yyerror("incompatible type!");
         }
@@ -166,30 +172,30 @@ struct ast *button(struct ast *pin) {
         struct value *v1=(struct value *)pin;
         if(v1->nodetype == 'I') {
             struct integerType *i=(struct integerType *)v1->structType;
-            if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
-                yyerror("setup wiringPi failed!");
+            if((controlPin(i->value) != GPIO) && (edu == 1)) {
+                if(controlPin(i->value) == SPI)
+                    yyerror("SPI PIN SELECTED");
+                else if(controlPin(i->value) == I2C)
+                    yyerror("I2C PIN SELECTED");
+                else if(controlPin(i->value) == UART)
+                    yyerror("UART PIN SELECTED");
+                else
+                    yyerror("undefined Pin, or power supply pin");
                 exit(1);
-            }
-            if(controlPin(i->value)!=1 && edu==1){
-                if(controlPin(i->value)==2){
-                    printf("SPI PIN SELECTED");
-                    return;
-                }else if(controlPin(i->value)==3){
-                    printf("I2C PIN SELECTED");
-                    return;
-                }else{
-                    printf("UART PIN SELECTED");
-                    return;
+            }else {
+                if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
+                    yyerror("setup wiringPi failed!");
+                    exit(1);
                 }
+                pinMode(convertPin(i->value), INPUT);
+                pullUpDnControl(convertPin(i->value), PUD_UP);
+                struct value *res=malloc(sizeof(struct value));
+                struct integerType *inres=malloc(sizeof(struct integerType));
+                inres->value=(digitalRead(convertPin(i->value)) == LOW);
+                res->nodetype='I';
+                res->structType=inres;
+                return (struct ast *)res;
             }
-            pinMode(convertPin(i->value), INPUT);
-            pullUpDnControl(convertPin(i->value), PUD_UP);
-            struct value *res=malloc(sizeof(struct value));
-            struct integerType *inres=malloc(sizeof(struct integerType));
-            inres->value=(digitalRead(convertPin(i->value)) == LOW);
-            res->nodetype='I';
-            res->structType=inres;
-            return (struct ast *)res;
         }else {
             yyerror("incompatible type!");
         }

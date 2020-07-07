@@ -808,6 +808,31 @@ struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp, struct ast
 		return (struct ast *)a;	
 }
 
+struct ast* strmrg(struct ast * value){
+	char *res="";
+	struct listexp *list=(struct listexp*)value;
+	while(list){
+		if(list->exp){
+			struct ast* tmp=evaluate(list->exp);
+			if(tmp->nodetype=='S'){
+				struct value *v=(struct value*)tmp;
+				struct stringType *s=(struct stringType *)(v->structType);
+				asprintf(&res, "%s%s", res, s->value);
+				list=list->next;
+			}else{
+				yyerror("Cannot concat String with %c", tmp->nodetype);
+				return NULL;
+			}
+		}
+	}
+	struct value *r=malloc(sizeof(struct value));
+	struct stringType *result=malloc(sizeof(struct stringType));
+	r->nodetype='S';
+	result->value=res;
+	r->structType=result;
+	return (struct ast*)r;
+}
+
 struct ast* callbuiltin(struct fncall *f){
     struct ast* a;
     enum bifs functype = f->functype;
@@ -998,6 +1023,15 @@ struct ast* callbuiltin(struct fncall *f){
 				case B_clear:
 					clrLcd();
 					break;
+				case B_strmrg:
+					if(!f->l){
+						yyerror("no arguments for strmrg...");
+						free(a);
+						break;
+					}
+					a=strmrg(evaluate(f->l));
+					break;
+
 				default:
 					yyerror("Unknown built-in function %d", functype);
  		}

@@ -120,6 +120,7 @@ enum bifs {			/* built-in functions */
   B_sendString=23,
   B_sLine=24,
   B_clear=25,
+  B_strmrg=26,
 };
 
 // built-in function 

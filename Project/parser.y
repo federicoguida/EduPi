@@ -30,7 +30,7 @@ int yylex();
 %token <fn> PRINT
 %token <fn> PRINTLN
 %token <fn> SCAN
-%token <fn> TIME SLP TYPE SQRT POW
+%token <fn> TIME SLP TYPE SQRT POW STRMRG
 %token <fn> POP PUSH APP DEL INS GET SIZE SEARCH
 %token <fn> SOP RGB BUTT INIT SINT SREAL SSTR SLINE CLEAR
 %token <s> NAME
@@ -183,6 +183,7 @@ functionR: TIME LPAREN RPAREN { $$ = newfunc($1, NULL, NULL); }
 | POW LPAREN exp COMMA exp RPAREN { $$ = newfunc($1, $3, $5); }
 | BUTT LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
 | SCAN LPAREN exp RPAREN { $$ = newfunc($1, $3, NULL); }
+| STRMRG LPAREN value_list RPAREN { $$ = newfunc($1, (struct ast*)$3, NULL); }
 ;
 
 explist: /*nothing*/ { $$=NULL; }

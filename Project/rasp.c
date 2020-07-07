@@ -9,6 +9,44 @@
 #  include <wiringPi.h>
 #  include <wiringPiI2C.h>
 #  include <softPwm.h>
+external int edu;
+int controlPin(int pin){
+    int gpio=1,spi=2,i2c=3,uart=4;
+    switch(Pin) {
+        case 2: res = i2c; break;
+        case 3: res = i2c; break;
+        case 4: res = gpio; break;
+        case 17: res = gpio; break;
+        case 27: res = gpio; break;
+        case 22: res = gpio; break;
+        case 10: res = spi; break;
+        case 9: res = spi; break;
+        case 11: res = spi; break;
+        case 0: res = i2c; break;
+        case 5: res = gpio; break;
+        case 6: res = gpio; break;
+        case 13: res = gpio; break;
+        case 19: res = spi; break;
+        case 26: res = gpio; break;
+        case 14: res = uart; break;
+        case 15: res = uart; break;
+        case 18: res = gpio; break;
+        case 23: res = gpio; break;
+        case 24: res = gpio; break;
+        case 25: res = gpio; break;
+        case 8: res = spi; break;
+        case 7: res = spi; break;
+        case 1: res = i2c; break;
+        case 12: res = gpio; break;
+        case 16: res = gpio; break;
+        case 20: res = spi; break;
+        case 21: res = spi; break;
+        default:
+            res=0;
+    }
+    return res;
+
+}
 
 int convertPin(int Pin) {
     int res;
@@ -42,7 +80,7 @@ int convertPin(int Pin) {
         case 20: res = 28; break;
         case 21: res = 29; break;
         default:
-            yyerror("undefined Pin!");
+            yyerror("undefined Pin, or power supply pin");
             exit(1);
     }
     return res;
@@ -58,6 +96,18 @@ void ledRGB(struct ast *pin, struct ast *channel) {
             if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
                 yyerror("setup wiringPi failed!");
                 exit(1);
+            }
+            if(controlPin(i->value)!=1 && edu==1){
+                if(controlPin(i->value)==2){
+                    printf("SPI PIN SELECTED");
+                    return;
+                }else if(controlPin(i->value)==3){
+                    printf("I2C PIN SELECTED");
+                    return;
+                }else{
+                    printf("UART PIN SELECTED");
+                    return;
+                }
             }
             if((c->value >= 0) && (c->value <= 100)) {
                 softPwmCreate(convertPin(i->value), 0, 100);
@@ -84,6 +134,18 @@ void setOutPin(struct ast *pin, struct ast *mode) {
                 yyerror("setup wiringPi failed!");
                 exit(1);
             }
+            if(controlPin(i->value)!=1 && edu==1){
+                if(controlPin(i->value)==2){
+                    printf("SPI PIN SELECTED");
+                    return;
+                }else if(controlPin(i->value)==3){
+                    printf("I2C PIN SELECTED");
+                    return;
+                }else{
+                    printf("UART PIN SELECTED");
+                    return;
+                }
+            }
             pinMode(convertPin(i->value), OUTPUT);
             if(strcmp(s->value, "HIGH") == 0)
                 digitalWrite(convertPin(i->value), HIGH);  //led on
@@ -107,6 +169,18 @@ struct ast *button(struct ast *pin) {
             if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
                 yyerror("setup wiringPi failed!");
                 exit(1);
+            }
+            if(controlPin(i->value)!=1 && edu==1){
+                if(controlPin(i->value)==2){
+                    printf("SPI PIN SELECTED");
+                    return;
+                }else if(controlPin(i->value)==3){
+                    printf("I2C PIN SELECTED");
+                    return;
+                }else{
+                    printf("UART PIN SELECTED");
+                    return;
+                }
             }
             pinMode(convertPin(i->value), INPUT);
             pullUpDnControl(convertPin(i->value), PUD_UP);

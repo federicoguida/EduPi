@@ -105,7 +105,7 @@ STRING    \"{print}*\"
 %%
 
 int main(int argc, char **argv) {
-
+  int edu =1;
   if(argc > 1) {
     if(!(yyin = fopen(argv[1], "r"))) {
       fprintf(stderr, "Not open file: %s\n", argv[1]);

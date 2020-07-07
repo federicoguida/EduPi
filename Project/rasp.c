@@ -15,10 +15,11 @@
 #define I2C 3
 #define UART 4
 
-external int edu;
+extern int edu;
 
-int controlPin(int pin){
-    switch(Pin) {
+int controlPin(int pin){7
+    int res;
+    switch(pin) {
         case 2: res = I2C; break;
         case 3: res = I2C; break;
         case 4: res = GPIO; break;

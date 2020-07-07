@@ -54,7 +54,29 @@ struct ast *newcall(struct symbol *s, struct ast *l){
 		return (struct ast *)a;
 }
 
-
+struct listexp *listcopy(struct listexp* lista){
+	struct listexp *l=malloc(sizeof(struct listexp));
+	if(!l){
+		yyerror("out of space");
+		exit(0);
+	}
+	struct listexp *tmp=lista;
+	struct listexp *val=l;
+	val->nodetype='Y';
+	val->exp=tmp->exp;
+	val->next=NULL;
+	tmp=tmp->next;
+	while(tmp) {
+		struct listexp *node=malloc(sizeof(struct listexp));
+		node->nodetype='Y';
+		node->exp=tmp->exp;
+		node->next=NULL;
+		val->next=node;
+		val=val->next;
+		tmp=tmp->next;
+	}
+	return l;
+}
 
 struct ast* calluser(struct ufncall *f){
 		struct symbol *fn = f->s;	/* function name */
@@ -101,7 +123,7 @@ struct ast* calluser(struct ufncall *f){
 		for(i = 0; i < nargs; i++) {
 			struct symbol *s = sl->sym;
 			if(val[i]->nodetype=='Y'){
-				s->l = (struct listexp*)val[i];
+				s->l = listcopy((struct listexp*)val[i]);
 				s->nodetype = s->l->nodetype;
 			}else{
 				s->v = (struct value*)val[i];

@@ -195,6 +195,7 @@ struct ast *get(struct symbol *s, struct ast *exp);
 struct ast *search(struct symbol *s, struct ast *exp);
 struct ast *size(struct symbol *s);
 int sizeList(struct listexp *l);
+struct listexp *listcopy(struct listexp* lista)
 /********************************END-LIST**************************************/
 
 /******************************FLOW*/

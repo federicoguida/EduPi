@@ -238,10 +238,10 @@ void sendStringLcd(struct ast *string) {
 }
 
 void lcdLoc(struct ast *line) {
-    if(integer != NULL) {
-        struct value *v=(struct value *)integer;
+    if(line != NULL) {
+        struct value *v=(struct value *)line;
         if(v->nodetype == 'S') {
-            struct stringType *i=(struct stringType *)v;
+            struct stringType *s=(struct stringType *)v;
             if(strcmp(s->value, "LINE1") == 0)
                 lcd_byte(LINE1, LCD_CMD);
             else if(strcmp(s->value, "LINE2") == 0)

@@ -54,7 +54,7 @@ struct ast *newcall(struct symbol *s, struct ast *l){
 		return (struct ast *)a;
 }
 
-struct listexp *listcopy(struct listexp* lista){
+struct listexp *listcopy(struct listexp* lista) {
 	struct listexp *l=malloc(sizeof(struct listexp));
 	if(!l){
 		yyerror("out of space");

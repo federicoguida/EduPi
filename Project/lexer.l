@@ -59,6 +59,8 @@ STRING    \"{print}*\"
 "lcdLine"         { yylval.fn = B_sLine; return SLINE; }
 "clearLcd"        { yylval.fn = B_clear; return CLEAR; }
 "strmrg"          { yylval.fn = B_strmrg; return STRMRG;}
+"strmul"          { yylval.fn = B_strmul; return STRMUL;}
+"toString"        { yylval.fn = B_toString; return TOSTRING;}
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

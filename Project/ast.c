@@ -833,6 +833,72 @@ struct ast* strmrg(struct ast * value){
 	return (struct ast*)r;
 }
 
+struct ast* strmul(struct ast* string, struct ast* mul){
+	char *result="";
+	if(mul->nodetype=='I' && string->nodetype=='S'){
+		struct value* val=(struct value*)mul;
+		struct value* st=(struct value*)string;
+		int v=((struct integerType*)val->structType)->value;
+		char *str=((struct stringType*)(st->structType))->value;
+		for (int i =0; i<v; i++){
+			asprintf(&result, "%s%s", result, str );
+		}
+		struct value * res=malloc(sizeof(struct value));
+		struct stringType *sres=malloc(sizeof(struct stringType));
+		sres->value=result;
+		res->nodetype='S';
+		res->structType=sres;
+		return (struct ast*)res;
+	}else{
+		yyerror("Types of arguments not compatible: %c %c", string->nodetype, mul->nodetype);
+		return NULL;
+	}
+}
+
+char* itoa(int value){
+	char *result;
+	asprintf(&result,"%d",value);
+	return result;
+}
+
+char *dtoa(double value){
+	char *result;
+	asprintf(&result,"%g",value);
+	return result;
+}
+
+struct ast* toString(struct ast* exp){
+	char *string;
+	struct value* v;
+	struct value* result;
+	struct stringType* sres;
+	if(exp->nodetype=='I' || exp->nodetype=='R'){
+		switch(exp->nodetype){
+			case 'I' :
+				v=(struct value*)exp;
+				string=itoa(((struct integerType*)(v->structType))->value);
+				result=malloc(sizeof(struct value));
+				sres=malloc(sizeof(struct stringType));
+				sres->value=string;
+				result->nodetype='S';
+				result->structType=sres;
+				return (struct ast*)result;
+			case 'R' :
+				v=(struct value*)exp;
+				string=dtoa(((struct realType*)(v->structType))->value);
+				result=malloc(sizeof(struct value));
+				sres=malloc(sizeof(struct stringType));
+				sres->value=string;
+				result->nodetype='S';
+				result->structType=sres;
+				return (struct ast*)result;
+		}
+	}else{
+		yyerror("Types of arguments not compatible: %c", exp->nodetype);
+		return NULL;
+	}
+}
+
 struct ast* callbuiltin(struct fncall *f){
     struct ast* a;
     enum bifs functype = f->functype;
@@ -1031,10 +1097,29 @@ struct ast* callbuiltin(struct fncall *f){
 					}
 					a=strmrg(evaluate(f->l));
 					break;
-
+				case B_strmul:
+					if(!f->l || !f->r){
+						yyerror("no arguments for strmul...");
+						free(a);
+						break;
+					}
+					a=strmul(evaluate(f->l),evaluate(f->r));
+					break;
+				case B_toString:
+					if(!f->l){
+						yyerror("no arguments for toString...");
+						free(a);
+						break;
+					}
+					a=toString(evaluate(f->l));
+					break;
 				default:
 					yyerror("Unknown built-in function %d", functype);
  		}
+		if(!a){
+			a=malloc(sizeof(struct ast*));
+			return a;
+		}
   		return a;
 }
 
@@ -1446,8 +1531,6 @@ void assignPeri(struct periassign* p){
 	p->var->nodetype=p->type;
 	p->var->p=peri;
 }
-
-/* TYPE C USERFUNC - TYPE L BUILTFUNC */
 
 struct funclist* newfunclist(struct ast* func, struct funclist *next){
 	struct funclist *fn=malloc(sizeof(struct funclist));

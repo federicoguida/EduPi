@@ -121,6 +121,8 @@ enum bifs {			/* built-in functions */
   B_sLine=24,
   B_clear=25,
   B_strmrg=26,
+  B_strmul=27,
+  B_toString=28,
 };
 
 // built-in function 

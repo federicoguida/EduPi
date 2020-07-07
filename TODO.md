@@ -3,3 +3,4 @@
 - [ ] Funzioni definite da Utente
 - [ ] Liste
 - [ ] Tipo periferica
+- [ ] Controllo dei pin delle periferiche

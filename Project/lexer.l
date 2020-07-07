@@ -1,5 +1,6 @@
 %option noyywrap nodefault yylineno
 %{
+#  include <string.h>
 #  include "ast.h"
 #  include "parser.tab.h"
 #  include "operations.h"
@@ -108,15 +109,29 @@ STRING    \"{print}*\"
 int edu;
 
 int main(int argc, char **argv) {
-  edu = 1;
+	edu = 0;
 
-  if(argc > 1) {
-    if(!(yyin = fopen(argv[1], "r"))) {
-      fprintf(stderr, "Not open file: %s\n", argv[1]);
-      exit(1);
-    }
-    return yyparse();
-  } else {
-    return yyparse();
-  }
+	if(argc > 2) {
+		if(!(yyin = fopen(argv[1], "r"))) {
+			fprintf(stderr, "Not open file: %s\n", argv[1]);
+			exit(1);
+		}
+		if(strcmp(argv[2], "-edu") == 0)
+			edu = 1;
+		return yyparse();
+	} else if(argc == 2) {
+		if(strcmp(argv[1], "-edu") == 0) {
+			edu = 1;
+			return yyparse();
+		}
+		else {
+			if(!(yyin = fopen(argv[1], "r"))) {
+				fprintf(stderr, "Not open file: %s\n", argv[1]);
+				exit(1);
+			}
+			return yyparse();
+		}
+	}else {
+		return yyparse();
+	}
 }

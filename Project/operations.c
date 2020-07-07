@@ -13,7 +13,7 @@ char *clearString(char *str) {
     return result;
 }
 
-struct ast * operation(int op, struct ast* value1, struct ast* value2){
+struct ast *operation(int op, struct ast* value1, struct ast* value2) {
       struct value *val1;
       struct value *val2;
       struct value *result;
@@ -353,7 +353,7 @@ struct ast * operation(int op, struct ast* value1, struct ast* value2){
       return (struct ast *)result;
 }
 
-struct ast* sop(int op, struct ast * tree){
+struct ast *sop(int op, struct ast * tree) {
     struct value * a;
     struct value * temp;
     struct integerType *i;

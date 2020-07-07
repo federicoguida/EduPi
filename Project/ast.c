@@ -8,7 +8,7 @@
 #  include <time.h>
 #  include "ast.h"
 #  include "operations.h"
-#  include "rasp.h"
+//#  include "rasp.h"
 
 /********************************USER-FUNC******************************/
 struct symlist *newsymlist(struct symbol *sym, struct symlist *next){
@@ -1417,22 +1417,22 @@ struct ast *evaluate(struct ast *tree) {
     struct symbol sv;
     switch(tree->nodetype) {
         case '+' :
-              result=sum(evaluate(tree->l), evaluate(tree->r));
+              result=operation('+',evaluate(tree->l), evaluate(tree->r));
               break;
         case '-' :
-              result=sub(evaluate(tree->l), evaluate(tree->r));
+              result=operation('-',evaluate(tree->l), evaluate(tree->r));
               break;
         case '*' :
-              result=mul(evaluate(tree->l), evaluate(tree->r));
+              result=operation('*',evaluate(tree->l), evaluate(tree->r));
               break;
         case '/' :
-              result=rdiv(evaluate(tree->l), evaluate(tree->r));
+              result=operation('/',evaluate(tree->l), evaluate(tree->r));
               break;
         case '%' :
-              result=mod(evaluate(tree->l), evaluate(tree->r));
+              result=operation('%',evaluate(tree->l), evaluate(tree->r));
               break;
         case '|' :
-              result=abss(evaluate(tree->l));
+              result=sop('|',evaluate(tree->l));
               break;
         case 'I' :
               result=tree;
@@ -1453,16 +1453,16 @@ struct ast *evaluate(struct ast *tree) {
 			  foreach((struct for_each*)tree);
 			  break;
         case 'M' :
-              result=negateValue(evaluate(tree->l));
+              result=sop('M',evaluate(tree->l));
               break;
         case 'O' :
-              result=orr(evaluate(tree->l), evaluate(tree->r));
+              result=operation('O',evaluate(tree->l), evaluate(tree->r));
               break;
         case 'A' :
-              result=and(evaluate(tree->l), evaluate(tree->r));
+              result=operation('A',evaluate(tree->l), evaluate(tree->r));
               break;
         case 'N' :
-              result=not(evaluate(tree->l));
+              result=sop('N',evaluate(tree->l));
               break;
         case '=' :
               assign((struct symasgn*) tree);
@@ -1504,12 +1504,12 @@ struct ast *evaluate(struct ast *tree) {
 			  peripheralcall((struct perimethod*)tree);
 			  break;
         case 'Z': temp=evaluate(tree->l); result=evaluate(tree->r);  break;
-        case 1: result = compare(1,evaluate(tree->l), evaluate(tree->r)); break; // >
-        case 2: result = compare(2,evaluate(tree->l), evaluate(tree->r)); break; // <
-        case 3: result = compare(3,evaluate(tree->l), evaluate(tree->r)); break; // !=
-        case 4: result = compare(4,evaluate(tree->l), evaluate(tree->r)); break; // ==
-        case 5: result = compare(5,evaluate(tree->l), evaluate(tree->r)); break; // >=
-        case 6: result = compare(6,evaluate(tree->l), evaluate(tree->r)); break; // <=
+        case 1: result = operation(1,evaluate(tree->l), evaluate(tree->r)); break; // >
+        case 2: result = operation(2,evaluate(tree->l), evaluate(tree->r)); break; // <
+        case 3: result = operation(3,evaluate(tree->l), evaluate(tree->r)); break; // !=
+        case 4: result = operation(4,evaluate(tree->l), evaluate(tree->r)); break; // ==
+        case 5: result = operation(5,evaluate(tree->l), evaluate(tree->r)); break; // >=
+        case 6: result = operation(6,evaluate(tree->l), evaluate(tree->r)); break; // <=
         default: printf("internal error debug"); 
     }
     return result;

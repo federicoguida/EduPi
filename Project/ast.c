@@ -256,7 +256,7 @@ struct ast *newsymdecl(int node, struct symbol *s){
 }
 
 void assign(struct symasgn *tree) {
-		
+	if(evaluate(tree->v)) {
 		if(tree->s->nodetype!='Y'){
 			struct value* v=(struct value*)(evaluate(tree->v));
 				if(tree->s->nodetype!=v->nodetype){
@@ -289,6 +289,9 @@ void assign(struct symasgn *tree) {
 					tree->s->l=l;
 				}
 		}
+	}else {
+		yyerror("Cannot assign null element!");
+	}
 }
 /********************************END-VARIABLE********************************/
 

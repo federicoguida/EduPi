@@ -14,6 +14,7 @@ char *clearString(char *str) {
 }
 
 struct ast *operation(int op, struct ast* value1, struct ast* value2) {
+  if((value1 != NULL) && (value2 != NULL)) {
       struct value *val1;
       struct value *val2;
       struct value *result;
@@ -351,9 +352,14 @@ struct ast *operation(int op, struct ast* value1, struct ast* value2) {
 
       }
       return (struct ast *)result;
+    }else {
+		    yyerror("argument not defined");
+		    return NULL;
+	  }
 }
 
 struct ast *sop(int op, struct ast * tree) {
+  if(tree != NULL) {
     struct value * a;
     struct value * temp;
     struct integerType *i;
@@ -401,4 +407,8 @@ struct ast *sop(int op, struct ast * tree) {
           return NULL;
     }
     return (struct ast* )a;
+  }else {
+		  yyerror("argument not defined");
+		  return NULL;
+	}
 }

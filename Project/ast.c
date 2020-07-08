@@ -828,13 +828,13 @@ struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp, struct ast
 		return (struct ast *)a;	
 }
 
-struct ast* strmrg(struct ast * value){
-	if(value != NULL) {
-		char *res="";
-		struct listexp *list=(struct listexp*)value;
-		while(list){
-			if(list->exp){
-				struct ast* tmp=evaluate(list->exp);
+struct ast* strmrg(struct ast *value){
+	char *res="";
+	struct listexp *list=(struct listexp*)value;
+	while(list){
+		if(list->exp){
+			struct ast* tmp=evaluate(list->exp);
+			if(tmp) {
 				if(tmp->nodetype=='S'){
 					struct value *v=(struct value*)tmp;
 					struct stringType *s=(struct stringType *)(v->structType);
@@ -845,17 +845,17 @@ struct ast* strmrg(struct ast * value){
 					return NULL;
 				}
 			}
+			else {
+				list=list->next;
+			}
 		}
-		struct value *r=malloc(sizeof(struct value));
-		struct stringType *result=malloc(sizeof(struct stringType));
-		r->nodetype='S';
-		result->value=res;
-		r->structType=result;
-		return (struct ast*)r;
-	}else {
-		yyerror("argument not defined");
-		return NULL;
 	}
+	struct value *r=malloc(sizeof(struct value));
+	struct stringType *result=malloc(sizeof(struct stringType));
+	r->nodetype='S';
+	result->value=res;
+	r->structType=result;
+	return (struct ast*)r;
 }
 
 struct ast* strmul(struct ast* string, struct ast* mul){
@@ -894,7 +894,7 @@ struct ast* strmul(struct ast* string, struct ast* mul){
 			return NULL;
 		}
 	}else {
-		yyerror("argument not defined");7
+		yyerror("argument not defined");
 		return NULL;
 	}
 }

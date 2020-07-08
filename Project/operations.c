@@ -344,16 +344,16 @@ struct ast *operation(int op, struct ast* value1, struct ast* value2) {
 
           default: 
           if(op!=1 && op!=2 && op!=3 && op!=4 && op!=5 && op!=6)
-          printf("Operation is not supported : Type %c %c Type %c\n", value1->nodetype, op, value2->nodetype );
+            yyerror("OPERATIONS-2: Operation is not supported : Type %c %c Type %c\n", value1->nodetype, op, value2->nodetype );
           else{
-          printf("Operation is not supported : Type %c compare Type %c\n", value1->nodetype,value2->nodetype );
+            yyerror("OPERATIONS-2: Operation is not supported : Type %c compare Type %c\n", value1->nodetype,value2->nodetype );
           }
           return NULL;
 
       }
       return (struct ast *)result;
     }else {
-		    yyerror("argument not defined");
+		    yyerror("OPERATIONS-2: Argument not defined");
 		    return NULL;
 	  }
 }
@@ -403,12 +403,12 @@ struct ast *sop(int op, struct ast * tree) {
             a->structType=ires;
             break;
       default: 
-          printf("Operation %c is not supported : Type %c \n", op, tree->nodetype );
+          yyerror("OPERATIONS-1: Operation %c is not supported : Type %c \n", op, tree->nodetype );
           return NULL;
     }
     return (struct ast* )a;
   }else {
-		  yyerror("argument not defined");
+		  yyerror("OPERATIONS-1: Argument not defined");
 		  return NULL;
 	}
 }

@@ -88,7 +88,7 @@ struct ast* calluser(struct ufncall *f){
 		int i;
 
 		 if(!fn->func) {
-			yyerror("function do not have body", fn->name);
+			yyerror("CALLUSER: Function do not have body", fn->name);
 			exit(1);
 		} 
 
@@ -105,7 +105,7 @@ struct ast* calluser(struct ufncall *f){
 		/* evaluate the arguments */
 		for(i = 0; i < nargs; i++) {
 			if(!args) {
-				yyerror("too few args in call to %s", fn->name);
+				yyerror("CALLUSER: Too few args in call to %s", fn->name);
 				free(val);
 				exit(1);
 			}
@@ -199,7 +199,7 @@ struct symbol *lookup(char* sym) {
 				}
 			if(++sp >= symtab+NHASH) sp = symtab; /* try the next entry */
 		}
-		yyerror("symbol table overflow\n");
+		yyerror("LOOKUP: symbol table overflow\n");
 		abort(); /* tried them all, table is full */
 }
 
@@ -256,27 +256,30 @@ struct ast *newsymdecl(int node, struct symbol *s){
 }
 
 void assign(struct symasgn *tree) {
-	if(evaluate(tree->v)) {
 		if(tree->s->nodetype!='Y'){
-			struct value* v=(struct value*)(evaluate(tree->v));
-				if(tree->s->nodetype!=v->nodetype){
-					if(tree->s->nodetype=='R' && v->nodetype=='I'){
-							tree->s->v=v;
-							struct realType *r=malloc(sizeof(struct realType));
-							struct value *val=malloc(sizeof(struct value));
-							double value=(double)(((struct integerType*)(v->structType))->value);
-							r->value=value;
-							val->nodetype='R';
-							val->structType=r;
-							tree->s->v=val;
+			if(evaluate(tree->v)) {
+				struct value* v=(struct value*)(evaluate(tree->v));
+					if(tree->s->nodetype!=v->nodetype){
+						if(tree->s->nodetype=='R' && v->nodetype=='I'){
+								tree->s->v=v;
+								struct realType *r=malloc(sizeof(struct realType));
+								struct value *val=malloc(sizeof(struct value));
+								double value=(double)(((struct integerType*)(v->structType))->value);
+								r->value=value;
+								val->nodetype='R';
+								val->structType=r;
+								tree->s->v=val;
 
+						}else{
+								yyerror("ASSIGN: Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, v->nodetype );
+								exit(1);
+						}
 					}else{
-							yyerror("Type %c of variable is not compatible with the type %c of value. ", tree->s->nodetype, v->nodetype );
-							exit(1);
+						tree->s->v=v;
 					}
-				}else{
-					tree->s->v=v;
-				}
+			}else {
+				yyerror("ASSIGN: Cannot assign null element!");
+			}
 		}else {
 				if(!tree->v){
 					struct listexp *node=malloc(sizeof(struct listexp));
@@ -285,13 +288,14 @@ void assign(struct symasgn *tree) {
 					node->next=NULL;
 					tree->s->l=node;
 				}else{
-					struct listexp *l = (struct listexp *)(evaluate(tree->v));
-					tree->s->l=l;
+					if((evaluate(tree->v))->nodetype == 'Y' ) {
+						struct listexp *l = (struct listexp *)(evaluate(tree->v));
+						tree->s->l=l;
+					}else {
+						yyerror("ASSIGN: Cannot assign %c type to %c type!", tree->v->nodetype, tree->s->nodetype);
+					}
 				}
 		}
-	}else {
-		yyerror("Cannot assign null element!");
-	}
 }
 /********************************END-VARIABLE********************************/
 
@@ -372,11 +376,11 @@ struct ast *pop(struct symbol *s) {
 					return a;
 				}
 			}else{
-				yyerror("Cannot pop empty list");
+				yyerror("POP: Cannot pop empty list");
 				return NULL;
 			}
 		}else{
-			yyerror("Cannot pop %c TYPE", s->nodetype);
+			yyerror("POP: Cannot pop %c TYPE", s->nodetype);
 			return NULL;
 		}
 	}
@@ -409,11 +413,11 @@ void append(struct symbol *s, struct ast *exp) {
 				}	
 			}
 			else {
-				yyerror("argument not defined");
+				yyerror("APPEND: Argument not defined");
 			}
 		}
 		else{
-			yyerror("Cannot push %c TYPE", s->nodetype);
+			yyerror("APPEND: Cannot push %c TYPE", s->nodetype);
 		}
 	}
 }
@@ -462,7 +466,7 @@ struct ast *delete(struct symbol *s, struct ast *exp) {
 				struct value *v=(struct value *)exp;
 				struct integerType *i=(struct integerType *)v->structType;
 				if(i->value > size-1) {
-					yyerror("out of bounds!");
+					yyerror("DELETE: Out of bounds!");
 				}
 				for(int n = 0; n <= i->value; n++) {
 					if(i->value == 0)
@@ -476,12 +480,12 @@ struct ast *delete(struct symbol *s, struct ast *exp) {
 				}
 			}
 			else {
-				yyerror("arguments not defined");
+				yyerror("DELETE: Arguments not defined");
 				return NULL;
 			}
 		}
 		else{
-			yyerror("Cannot delete %c TYPE", s->nodetype);
+			yyerror("DELETE: Cannot delete %c TYPE", s->nodetype);
 			return NULL;
 		}
 	}
@@ -499,7 +503,7 @@ struct ast *get(struct symbol *s, struct ast *exp) {
 				struct value *v=(struct value *)exp;
 				struct integerType *i=(struct integerType *)v->structType;
 				if(i->value > size-1) {
-					yyerror("out of bounds!");
+					yyerror("GET: Out of bounds!");
 				}
 				for(int n = 0; n <= i->value; n++) {
 					if(n == i->value) {
@@ -510,12 +514,12 @@ struct ast *get(struct symbol *s, struct ast *exp) {
 				}
 			}
 			else {
-				yyerror("argument not defined");
+				yyerror("GET: Argument not defined");
 				return NULL;
 			}
 		}
 		else{
-			yyerror("Cannot get %c TYPE", s->nodetype);
+			yyerror("GET: Cannot get %c TYPE", s->nodetype);
 			return NULL;
 		}
 	}
@@ -543,11 +547,11 @@ void push(struct symbol *s, struct ast *exp) {
 				}
 			}
 			else {
-				yyerror("argument not defined");
+				yyerror("PUSH: Argument not defined");
 			}
 		}
 		else{
-			yyerror("Cannot push %c TYPE", s->nodetype);
+			yyerror("PUSH: Cannot push %c TYPE", s->nodetype);
 		}
 	}
 }
@@ -563,7 +567,7 @@ void insert(struct symbol *s, struct ast *exp, struct ast *val) {
 				struct value *v=(struct value *)exp;
 				struct integerType *i=(struct integerType *)v->structType;
 				if(i->value > size) {
-					yyerror("out of bounds!");
+					yyerror("INSERT: Out of bounds!");
 				}
 				for(int n = 0; n <= i->value; n++) {
 					if(i->value == 0) {
@@ -580,11 +584,11 @@ void insert(struct symbol *s, struct ast *exp, struct ast *val) {
 				}
 			}
 			else {
-				yyerror("arguments not defined");
+				yyerror("INSERT: Arguments not defined");
 			}
 		}
 		else{
-			yyerror("Cannot insert %c TYPE", s->nodetype);
+			yyerror("INSERT: Cannot insert %c TYPE", s->nodetype);
 		}
 	}
 }
@@ -653,10 +657,10 @@ struct ast *search(struct symbol *s, struct ast *exp) {
 							}
 							break;
 						case 'Y':
-							yyerror("Cannot search list!");
+							yyerror("SEARCH: Cannot search list!");
 							break;
 						default:
-							yyerror("search error type!");
+							yyerror("SEARCH: Error type!");
 							exit(1);
 					}
 					count++;
@@ -666,11 +670,11 @@ struct ast *search(struct symbol *s, struct ast *exp) {
 				}
 				return NULL;
 			}
-			yyerror("Value NULL!");
+			yyerror("SEARCH: Value NULL!");
 			return NULL;
 		}
 		else{
-			yyerror("Cannot search %c TYPE", s->nodetype);
+			yyerror("SEARCH: Cannot search %c TYPE", s->nodetype);
 			return NULL;
 		}
 	}
@@ -696,7 +700,7 @@ struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *
 
 void ifop(struct flow *f){
 	if(!evaluate(f->cond)) {
-		yyerror("undefined condition!");
+		yyerror("IF-ELSE: Undefined condition!");
 	}else {
 		struct value *v=(struct value*)evaluate(f->cond);
 		struct integerType *i=(struct integerType*)v->structType;
@@ -714,7 +718,7 @@ void ifop(struct flow *f){
 
 void whileop(struct flow *f) {
 	if(!evaluate(f->cond)) {
-		yyerror("undefined condition!");
+		yyerror("WHILE: Undefined condition!");
 	}else {
 		struct value *v=(struct value*)evaluate(f->cond);
 		struct integerType *i=(struct integerType*)v->structType;
@@ -735,7 +739,7 @@ void dowhileop(struct flow *f) {
 		do{
 			evaluate(f->tl);
 			if(!evaluate(f->cond)) {
-				yyerror("undefined condition!");
+				yyerror("DO-WHILE: Undefined condition!");
 				break;
 			}
 			v=(struct value*)evaluate(f->cond);
@@ -745,10 +749,10 @@ void dowhileop(struct flow *f) {
 }
 
 void forop(struct flow *f) { 
+	evaluate(f->in);
 	if(!evaluate(f->cond)) {
-		yyerror("undefined condition!");
+		yyerror("FOR: Undefined condition!");
 	}else {
-		evaluate(f->in);
 		struct value *v=(struct value*)evaluate(f->cond);
 		struct integerType *i=(struct integerType*)v->structType;
 		if(f->tl && f->in && f->el) {
@@ -773,10 +777,10 @@ struct ast *newForEach(int nodetype, struct symbol* i, struct symbol* list, stru
 
 void foreach(struct for_each *f){
 	if(!(f->list->l)) {
-		yyerror("undefined list!");
+		yyerror("FOR-EACH: Undefined list!");
 	}else {
 		if(f->list->nodetype!='Y'){
-			yyerror("Second operator must be list");
+			yyerror("FOR-EACH: Second operator must be list");
 		}else{
 			if(f->list->l->exp){
 				struct listexp* l=(struct listexp*)f->list->l;
@@ -792,7 +796,7 @@ void foreach(struct for_each *f){
 					l=l->next;
 				}
 			}else{
-				yyerror("List dont have elements");
+				yyerror("FOR-EACH: List dont have elements");
 			}
 		}
 	}
@@ -844,7 +848,7 @@ struct ast* strmrg(struct ast *value){
 					asprintf(&res, "%s%s", res, s->value);
 					list=list->next;
 				}else{
-					yyerror("Cannot concat String with %c", tmp->nodetype);
+					yyerror("STRMRG: Cannot concat String with %c", tmp->nodetype);
 					return NULL;
 				}
 			}
@@ -893,11 +897,11 @@ struct ast* strmul(struct ast* string, struct ast* mul){
 			res->structType=sres;
 			return (struct ast*)res;
 		}else{
-			yyerror("Types of arguments not compatible: %c %c", string->nodetype, mul->nodetype);
+			yyerror("STRMUL: Types of arguments not compatible: %c %c", string->nodetype, mul->nodetype);
 			return NULL;
 		}
 	}else {
-		yyerror("argument not defined");
+		yyerror("STRMUL: Argument not defined");
 		return NULL;
 	}
 }
@@ -942,11 +946,11 @@ struct ast *toString(struct ast* exp){
 					return (struct ast*)result;
 			}
 		}else{
-			yyerror("Types of arguments not compatible: %c", exp->nodetype);
+			yyerror("TO-STRING: Types of arguments not compatible: %c", exp->nodetype);
 			return NULL;
 		}
 	}else {
-		yyerror("argument not defined");
+		yyerror("TO-STRING: Argument not defined");
 		return NULL;
 	}
 }
@@ -958,7 +962,7 @@ struct ast* callbuiltin(struct fncall *f){
     switch(functype) {
 				case B_print:
 					if(!f->l){
-						yyerror("no arguments for print...");
+						yyerror("FUNC: No arguments for print...");
 						free(a);
 						break;
 					}
@@ -966,7 +970,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_println:
 					if(!f->l){
-						yyerror("no arguments for print...");
+						yyerror("FUNC: No arguments for println...");
 						free(a);
 						break;
 					}
@@ -977,7 +981,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_pop:
 					if(!f->s){
-						yyerror("no arguments for pop...");
+						yyerror("FUNC: No arguments for pop...");
 						free(a);
 						break;
 					}
@@ -985,7 +989,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_push:
 					if(!f->l) {
-						yyerror("no arguments for push...");
+						yyerror("FUNC: No arguments for push...");
 						free(a);
 						break;
 					}
@@ -993,7 +997,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_app:
 					if(!f->l){
-						yyerror("no arguments for push...");
+						yyerror("FUNC: No arguments for append...");
 						free(a);
 						break;
 					}
@@ -1001,7 +1005,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_del:
 					if(!f->s || !f->l) {
-						yyerror("no arguments for delete...");
+						yyerror("FUNC: No arguments for delete...");
 						free(a);
 						break;
 					}
@@ -1009,7 +1013,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_get:
 					if(!f->s || !f->l) {
-						yyerror("no arguments for get...");
+						yyerror("FUNC: No arguments for get...");
 						free(a);
 						break;
 					}
@@ -1017,7 +1021,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_ins:
 					if(!f->l || !f->r) {
-						yyerror("no arguments for insert...");
+						yyerror("FUNC: No arguments for insert...");
 						free(a);
 						break;
 					}
@@ -1025,7 +1029,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_search:
 					if(!f->s || !f->l) {
-						yyerror("no arguments for search...");
+						yyerror("FUNC: No arguments for search...");
 						free(a);
 						break;
 					}
@@ -1033,7 +1037,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_size:
 					if(!f->s) {
-						yyerror("no arguments for size...");
+						yyerror("FUNC: No arguments for size...");
 						free(a);
 						break;
 					}
@@ -1041,7 +1045,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_slp:
 					if(!f->l){
-						yyerror("no arguments for sleep...");
+						yyerror("FUNC: No arguments for sleep...");
 						free(a);
 						break;
 					}
@@ -1049,7 +1053,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_type:
 					if(!f->l) {
-						yyerror("no arguments for type...");
+						yyerror("FUNC: No arguments for type...");
 						free(a);
 						break;
 					}
@@ -1057,7 +1061,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_sqrt:
 					if(!f->l) {
-						yyerror("no arguments for sqrt...");
+						yyerror("FUNC: No arguments for sqrt...");
 						free(a);
 						break;
 					}
@@ -1065,7 +1069,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_pow:
 					if(!f->l || !f->r) {
-						yyerror("no arguments for pow...");
+						yyerror("FUNC: No arguments for pow...");
 						free(a);
 						break;
 					}
@@ -1073,7 +1077,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_sop:
 					if(!f->l || !f->r) {
-						yyerror("no arguments for led...");
+						yyerror("FUNC: No arguments for setOutPin...");
 						free(a);
 						break;
 					}
@@ -1081,7 +1085,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_rgb:
 					if(!f->l || !f->r) {
-						yyerror("no arguments for ledRGB...");
+						yyerror("FUNC: No arguments for ledRGB...");
 						free(a);
 						break;
 					}
@@ -1089,7 +1093,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_butt:
 					if(!f->l) {
-						yyerror("no arguments for button...");
+						yyerror("FUNC: No arguments for button...");
 						free(a);
 						break;
 					}
@@ -1097,7 +1101,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_scan:
 					if(!f->l) {
-						yyerror("no type specified for scan...");
+						yyerror("FUNC: No type specified for scan...");
 						free(a);
 						break;
 					}
@@ -1108,7 +1112,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_sendInt:
 					if(!f->l) {
-						yyerror("no type specified for send integer lcd...");
+						yyerror("FUNC: No type specified for send integer lcd...");
 						free(a);
 						break;
 					}
@@ -1116,7 +1120,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_sendReal:
 					if(!f->l) {
-						yyerror("no type specified for send real lcd...");
+						yyerror("FUNC: No type specified for send real lcd...");
 						free(a);
 						break;
 					}
@@ -1124,7 +1128,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_sendString:
 					if(!f->l) {
-						yyerror("no type specified for send string lcd...");
+						yyerror("FUNC: No type specified for send string lcd...");
 						free(a);
 						break;
 					}
@@ -1132,7 +1136,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_sLine:
 					if(!f->l) {
-						yyerror("no type specified for lcd line...");
+						yyerror("FUNC: No type specified for lcd line...");
 						free(a);
 						break;
 					}
@@ -1143,7 +1147,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_strmrg:
 					if(!f->l){
-						yyerror("no arguments for strmrg...");
+						yyerror("FUNC: No arguments for strmrg...");
 						free(a);
 						break;
 					}
@@ -1151,7 +1155,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_strmul:
 					if(!f->l || !f->r){
-						yyerror("no arguments for strmul...");
+						yyerror("FUNC: No arguments for strmul...");
 						free(a);
 						break;
 					}
@@ -1159,7 +1163,7 @@ struct ast* callbuiltin(struct fncall *f){
 					break;
 				case B_toString:
 					if(!f->l){
-						yyerror("no arguments for toString...");
+						yyerror("FUNC: No arguments for toString...");
 						free(a);
 						break;
 					}
@@ -1177,7 +1181,7 @@ struct ast* callbuiltin(struct fncall *f){
 
 void print(struct ast *val) {
 	if(!val)
-		yyerror("Cannot print null element");
+		yyerror("PRINT: Cannot print null element");
 	else{
 		struct value *a;
 		struct integerType *i;
@@ -1239,7 +1243,7 @@ void print(struct ast *val) {
 
 void println(struct ast *val) {
 	if(!val)
-		yyerror("Cannot print null element");
+		yyerror("PRINTLN: Cannot print null element");
 	else{
 		print(val); 
 		printf("\n");
@@ -1267,10 +1271,10 @@ void bsleep(struct ast *val) {
 			fflush(stdout);
 			usleep(intero*1000);
 		}else{
-			yyerror("Integer type expected on sleep function");
+			yyerror("SLEEP: Integer type expected on sleep function");
 		}
 	}else {
-		yyerror("argument not defined");
+		yyerror("SLEEP: Argument not defined");
 	}
 }	
 
@@ -1315,15 +1319,16 @@ struct ast *type(struct ast *val) {
 				res->structType = str;
 				return (struct ast *)res;
 			default:
-				yyerror("error type!");
+				yyerror("TYPE: Error type!");
 				exit(1);
 		}
 	}
 	else {
-		yyerror("argument not defined");
+		yyerror("TYPE: Argument not defined");
 		return NULL;
 	}
 }
+
 struct ast *scan(struct ast *val){
 	if(val != NULL) {
 		struct value *res;
@@ -1363,7 +1368,7 @@ struct ast *scan(struct ast *val){
 			}else
 				return NULL;
 	}else {
-		yyerror("argument not defined");
+		yyerror("SCAN: Argument not defined");
 		return NULL;
 	}
 }
@@ -1390,12 +1395,12 @@ struct ast *ssqrt(struct ast *val) {
 			return (struct ast *)res;
 		}
 		else {
-			yyerror("Incompatible type!");
+			yyerror("SQRT: Incompatible type!");
 			return NULL;
 		}
 	}
 	else {
-		yyerror("argument not defined");
+		yyerror("SQRT: Argument not defined");
 		return NULL;
 	}
 }
@@ -1426,7 +1431,7 @@ struct ast *ppow(struct ast *val1, struct ast *val2) {
 				return (struct ast *)res;
 			}
 			else {
-				yyerror("Incompatible type!");
+				yyerror("POW: Incompatible type!");
 				return NULL;
 			}
 		}
@@ -1452,17 +1457,17 @@ struct ast *ppow(struct ast *val1, struct ast *val2) {
 				return (struct ast *)res;
 			}
 			else {
-				yyerror("Incompatible type!");
+				yyerror("POW: Incompatible type!");
 				return NULL;
 			}
 		}
 		else {
-			yyerror("Incompatible type!");
+			yyerror("POW: Incompatible type!");
 			return NULL;
 		}
 	}
 	else {
-		yyerror("argument not defined");
+		yyerror("POW: Argument not defined");
 		return NULL;
 	}
 }
@@ -1581,7 +1586,7 @@ struct ast* newperipherical(int nodetype, struct symbol *var, char *name, struct
 
 void assignPeri(struct periassign* p){
 	if(!p){
-		yyerror("no arguments for declaration of peripheral");
+		yyerror("ASSIGN-PERI: No arguments for declaration of peripheral");
 	}
 	struct peripherical *peri=malloc(sizeof(struct peripherical));
 	peri->nodetype='K';
@@ -1627,8 +1632,8 @@ void peripheralcall(struct perimethod *m) {
 			fl=fl->next;
 		}
 			if(done==0){
-			printf("%s: ", m->f->name );
-			printf("Method not found");
+				printf("%s: ", m->f->name );
+				printf("Method not found");
 			}
 	}
 }

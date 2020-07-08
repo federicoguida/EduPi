@@ -85,7 +85,7 @@ int convertPin(int Pin) {
         case 20: res = 28; break;
         case 21: res = 29; break;
         default: {
-            yyerror("undefined Pin, or power supply pin");
+            yyerror("CONVERT-PIN: Undefined Pin, or power supply pin");
             exit(1);
         }
     }
@@ -107,25 +107,25 @@ void ledRGB(struct ast *pin, struct ast *channel) {
                 else if(controlPin(i->value) == UART)
                     yyerror("UART PIN SELECTED");
                 else
-                    yyerror("undefined Pin, or power supply pin");
+                    yyerror("Undefined Pin, or power supply pin");
                 exit(1);
             }else {
                 if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
-                    yyerror("setup wiringPi failed!");
+                    yyerror("Setup wiringPi failed!");
                     exit(1);
                 }
                 if((c->value >= 0) && (c->value <= 100)) {
                     softPwmCreate(convertPin(i->value), 0, 100);
                     softPwmWrite(convertPin(i->value), c->value); //[0, 100]
                 }else {
-                    yyerror("unknown channel!");
+                    yyerror("LED-RGB: Unknown channel!");
                 }
             }
         }else {
-            yyerror("incompatible type!");
+            yyerror("LED-RGB: Incompatible type!");
         }
     }else {
-		yyerror("argument not defined");
+		yyerror("LED-RGB: Argument not defined");
 	}
 }
 
@@ -144,11 +144,11 @@ void setOutPin(struct ast *pin, struct ast *mode) {
                 else if(controlPin(i->value) == UART)
                     yyerror("UART PIN SELECTED");
                 else
-                    yyerror("undefined Pin, or power supply pin");
+                    yyerror("Undefined Pin, or power supply pin");
                 exit(1);
             }else {
                 if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
-                    yyerror("setup wiringPi failed!");
+                    yyerror("Setup wiringPi failed!");
                     exit(1);
                 }
                 pinMode(convertPin(i->value), OUTPUT);
@@ -157,13 +157,13 @@ void setOutPin(struct ast *pin, struct ast *mode) {
                 else if(strcmp(s->value, "LOW") == 0)
                     digitalWrite(convertPin(i->value), LOW);  //led off
                 else
-                    yyerror("incompatible mode!");
+                    yyerror("SET-OUT-PIN: Incompatible mode!");
             }
         }else {
-            yyerror("incompatible type!");
+            yyerror("SET-OUT-PIN: Incompatible type!");
         }
     }else {
-		yyerror("argument not defined");
+		yyerror("SET-OUT-PIN: Argument not defined");
 	}
 }
 
@@ -180,11 +180,11 @@ struct ast *button(struct ast *pin) {
                 else if(controlPin(i->value) == UART)
                     yyerror("UART PIN SELECTED");
                 else
-                    yyerror("undefined Pin, or power supply pin");
+                    yyerror("Undefined Pin, or power supply pin");
                 exit(1);
             }else {
                 if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
-                    yyerror("setup wiringPi failed!");
+                    yyerror("Setup wiringPi failed!");
                     exit(1);
                 }
                 pinMode(convertPin(i->value), INPUT);
@@ -197,10 +197,10 @@ struct ast *button(struct ast *pin) {
                 return (struct ast *)res;
             }
         }else {
-            yyerror("incompatible type!");
+            yyerror("BUTTON: Incompatible type!");
         }
     }else {
-		yyerror("argument not defined");
+		yyerror("BUTTON: Argument not defined");
 	}
 }
 
@@ -242,12 +242,12 @@ void lcd_byte(int bits, int mode) {
 
 void lcd_init(void) {
     if(wiringPiSetup() == -1) { //when initialize wiringPi failed, print message to screen
-        yyerror("setup wiringPi failed!");
+        yyerror("Setup wiringPi failed!");
         exit(1);
     }
     fd = wiringPiI2CSetup(I2C_ADDR);
     if(fd < 0) {
-        yyerror("setup wiringPiI2C failed!");
+        yyerror("Setup wiringPiI2C failed!");
         exit(1);
     }
     // Initialise display
@@ -274,10 +274,10 @@ void sendIntegerLcd(struct ast *integer) {
             res->structType=sres;
             sendStringLcd((struct ast *)res);
         }else {
-            yyerror("incompatible type!");
+            yyerror("SEND-INTEGER: Incompatible type!");
         }
     }else {
-		yyerror("argument not defined");
+		yyerror("SET-INTEGER: Argument not defined");
 	}
 }
 
@@ -295,10 +295,10 @@ void sendRealLcd(struct ast *real) {
             res->structType=sres;
             sendStringLcd((struct ast *)res);
         }else {
-            yyerror("incompatible type!");
+            yyerror("SEND-REAL: Incompatible type!");
         }
     }else {
-		yyerror("argument not defined");
+		yyerror("SEND-REAL: Argument not defined");
 	}
 }
 
@@ -310,10 +310,10 @@ void sendStringLcd(struct ast *string) {
             char *str=strdup(s->value);
             while(*str) lcd_byte(*(str++), LCD_CHR);
         }else {
-            yyerror("incompatible type!");
+            yyerror("SEND-STRING: Incompatible type!");
         }
     }else {
-		yyerror("argument not defined");
+		yyerror("SEND-STRING: Argument not defined");
 	}
 }
 
@@ -327,13 +327,13 @@ void lcdLoc(struct ast *line) {
             else if(strcmp(s->value, "LINE2") == 0)
                 lcd_byte(LINE2, LCD_CMD);
             else
-                yyerror("incompatible LINE!");
+                yyerror("LINE-LCD: Incompatible LINE!");
         }else {
-            yyerror("incompatible type!");
+            yyerror("LINE-LCD: Incompatible type!");
         }
     }
     else {
-		yyerror("argument not defined");
+		yyerror("LINE-LCD: Argument not defined");
 	}	
 }
 

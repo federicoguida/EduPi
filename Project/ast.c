@@ -692,55 +692,71 @@ struct ast *newflow(int nodetype, struct ast *cond, struct ast *tl, struct ast *
 }
 
 void ifop(struct flow *f){
-    struct value *v=(struct value*)evaluate(f->cond);
-    struct integerType *i=(struct integerType*)v->structType;
-    if(i->value!=0){
-				if(f->tl) {
-					evaluate(f->tl);
-      	}
-    } else {
-				if(f->el) {
-					evaluate((f->el));
-				}
-    }
+	if(!evaluate(f->cond)) {
+		yyerror("undefined condition!");
+	}else {
+		struct value *v=(struct value*)evaluate(f->cond);
+		struct integerType *i=(struct integerType*)v->structType;
+		if(i->value!=0){
+			if(f->tl) {
+				evaluate(f->tl);
+			}
+		} else {
+			if(f->el) {
+				evaluate((f->el));
+			}
+		}
+	}
 }
 
 void whileop(struct flow *f) {
+	if(!evaluate(f->cond)) {
+		yyerror("undefined condition!");
+	}else {
 		struct value *v=(struct value*)evaluate(f->cond);
 		struct integerType *i=(struct integerType*)v->structType;
 		if(f->tl) { 
-				while(i->value != 0){
-						evaluate(f->tl);
-						v=(struct value*)evaluate(f->cond);
-						i=(struct integerType*)v->structType;
-				} 
+			while(i->value != 0){
+				evaluate(f->tl);
+				v=(struct value*)evaluate(f->cond);
+				i=(struct integerType*)v->structType;
+			} 
 		}
+	}
 }
 
 void dowhileop(struct flow *f) {
-		struct value *v;
-		struct integerType *i;
-		if(f->tl) { 
-				do{
-						evaluate(f->tl);
-						v=(struct value*)evaluate(f->cond);
-						i=(struct integerType*)v->structType;
-				}while(i->value != 0); 
-		}
+	struct value *v;
+	struct integerType *i;
+	if(f->tl) { 
+		do{
+			evaluate(f->tl);
+			if(!evaluate(f->cond)) {
+				yyerror("undefined condition!");
+				break;
+			}
+			v=(struct value*)evaluate(f->cond);
+			i=(struct integerType*)v->structType;
+		}while(i->value != 0); 
+	}
 }
 
 void forop(struct flow *f) { 
-    evaluate(f->in);
-    struct value *v=(struct value*)evaluate(f->cond);
-    struct integerType *i=(struct integerType*)v->structType;
-    if(f->tl && f->in && f->el) {
-        while(i->value) {
-						evaluate(f->tl);
-						evaluate(f->el);
-						v=(struct value*)evaluate(f->cond);
-						i=(struct integerType*)v->structType;
-        }
-    }
+	if(!evaluate(f->cond)) {
+		yyerror("undefined condition!");
+	}else {
+		evaluate(f->in);
+		struct value *v=(struct value*)evaluate(f->cond);
+		struct integerType *i=(struct integerType*)v->structType;
+		if(f->tl && f->in && f->el) {
+			while(i->value) {
+				evaluate(f->tl);
+				evaluate(f->el);
+				v=(struct value*)evaluate(f->cond);
+				i=(struct integerType*)v->structType;
+			}
+		}
+	}
 }
 
 struct ast *newForEach(int nodetype, struct symbol* i, struct symbol* list, struct ast* body){
@@ -753,24 +769,28 @@ struct ast *newForEach(int nodetype, struct symbol* i, struct symbol* list, stru
 }
 
 void foreach(struct for_each *f){
-	if(f->list->nodetype!='Y'){
-		yyerror("Second operator must be list");
-	}else{
-		if(f->list->l->exp){
-			struct listexp* l=(struct listexp*)f->list->l;
-			while(l){
-				if(l->exp->nodetype=='Y'){
-					f->i->nodetype='Y';
-					f->i->l=(struct listexp*)evaluate(l->exp);
-				}else{
-					f->i->nodetype='V';
-					f->i->v=(struct value*)l->exp;
-				}
-				evaluate(f->body);
-				l=l->next;
-			}
+	if(!(f->list->l)) {
+		yyerror("undefined list!");
+	}else {
+		if(f->list->nodetype!='Y'){
+			yyerror("Second operator must be list");
 		}else{
-			yyerror("List dont have elements");
+			if(f->list->l->exp){
+				struct listexp* l=(struct listexp*)f->list->l;
+				while(l){
+					if(l->exp->nodetype=='Y'){
+						f->i->nodetype='Y';
+						f->i->l=(struct listexp*)evaluate(l->exp);
+					}else{
+						f->i->nodetype='V';
+						f->i->v=(struct value*)l->exp;
+					}
+					evaluate(f->body);
+					l=l->next;
+				}
+			}else{
+				yyerror("List dont have elements");
+			}
 		}
 	}
 }
@@ -809,53 +829,77 @@ struct ast *newlfunc(int functype, struct symbol *l, struct ast *exp, struct ast
 }
 
 struct ast* strmrg(struct ast * value){
-	char *res="";
-	struct listexp *list=(struct listexp*)value;
-	while(list){
-		if(list->exp){
-			struct ast* tmp=evaluate(list->exp);
-			if(tmp->nodetype=='S'){
-				struct value *v=(struct value*)tmp;
-				struct stringType *s=(struct stringType *)(v->structType);
-				asprintf(&res, "%s%s", res, s->value);
-				list=list->next;
-			}else{
-				yyerror("Cannot concat String with %c", tmp->nodetype);
-				return NULL;
+	if(value != NULL) {
+		char *res="";
+		struct listexp *list=(struct listexp*)value;
+		while(list){
+			if(list->exp){
+				struct ast* tmp=evaluate(list->exp);
+				if(tmp->nodetype=='S'){
+					struct value *v=(struct value*)tmp;
+					struct stringType *s=(struct stringType *)(v->structType);
+					asprintf(&res, "%s%s", res, s->value);
+					list=list->next;
+				}else{
+					yyerror("Cannot concat String with %c", tmp->nodetype);
+					return NULL;
+				}
 			}
 		}
-	}
-	struct value *r=malloc(sizeof(struct value));
-	struct stringType *result=malloc(sizeof(struct stringType));
-	r->nodetype='S';
-	result->value=res;
-	r->structType=result;
-	return (struct ast*)r;
-}
-
-struct ast* strmul(struct ast* string, struct ast* mul){
-	char *result="";
-	if(mul->nodetype=='I' && string->nodetype=='S'){
-		struct value* val=(struct value*)mul;
-		struct value* st=(struct value*)string;
-		int v=((struct integerType*)val->structType)->value;
-		char *str=((struct stringType*)(st->structType))->value;
-		for (int i =0; i<v; i++){
-			asprintf(&result, "%s%s", result, str );
-		}
-		struct value * res=malloc(sizeof(struct value));
-		struct stringType *sres=malloc(sizeof(struct stringType));
-		sres->value=result;
-		res->nodetype='S';
-		res->structType=sres;
-		return (struct ast*)res;
-	}else{
-		yyerror("Types of arguments not compatible: %c %c", string->nodetype, mul->nodetype);
+		struct value *r=malloc(sizeof(struct value));
+		struct stringType *result=malloc(sizeof(struct stringType));
+		r->nodetype='S';
+		result->value=res;
+		r->structType=result;
+		return (struct ast*)r;
+	}else {
+		yyerror("argument not defined");
 		return NULL;
 	}
 }
 
-char* itoa(int value){
+struct ast* strmul(struct ast* string, struct ast* mul){
+	if((string != NULL) && (mul != NULL)) {
+		char *result="";
+		if(mul->nodetype=='I' && string->nodetype=='S'){
+			struct value* val=(struct value*)mul;
+			struct value* st=(struct value*)string;
+			int v=((struct integerType*)val->structType)->value;
+			char *str=((struct stringType*)(st->structType))->value;
+			for (int i =0; i<v; i++){
+				asprintf(&result, "%s%s", result, str );
+			}
+			struct value * res=malloc(sizeof(struct value));
+			struct stringType *sres=malloc(sizeof(struct stringType));
+			sres->value=result;
+			res->nodetype='S';
+			res->structType=sres;
+			return (struct ast*)res;
+		}else if(mul->nodetype=='R' && string->nodetype=='S') {
+			struct value* val=(struct value*)mul;
+			struct value* st=(struct value*)string;
+			int v=(int)(((struct realType*)val->structType)->value);
+			char *str=((struct stringType*)(st->structType))->value;
+			for (int i =0; i<v; i++){
+				asprintf(&result, "%s%s", result, str );
+			}
+			struct value * res=malloc(sizeof(struct value));
+			struct stringType *sres=malloc(sizeof(struct stringType));
+			sres->value=result;
+			res->nodetype='S';
+			res->structType=sres;
+			return (struct ast*)res;
+		}else{
+			yyerror("Types of arguments not compatible: %c %c", string->nodetype, mul->nodetype);
+			return NULL;
+		}
+	}else {
+		yyerror("argument not defined");7
+		return NULL;
+	}
+}
+
+char *itoa(int value){
 	char *result;
 	asprintf(&result,"%d",value);
 	return result;
@@ -867,34 +911,39 @@ char *dtoa(double value){
 	return result;
 }
 
-struct ast* toString(struct ast* exp){
-	char *string;
-	struct value* v;
-	struct value* result;
-	struct stringType* sres;
-	if(exp->nodetype=='I' || exp->nodetype=='R'){
-		switch(exp->nodetype){
-			case 'I' :
-				v=(struct value*)exp;
-				string=itoa(((struct integerType*)(v->structType))->value);
-				result=malloc(sizeof(struct value));
-				sres=malloc(sizeof(struct stringType));
-				sres->value=string;
-				result->nodetype='S';
-				result->structType=sres;
-				return (struct ast*)result;
-			case 'R' :
-				v=(struct value*)exp;
-				string=dtoa(((struct realType*)(v->structType))->value);
-				result=malloc(sizeof(struct value));
-				sres=malloc(sizeof(struct stringType));
-				sres->value=string;
-				result->nodetype='S';
-				result->structType=sres;
-				return (struct ast*)result;
+struct ast *toString(struct ast* exp){
+	if(exp != NULL) {
+		char *string;
+		struct value* v;
+		struct value* result;
+		struct stringType* sres;
+		if(exp->nodetype=='I' || exp->nodetype=='R'){
+			switch(exp->nodetype){
+				case 'I' :
+					v=(struct value*)exp;
+					string=itoa(((struct integerType*)(v->structType))->value);
+					result=malloc(sizeof(struct value));
+					sres=malloc(sizeof(struct stringType));
+					sres->value=string;
+					result->nodetype='S';
+					result->structType=sres;
+					return (struct ast*)result;
+				case 'R' :
+					v=(struct value*)exp;
+					string=dtoa(((struct realType*)(v->structType))->value);
+					result=malloc(sizeof(struct value));
+					sres=malloc(sizeof(struct stringType));
+					sres->value=string;
+					result->nodetype='S';
+					result->structType=sres;
+					return (struct ast*)result;
+			}
+		}else{
+			yyerror("Types of arguments not compatible: %c", exp->nodetype);
+			return NULL;
 		}
-	}else{
-		yyerror("Types of arguments not compatible: %c", exp->nodetype);
+	}else {
+		yyerror("argument not defined");
 		return NULL;
 	}
 }
@@ -1125,7 +1174,7 @@ struct ast* callbuiltin(struct fncall *f){
 
 void print(struct ast *val) {
 	if(!val)
-	yyerror("Cannot print null element");
+		yyerror("Cannot print null element");
 	else{
 		struct value *a;
 		struct integerType *i;
@@ -1186,12 +1235,12 @@ void print(struct ast *val) {
 }
 
 void println(struct ast *val) {
-		if(!val)
-			yyerror("Cannot print null element");
-		else{
+	if(!val)
+		yyerror("Cannot print null element");
+	else{
 		print(val); 
 		printf("\n");
-		}
+	}
 }
 
 struct ast *date(){
@@ -1205,18 +1254,22 @@ struct ast *date(){
     return (struct ast*)a;
 }
 void bsleep(struct ast *val) {
-	struct value *a;
-	struct integerType *i;
-	if(val->nodetype=='I'){
-        a=(struct value *)val;
-        i=(struct integerType *)a->structType;
-        int intero= i->value;
-        fflush(stdout);
-        usleep(intero*1000);
-  	}else{
-		yyerror("Integer type expected on sleep function");
-  	}
-}
+	if(val != NULL) {
+		struct value *a;
+		struct integerType *i;
+		if(val->nodetype=='I'){
+			a=(struct value *)val;
+			i=(struct integerType *)a->structType;
+			int intero= i->value;
+			fflush(stdout);
+			usleep(intero*1000);
+		}else{
+			yyerror("Integer type expected on sleep function");
+		}
+	}else {
+		yyerror("argument not defined");
+	}
+}	
 
 struct ast *type(struct ast *val) {
 	if(val != NULL) {
@@ -1269,42 +1322,47 @@ struct ast *type(struct ast *val) {
 	}
 }
 struct ast *scan(struct ast *val){
-	struct value *res;
-	struct value *a;
-	struct integerType *i;
-	struct realType *r;
-	struct stringType *s;
-	struct stringType *p;
-	float realres;
-	char *stringres;
-	a=(struct value *)val;
-	p=(struct stringType *)a->structType;
-		if(strcmp(p->value,"I")==0){
-			res=malloc(sizeof(struct value));
-			i=malloc(sizeof(struct integerType));
-			scanf("%d",&(i->value));
-			res->nodetype='I';
-			res->structType=i;
-			return (struct ast*)res;
-		}else if(strcmp(p->value,"S")==0){
-			res=malloc(sizeof(struct value));
-			s=malloc(sizeof(struct stringType));
-			stringres=malloc(sizeof(char)*256);
-			scanf("%s",stringres);
-			s->value=strdup(stringres);
-			res->nodetype='S';
-			res->structType=s;
-			return (struct ast*)res;
-		}else if(strcmp(p->value,"R")==0){
-			res=malloc(sizeof(struct value));
-			r=malloc(sizeof(struct integerType));
-			scanf("%f",&realres);
-			r->value=(double)realres;
-			res->nodetype='R';
-			res->structType=r;
-			return (struct ast*)res;
-		}else
-			return NULL;	
+	if(val != NULL) {
+		struct value *res;
+		struct value *a;
+		struct integerType *i;
+		struct realType *r;
+		struct stringType *s;
+		struct stringType *p;
+		float realres;
+		char *stringres;
+		a=(struct value *)val;
+		p=(struct stringType *)a->structType;
+			if(strcmp(p->value,"I")==0){
+				res=malloc(sizeof(struct value));
+				i=malloc(sizeof(struct integerType));
+				scanf("%d",&(i->value));
+				res->nodetype='I';
+				res->structType=i;
+				return (struct ast*)res;
+			}else if(strcmp(p->value,"S")==0){
+				res=malloc(sizeof(struct value));
+				s=malloc(sizeof(struct stringType));
+				stringres=malloc(sizeof(char)*256);
+				scanf("%s",stringres);
+				s->value=strdup(stringres);
+				res->nodetype='S';
+				res->structType=s;
+				return (struct ast*)res;
+			}else if(strcmp(p->value,"R")==0){
+				res=malloc(sizeof(struct value));
+				r=malloc(sizeof(struct integerType));
+				scanf("%f",&realres);
+				r->value=(double)realres;
+				res->nodetype='R';
+				res->structType=r;
+				return (struct ast*)res;
+			}else
+				return NULL;
+	}else {
+		yyerror("argument not defined");
+		return NULL;
+	}
 }
 
 struct ast *ssqrt(struct ast *val) {
@@ -1519,10 +1577,8 @@ struct ast* newperipherical(int nodetype, struct symbol *var, char *name, struct
 }
 
 void assignPeri(struct periassign* p){
-
 	if(!p){
-		//yyerror("no arguments for declaration of peripheral");
-		//return NULL;
+		yyerror("no arguments for declaration of peripheral");
 	}
 	struct peripherical *peri=malloc(sizeof(struct peripherical));
 	peri->nodetype='K';
@@ -1687,7 +1743,6 @@ struct ast *evaluate(struct ast *tree) {
         case 4: result = operation(4,evaluate(tree->l), evaluate(tree->r)); break; // ==
         case 5: result = operation(5,evaluate(tree->l), evaluate(tree->r)); break; // >=
         case 6: result = operation(6,evaluate(tree->l), evaluate(tree->r)); break; // <=
-        default: printf("internal error debug"); 
     }
     return result;
 }

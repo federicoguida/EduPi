@@ -10,3 +10,4 @@ void sendRealLcd(struct ast *real);
 void sendStringLcd(struct ast *string);
 void lcdLoc(struct ast *line);
 void clrLcd(void);
+void status(void);

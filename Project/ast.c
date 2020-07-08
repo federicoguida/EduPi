@@ -1075,6 +1075,14 @@ struct ast* callbuiltin(struct fncall *f){
 					}
 					a=ppow(evaluate(f->l), evaluate(f->r));
 					break;
+				case B_random:
+					if(!f->l || !f->r) {
+						yyerror("FUNC: No arguments for random...");
+						free(a);
+						break;
+					}
+					a=rrandom(evaluate(f->l), evaluate(f->r));
+					break;
 				case B_sop:
 					if(!f->l || !f->r) {
 						yyerror("FUNC: No arguments for setOutPin...");
@@ -1168,6 +1176,9 @@ struct ast* callbuiltin(struct fncall *f){
 						break;
 					}
 					a=toString(evaluate(f->l));
+					break;
+				case B_status:
+					status();
 					break;
 				default:
 					yyerror("Unknown built-in function %d", functype);
@@ -1455,19 +1466,45 @@ struct ast *ppow(struct ast *val1, struct ast *val2) {
 				res->nodetype='R';
 				res->structType=r;
 				return (struct ast *)res;
-			}
-			else {
+			}else {
 				yyerror("POW: Incompatible type!");
 				return NULL;
 			}
-		}
-		else {
+		}else {
 			yyerror("POW: Incompatible type!");
 			return NULL;
 		}
-	}
-	else {
+	}else {
 		yyerror("POW: Argument not defined");
+		return NULL;
+	}
+}
+
+struct ast *rrandom(struct ast *val1, struct ast *val2) {
+	if((val1 != NULL) && (val2 != NULL)) {
+		struct value *v1=(struct value *)val1;
+		struct value *v2=(struct value *)val2;
+		srand(time(0));
+		if(v1->nodetype == 'I') {
+			if(v2->nodetype == 'I') {
+				struct value *res=malloc(sizeof(struct value));
+				struct integerType *i=malloc(sizeof(struct integerType));
+				struct integerType *intValue1=(struct integerType *)v1->structType;
+				struct integerType *intValue2=(struct integerType *)v2->structType;
+				i->value=(intValue1->value)+rand()%(intValue2->value);
+				res->nodetype='I';
+				res->structType=i;
+				return (struct ast *)res;
+			}else {
+				yyerror("RANDOM: Incompatible type!");
+				return NULL;
+			}
+		}else {
+			yyerror("RANDOM: Incompatible type!");
+			return NULL;
+		}
+	}else {
+		yyerror("RANDOM: Argument not defined");
 		return NULL;
 	}
 }

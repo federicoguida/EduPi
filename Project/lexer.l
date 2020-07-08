@@ -61,6 +61,8 @@ STRING    \"{print}*\"
 "strmrg"          { yylval.fn = B_strmrg; return STRMRG;}
 "strmul"          { yylval.fn = B_strmul; return STRMUL;}
 "toString"        { yylval.fn = B_toString; return TOSTRING;}
+"statusGPIO"	  { yylval.fn = B_status; return STATUS; }
+"random"		  { yylval.fn = B_random; return RAND; }
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }
@@ -120,6 +122,9 @@ int main(int argc, char **argv) {
 		}
 		if(strcmp(argv[2], "-edu") == 0)
 			edu = 1;
+		yyparse();
+		fclose(yyin);
+		yyrestart(stdin);
 		return yyparse();
 	} else if(argc == 2) {
 		if(strcmp(argv[1], "-edu") == 0) {

@@ -123,6 +123,8 @@ enum bifs {			/* built-in functions */
   B_strmrg=26,
   B_strmul=27,
   B_toString=28,
+  B_status=29,
+  B_random=30,
 };
 
 // built-in function 
@@ -229,6 +231,7 @@ void bsleep(struct ast *val);
 struct ast *type(struct ast *val);
 struct ast *ssqrt(struct ast *val);
 struct ast *ppow(struct ast *val1, struct ast *val2);
+struct ast *rrandom(struct ast *val1, struct ast *val2);
 struct listexp* newprintlist(struct ast *p, struct listexp *list);
 /*****************END-BUILT*/
 

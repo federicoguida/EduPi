@@ -92,6 +92,11 @@ int convertPin(int Pin) {
     return res;
 }
 
+void status(void) {
+    system("gpio readall");
+    fflush(stdout);
+}
+
 void ledRGB(struct ast *pin, struct ast *channel) {
     if((pin != NULL) && (channel != NULL)) {
         struct value *v1=(struct value *)pin;

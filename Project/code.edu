@@ -1,4 +1,13 @@
-for(integer x = 0; x < 20; x++) {
-	println(x);
+integer sum = 0;
+
+for(integer x = 0; x <= 10000; x++) {
+		sum = sum + x;
+		print(x);
+		print(" ");
 }
+println("");
+print("Valore accumulatore: ");
+println(sum);
+println("." *500);
+
 

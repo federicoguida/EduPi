@@ -1,6 +1,1 @@
-- [x] Controllo tipi 
-- [ ] Ottimizzazione della memoria
-- [ ] Funzioni definite da Utente
-- [ ] Liste
-- [ ] Tipo periferica
-- [ ] Controllo dei pin delle periferiche
+

@@ -1275,12 +1275,19 @@ void bsleep(struct ast *val) {
 	if(val != NULL) {
 		struct value *a;
 		struct integerType *i;
+		struct realType *r;
 		if(val->nodetype=='I'){
 			a=(struct value *)val;
 			i=(struct integerType *)a->structType;
 			int intero= i->value;
 			fflush(stdout);
 			usleep(intero*1000);
+		}else if(val->nodetype=='R') {
+			a=(struct value *)val;
+			r=(struct realType *)a->structType;
+			double reale= r->value;
+			fflush(stdout);
+			usleep(reale*1000);
 		}else{
 			yyerror("SLEEP: Integer type expected on sleep function");
 		}

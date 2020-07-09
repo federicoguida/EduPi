@@ -27,3 +27,11 @@ println("PIN RED Channel --> " >> 16);
 println("PIN GREEN Channel --> " >> 20);
 println("PIN BLUE Channel --> " >> 21);
 println(rgb);
+
+rgb->colorLED(16, 20, 21, 10);
+sleep(50);
+rgb->setRGB(16, 100);
+sleep(50);
+rgb->setRGB(20, 100);
+sleep(50);
+rgb->setRGB(21, 100);

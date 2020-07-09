@@ -1,0 +1,27 @@
+def rot(l) {
+    l.append(l.delete(0));
+    return l;
+}
+
+def swap(l) {
+    l.push(l.delete(1));
+    return l;
+}
+
+def over(l) {
+    l.push(l.get(1));
+    return l;
+}
+
+def nip(l) {
+    l.delete(1);
+    return l;
+}
+
+def dup(l) {
+    l.push(l.get(0));
+    return l;
+}
+
+list stack = [1, 2, 3];
+println(stack);

@@ -1,0 +1,15 @@
+def range(x) {
+    list l = [];
+    for(integer i = 0; i < x; i++) {
+        l.append(i);
+    }
+    return l;
+}
+
+def printList(lista) {
+    for n in lista {
+        println("Element list [" >> toString(n) >> "] * 2 = " >> toString(n*2));
+    }
+}
+
+printList(range(20));

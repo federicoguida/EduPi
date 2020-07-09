@@ -1,0 +1,8 @@
+real accum = 0;
+integer n = 1000000;
+
+for(integer i = 0; i < n; i++) {
+    accum = accum + (pow(-1, i)/(2*i+1));
+}
+
+print(accum*4);

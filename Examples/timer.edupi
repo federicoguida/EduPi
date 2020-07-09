@@ -1,0 +1,27 @@
+def action(pin1, pin2, n) {
+    integer x = pin1;
+    integer y = pin2;
+
+    for(integer i = 0; i < n; i++) {
+        setOutPin(x, "HIGH");
+        setOutPin(y, "HIGH");
+        sleep(500);
+        setOutPin(x, "LOW");
+        setOutPin(y, "LOW");
+        sleep(500);
+    }
+}
+
+def loop() {
+    integer flag = 0;
+    string timeOut = "2020-07-09 23:41:00";
+    if(timeOut == time()) {
+        action(17, 24, 5);
+        flag = 1;
+    }
+    return flag;
+}
+
+while(loop() == 0) {
+    println(time());
+}

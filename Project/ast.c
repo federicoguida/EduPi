@@ -1777,6 +1777,12 @@ struct ast *evaluate(struct ast *tree) {
               break;
         case 'X' :
               ((struct symdecl*)tree)->s->nodetype=((struct symdecl*)tree)->type;
+			  ((struct symdecl*)tree)->s->v=NULL;
+			  ((struct symdecl*)tree)->s->l=NULL;
+			  ((struct symdecl*)tree)->s->p=NULL;
+			  ((struct symdecl*)tree)->s->func=NULL;
+			  ((struct symdecl*)tree)->s->syms=NULL;
+			  ((struct symdecl*)tree)->s->returnValue=NULL;
               break;
         case 'F' :
               ifop((struct flow *)tree);

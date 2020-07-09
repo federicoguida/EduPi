@@ -138,7 +138,7 @@ init: type NAME ASSIGN exp { $$ = newasgn($1, $2, $4); }
 | LST NAME ASSIGN LBRACK  RBRACK { $$ = newlasgn($1, $2, NULL); }
 | NAME ASSIGN LBRACK value_list RBRACK { $$ = newlsasgn($1, $4); }
 | NAME ASSIGN LBRACK RBRACK { $$ = newlsasgn($1, NULL); }
-| PERI NAME ASSIGN STRING COMMA functionlist {$$ = newperipherical($1, $2, $4, $6);}
+| PERI NAME ASSIGN LBRACK STRING COMMA functionlist RBRACK {$$ = newperipherical($1, $2, $5, $7);}
 ;
 
 pericall: NAME ARR ID { $$ = newperipheralcall($1, newString('S', "ID"),NULL, NULL); }

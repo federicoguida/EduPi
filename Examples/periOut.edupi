@@ -1,0 +1,46 @@
+// functions //
+
+def ledOn(pin) {
+    setOutPin(pin, "HIGH");
+}
+
+def ledOff(pin) {
+    setOutPin(pin, "LOW");
+}
+
+def buzzOn(pin) {
+    setOutPin(pin, "HIGH");
+}
+
+def buzzOff(pin) {
+    setOutPin(pin, "LOW");
+}
+
+def ledBlink(pin, n) {
+    integer x = pin;
+    for(integer i = 1; i <= n; i++) {
+        ledOn(x);
+        sleep(500);
+        ledOff(x);
+        sleep(500);
+    }
+}
+
+def buzzBlink(pin, n) {
+    integer x = pin;
+    for(integer i = 1; i <= n; i++) {
+        buzzOn(x);
+        sleep(500);
+        buzzOff(x);
+        sleep(500);
+    }
+}
+
+// INIT //
+
+peripheral led = ["LED", ledOn(), ledOff(), ledBlink()];
+peripheral buzzer = ["BUZZER", buzzOn(), buzzOff(), buzzBlink()];
+println("PIN LED --> " >> 17);
+println(led);
+println("PIN BUZZER --> " >> 24);
+println(buzzer);

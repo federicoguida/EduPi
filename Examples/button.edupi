@@ -1,0 +1,24 @@
+// functions //
+
+def pressed(pinButton, pinLed, pinBuzzer) {
+    integer x = pinButton;
+    integer y = pinLed;
+    integer z = pinBuzzer;
+    while(1) {
+        if(button(x)) {
+            setOutPin(y, "HIGH");
+            setOutPin(z, "HIGH");
+        }else {
+            setOutPin(y, "LOW");
+            setOutPin(z, "LOW");
+        }
+    }
+}
+
+// INIT //
+
+peripheral butt = ["BUTTON", pressed()];
+println("PIN BUTTON --> " >> 18);
+println("PIN LED --> " >> 17);
+println("PIN BUZZER --> " >> 24);
+println(butt);

@@ -1057,7 +1057,7 @@ struct ast* callbuiltin(struct fncall *f){
 						free(a);
 						break;
 					}
-					a=type(evaluate(f->l));
+					a=type(f->l);
 					break;
 				case B_sqrt:
 					if(!f->l) {
@@ -1326,6 +1326,20 @@ struct ast *type(struct ast *val) {
 				res=malloc(sizeof(struct value));
 				str=malloc(sizeof(struct stringType));
 				str->value = "peripheral";
+				res->nodetype = 'S';
+				res->structType = str;
+				return (struct ast *)res;
+			case 'V':
+				res=malloc(sizeof(struct value));
+				str=malloc(sizeof(struct stringType));
+				switch(((struct symref*)val)->s->nodetype) {
+					case 'I': str->value = "integer"; break;
+					case 'R': str->value = "real"; break;
+					case 'S': str->value = "string"; break;
+					case 'Y': str->value = "list"; break;
+					case 'K': str->value = "peripheral"; break;
+					default: str->value = "undefined type"; break;
+				}
 				res->nodetype = 'S';
 				res->structType = str;
 				return (struct ast *)res;

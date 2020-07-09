@@ -9,5 +9,3 @@ println("");
 print("Valore accumulatore: ");
 println(sum);
 println("." *500);
-
-

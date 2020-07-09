@@ -8,8 +8,7 @@
 #  include "rasp.h"
 
 char *clearString(char *str) {
-    char *result=malloc(strlen(str)+1);
-    strncpy(result, str+1, strlen(str)-2);
+    char *result = strndup(str+1, strlen(str)-2);
     return result;
 }
 

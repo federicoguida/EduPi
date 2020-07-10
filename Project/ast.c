@@ -1202,6 +1202,7 @@ void print(struct ast *val) {
 		struct peripherical *p;
 		struct funclist *f;
 		struct ast* listPrint;
+		struct symlist *sl;
 
 		switch(val->nodetype){
 			case 'I' :  
@@ -1230,10 +1231,19 @@ void print(struct ast *val) {
 						break;
 			case 'K' :
 						p=(struct peripherical*)val;
-						printf("Peripheral ID: %s\n",p->name);
+						printf("Peripheral Description: %s\n",p->name);
 						f=p->f;
 						while(f){
-							printf("Method --> %s\n", f->bcall->s->name);
+							printf("Method --> %s(", f->bcall->s->name);
+							sl=f->bcall->s->syms;
+							while(sl){
+								if(sl->sym)
+									printf("%s",sl->sym->name);
+								if(sl->next)
+									printf(",");
+								sl=sl->next;
+							}
+							printf(")\n");
 							f=f->next;
 						}
 						break;
@@ -1675,24 +1685,28 @@ struct ast* newperipheralcall(struct symbol *s, struct ast* a, struct symbol *f,
 }
 
 void peripheralcall(struct perimethod *m) {
-	if(m->a){
-		printf("Peripheral ID -> %s\n",m->s->p->name);
-	}else {
-		int done=0;
-		struct funclist *fl=m->s->p->f;
-		while(fl){
-			if((char*)fl->bcall->s->name==(char*)m->f->name){
-				fl->bcall->l=m->expl;
-				calluser(fl->bcall);
-				done=1;
-				break;
+	if(m->s->p){
+		if(m->a){
+			printf("Peripheral ID -> %s\nPeripheral Description: %s\n",m->s->name,m->s->p->name);
+		}else {
+			int done=0;
+			struct funclist *fl=m->s->p->f;
+			while(fl){
+				if((char*)fl->bcall->s->name==(char*)m->f->name){
+					fl->bcall->l=m->expl;
+					calluser(fl->bcall);
+					done=1;
+					break;
+				}
+				fl=fl->next;
 			}
-			fl=fl->next;
+				if(done==0){
+					printf("%s: ", m->f->name );
+					printf("Method not found");
+				}
 		}
-			if(done==0){
-				printf("%s: ", m->f->name );
-				printf("Method not found");
-			}
+	}else{
+		yyerror("Peripheral not found!");
 	}
 }
 

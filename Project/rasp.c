@@ -269,7 +269,7 @@ void sendIntegerLcd(struct ast *integer) {
     if(integer != NULL) {
         struct value *v=(struct value *)integer;
         if(v->nodetype == 'I') {
-            struct integerType *i=(struct integerType *)v;
+            struct integerType *i=(struct integerType *)v->structType;
             char *str;
             asprintf(&str, "%d", i->value);
             struct value *res=malloc(sizeof(struct value));
@@ -290,7 +290,7 @@ void sendRealLcd(struct ast *real) {
     if(real != NULL) {
         struct value *v=(struct value *)real;
         if(v->nodetype == 'R') {
-            struct realType *r=(struct realType *)v;
+            struct realType *r=(struct realType *)v->structType;
             char *str;
             asprintf(&str, "%g", r->value);
             struct value *res=malloc(sizeof(struct value));
@@ -311,7 +311,7 @@ void sendStringLcd(struct ast *string) {
     if(string != NULL) {
         struct value *v=(struct value *)string;
         if(v->nodetype == 'S') {
-            struct stringType *s=(struct stringType *)v;
+            struct stringType *s=(struct stringType *)v->structType;
             char *str=strdup(s->value);
             while(*str) lcd_byte(*(str++), LCD_CHR);
         }else {
@@ -326,7 +326,7 @@ void lcdLoc(struct ast *line) {
     if(line != NULL) {
         struct value *v=(struct value *)line;
         if(v->nodetype == 'S') {
-            struct stringType *s=(struct stringType *)v;
+            struct stringType *s=(struct stringType *)v->structType;
             if(strcmp(s->value, "LINE1") == 0)
                 lcd_byte(LINE1, LCD_CMD);
             else if(strcmp(s->value, "LINE2") == 0)

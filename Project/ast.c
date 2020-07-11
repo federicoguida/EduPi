@@ -955,6 +955,29 @@ struct ast *toString(struct ast* exp){
 	}
 }
 
+struct ast* toInt(struct ast * value){
+	if(value->nodetype!='I' && value->nodetype!='R'){
+		yyerror("TO-INTEGER: Cannot convert to integer %c TYPE", value->nodetype);
+		return NULL;
+	}
+	struct value *result=malloc(sizeof(struct value));
+	struct integerType *res=malloc(sizeof(struct value));
+	struct value *point=(struct value *)value;
+	struct realType* real;
+	switch(value->nodetype){
+		case 'I':
+			free(result);
+			free(res);
+			return (struct ast*)value;
+		case 'R':
+			real=(struct realType* )(point->structType);
+			result->nodetype='I';
+			res->value=(int)real->value;
+			result->structType=res;
+			return (struct ast*)result;
+	}
+}
+
 struct ast* callbuiltin(struct fncall *f){
     struct ast* a;
     enum bifs functype = f->functype;
@@ -1180,6 +1203,16 @@ struct ast* callbuiltin(struct fncall *f){
 				case B_status:
 					status();
 					break;
+				case 'I':
+					if(!f->l){
+						yyerror("FUNC: No arguments for convert to integer");
+						free(a);
+						break;
+					}
+					a=toInt(evaluate(f->l));
+					break;
+				case B_exit:
+					exit(0);
 				default:
 					yyerror("Unknown built-in function %d", functype);
  		}

@@ -1393,6 +1393,12 @@ struct ast *type(struct ast *val) {
 				res->nodetype = 'S';
 				res->structType = str;
 				return (struct ast *)res;
+			case 'L':
+				type(evaluate(val));
+				break;
+			case 'C':
+				type(evaluate(val));
+				break;
 			default:
 				yyerror("TYPE: Error type!");
 				exit(1);

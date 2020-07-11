@@ -1,5 +1,5 @@
-list x = [5, "ciao", 5.8, 6, 243, "casa", "pizza", 89.24, "suca", 2, 67.45, "torta"];
-list p = [3, "prova"];
+list x = [5, "ciao", 5.8, 6, 243, "casa", "pizza", 89.24, "tavolo", 2, 67.45, "torta", 34, 21.8, "palla"];
+list p = [3, "prova", 21.9];
 list q = [78, 98.33, 1];
 
 x.insert(3, p);
@@ -10,23 +10,23 @@ list r = [];
 list s = [];
 list l = [];
 
-for(integer n = 0; n < x.size(); n++) {
-	if(type(x.get(n)) == "integer") {
-		i.append(x.get(n));
+for n in x {
+	if(type(n) == "integer") {
+		i.append(n);
 	}
-	if(type(x.get(n)) == "real") {
-		r.append(x.get(n));
+	if(type(n) == "real") {
+		r.append(n);
 	}
-	if(type(x.get(n)) == "string") {
-		s.append(x.get(n));
+	if(type(n) == "string") {
+		s.append(n);
 	}
-	if(type(x.get(n)) == "list") {
-		l.append(x.get(n));
+	if(type(n) == "list") {
+		l.append(n);
 	}
 }
 
-print("Lista Originale    --> "); println(x);
-print("Lista di Interi    --> "); println(i);
-print("Lista di Reali     --> "); println(r);
-print("Lista di Stringhe  --> "); println(s);
-print("Lista di Liste     --> "); println(l);
+println("Lista Originale    --> " >> x);
+println("Lista di Interi    --> " >> i);
+println("Lista di Reali     --> " >> r);
+println("Lista di Stringhe  --> " >> s);
+println("Lista di Liste     --> " >> l);

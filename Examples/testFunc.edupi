@@ -1,0 +1,21 @@
+// CODICE CON WHILE DENTRO UNA FUNZIONE //
+
+def range(x) {
+    list l = [];
+    integer i = 0;
+    while(x > l.size()) {
+        l.append(i);
+        i++;
+    }
+    return l;
+}
+
+def empty(y) {
+    while(y.size() > 2) {
+        y.pop();
+    }
+    return y;
+}
+
+list t = range(100);
+println(empty(t));

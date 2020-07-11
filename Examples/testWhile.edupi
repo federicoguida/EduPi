@@ -1,0 +1,19 @@
+// CODICE CON WHILE //
+
+def range(x) {
+    list l = [];
+    integer i = 0;
+    while(x > l.size()) {
+        l.append(i);
+        i++;
+    }
+    return l;
+}
+
+list t = range(100);
+
+while(t.size() > 2) {
+    t.pop();
+}
+
+println(t);

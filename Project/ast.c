@@ -111,10 +111,20 @@ struct ast* calluser(struct ufncall *f){
 			}
 
 			if(args->nodetype == 'Z') {	/* if this is a list node */
-				val[i] = evaluate(args->l);
+				struct ast* temp=evaluate(args->l);
+				if(!temp){
+					yyerror("CALLUSER: Args cannot be null");
+					exit(1);
+				}
+				val[i] = temp;
 				args = args->r;
 			} else {			/* if it's the end of the list */
-				val[i] = evaluate(args);
+				struct ast* temp=evaluate(args);
+				if(!temp){
+					yyerror("CALLUSER: Args cannot be null");
+					exit(1);
+				}
+				val[i] = temp;
 				args = NULL;
 			}
 		}

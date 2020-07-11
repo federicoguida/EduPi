@@ -1,0 +1,20 @@
+// codice con FOR EACH //
+
+def range(x) {
+    list l = [];
+    integer i = 0;
+    while(x > l.size()) {
+        l.append(i);
+        i++;
+    }
+    return l;
+}
+
+list t = range(1000);
+list z = range(1000-2);
+
+for i in z { //lista accorciata
+    t.pop();
+}
+
+println(t);

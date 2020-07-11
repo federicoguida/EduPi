@@ -1,0 +1,19 @@
+// CODICE CON FOR //
+
+def range(x) {
+    list l = [];
+    integer i = 0;
+    while(x > l.size()) {
+        l.append(i);
+        i++;
+    }
+    return l;
+}
+
+integer y = 100;
+list t = range(y);
+
+for(integer n = 0; n < (y-2); n++) {
+    t.pop();
+}
+println(t);

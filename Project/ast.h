@@ -125,6 +125,7 @@ enum bifs {			/* built-in functions */
   B_toString=28,
   B_status=29,
   B_random=30,
+  B_exit=31,
 };
 
 // built-in function 

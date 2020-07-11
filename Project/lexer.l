@@ -63,6 +63,7 @@ STRING    \"{print}*\"
 "toString"        { yylval.fn = B_toString; return TOSTRING;}
 "statusGPIO"	  { yylval.fn = B_status; return STATUS; }
 "random"		  { yylval.fn = B_random; return RAND; }
+"exit"			  { yylval.fn = B_exit; return EXIT;}
 
 "+"     { return ADDOP; }
 "-"     { return SUBOP; }

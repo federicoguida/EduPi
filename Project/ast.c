@@ -1684,7 +1684,7 @@ Z 	TREE OF STATEMENTS
 
 
 
-/**************PERI WORK IN PROGRESS**********************/
+/**************PERIPHERAL**********************/
 struct ast* newperipherical(int nodetype, struct symbol *var, char *name, struct funclist *fl ){
 	struct periassign* p=malloc(sizeof(struct periassign));
 	

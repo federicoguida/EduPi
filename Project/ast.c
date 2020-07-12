@@ -799,7 +799,7 @@ void foreach(struct for_each *f){
 						f->i->nodetype='Y';
 						f->i->l=(struct listexp*)evaluate(l->exp);
 					}else{
-						f->i->nodetype='V';
+						f->i->nodetype=l->exp->nodetype;
 						f->i->v=(struct value*)l->exp;
 					}
 					evaluate(f->body);
@@ -1398,6 +1398,8 @@ struct ast *type(struct ast *val) {
 					case 'S': str->value = "string"; break;
 					case 'Y': str->value = "list"; break;
 					case 'K': str->value = "peripheral"; break;
+					case 'L': type(evaluate(val)); break;
+					case 'C': type(evaluate(val)); break;
 					default: str->value = "undefined type"; break;
 				}
 				res->nodetype = 'S';

@@ -17,8 +17,8 @@ def pressed(pinButton, pinLed, pinBuzzer) {
 
 // INIT //
 
-peripheral butt = ["BUTTON", pressed()];
-println("PIN BUTTON --> " >> 18);
+peripheral pulsante = ["PULSANTE", pressed()];
+println("PIN PULSANTE --> " >> 18);
 println("PIN LED --> " >> 17);
 println("PIN BUZZER --> " >> 24);
-println(butt);
+println(pulsante);

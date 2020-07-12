@@ -45,5 +45,5 @@ println(led);
 println("PIN BUZZER --> " >> 24);
 println(buzzer);
 
-led->ledBlink(17, 5);
-buzzer->buzzBlink(24, 5);
+//led->ledBlink(17, 5);
+//buzzer->buzzBlink(24, 5);

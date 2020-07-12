@@ -1422,44 +1422,45 @@ struct ast *type(struct ast *val) {
 	}
 }
 
-struct ast *scan(struct ast *val){
+struct ast *scan(struct ast *val) {
 	if(val != NULL) {
+		struct value *v=(struct value *)val;
+		struct stringType *s=(struct stringType *)v->structType;
 		struct value *res;
-		struct value *a;
-		struct integerType *i;
-		struct realType *r;
-		struct stringType *s;
-		struct stringType *p;
-		float realres;
-		char *stringres;
-		a=(struct value *)val;
-		p=(struct stringType *)a->structType;
-			if(strcmp(p->value,"I")==0){
-				res=malloc(sizeof(struct value));
-				i=malloc(sizeof(struct integerType));
-				scanf("%d",&(i->value));
-				res->nodetype='I';
-				res->structType=i;
-				return (struct ast*)res;
-			}else if(strcmp(p->value,"S")==0){
-				res=malloc(sizeof(struct value));
-				s=malloc(sizeof(struct stringType));
-				stringres=malloc(sizeof(char)*256);
-				scanf("%s",stringres);
-				s->value=strdup(stringres);
-				res->nodetype='S';
-				res->structType=s;
-				return (struct ast*)res;
-			}else if(strcmp(p->value,"R")==0){
-				res=malloc(sizeof(struct value));
-				r=malloc(sizeof(struct integerType));
-				scanf("%f",&realres);
-				r->value=(double)realres;
-				res->nodetype='R';
-				res->structType=r;
-				return (struct ast*)res;
-			}else
-				return NULL;
+		struct integerType *inres;
+		struct realType *dbres;
+		struct stringType *stres;
+		int i;
+		double d;
+		char *str;
+		if(strcmp(s->value, "I") == 0) {
+			res=malloc(sizeof(struct value));
+			inres=malloc(sizeof(struct integerType));
+			scanf("%d", &i);
+			inres->value=i;
+			res->nodetype='I';
+			res->structType=inres;
+			return (struct ast *)res;
+		}else if(strcmp(s->value, "R") == 0) {
+			res=malloc(sizeof(struct value));
+			dbres=malloc(sizeof(struct realType));
+			scanf("%g", &d);
+			dbres->value=d;
+			res->nodetype='R';
+			res->structType=dbres;
+			return (struct ast *)res;
+		}else if(strcmp(s->value, "S") == 0) {
+			res=malloc(sizeof(struct value));
+			stres=malloc(sizeof(struct stringType));
+			scanf("%s", str);
+			stres->value=str;
+			res->nodetype='S';
+			res->structType=stres;
+			return (struct ast *)res;
+		}else {
+			yyerror("SCAN: Type not defined");
+			return NULL;
+		}
 	}else {
 		yyerror("SCAN: Argument not defined");
 		return NULL;

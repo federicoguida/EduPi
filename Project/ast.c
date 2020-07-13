@@ -1452,6 +1452,7 @@ struct ast *scan(struct ast *val) {
 		}else if(strcmp(s->value, "S") == 0) {
 			res=malloc(sizeof(struct value));
 			stres=malloc(sizeof(struct stringType));
+			str=malloc(sizeof(char)*50);
 			scanf("%s", str);
 			stres->value=str;
 			res->nodetype='S';
